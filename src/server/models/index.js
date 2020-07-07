@@ -79,7 +79,7 @@ async function submitESSearch(params) {
   }
   catch (error) {
     console.error(error.meta.body.error);
-    throw new Error('Elasticsearch does not provide a response:');
+    throw new Error(`Elasticsearch does not provide a response: ${error.meta.body.error}`);
   }
 }
 
