@@ -1,6 +1,42 @@
 /* eslint-disable no-underscore-dangle */
 const { esclient, index, type } = require('../../elastic');
 const { mappings } = require('../mappings');
+const allowedFilters = mappings.filter((mapping) => mapping.filter === true);
+
+function createESFilterMatchParams(filterParams) {
+  let result = {};
+  const allowedFilterKeys = allowedFilters.map((allowedFilter) => {
+    return allowedFilter.key;
+  });
+
+  const filterParamsKeys = Object.keys(filterParams);
+  const allowedFilterParams = [];
+
+  // Getting only allowed allowed filter params
+  filterParamsKeys.forEach((filterParamKey) => {
+    if (allowedFilterKeys.includes(filterParamKey)) {
+      allowedFilterParams[filterParamKey] = (filterParams[filterParamKey]);
+    }
+  });
+
+  const matchParams = [];
+  // create es filter params
+  Object.keys(allowedFilterParams).forEach((filterKey) => {
+    const mapping = mappings.find((mapping) => mapping.key == filterKey);
+    matchParams.push({
+      match: {
+        [mapping.value]: allowedFilterParams[filterKey],
+      },
+    });
+  });
+
+  result = {
+    bool: {
+      must: matchParams,
+    },
+  };
+  return result;
+}
 
 async function submitESSearch(params) {
   const currentAggs = { };
@@ -41,6 +77,7 @@ async function submitESSearch(params) {
     throw new Error('Elasticsearch does not provide a respons');
   }
 }
+
 function aggregateESResult(params) {
   const { body: { took, hits, aggregations = { } } } = params;
   const filter = {};
@@ -107,18 +144,19 @@ async function getSingleGraphic(params) {
 }
 
 async function getGraphics(req) {
-  const query = {
-    match_all: { },
-  };
 
-  const filterConfig = mappings.filter((mapping) => mapping.filter === true);
+  const query = createESFilterMatchParams(req);
+  console.log(query.bool.must);
+  // const query = {
+  //   match_all: { },
+  // };
 
   const result = await submitESSearch({
     req,
     index,
     type,
     query,
-    filter: filterConfig,
+    filter: allowedFilters,
   });
   const { meta, results, filters } = aggregateESResult(result);
 
