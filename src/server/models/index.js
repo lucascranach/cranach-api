@@ -39,7 +39,7 @@ function createESFilterMatchParams(filterParams) {
   return result;
 }
 
-function createESQuery(params) {
+function createESSearchParams(params) {
   const currentAggs = { };
   if (params.filter) {
     params.filter.forEach((filterItem) => {
@@ -72,9 +72,8 @@ function createESQuery(params) {
 }
 
 async function submitESSearch(params) {
-  const esParams = createESQuery(params);
   try {
-    const result = await esclient.search(esParams);
+    const result = await esclient.search(params);
     return result;
   }
   catch (error) {
@@ -128,19 +127,23 @@ function aggregateESResult(params) {
   return result;
 }
 
-async function getSingleGraphic(params) {
+async function getSingleGraphic(req) {
   const query = {
     match: {
-      _id: params.id,
+      _id: req.id,
     },
   };
 
-  const result = await submitESSearch({
-    req: params.req,
+  const searchParams = createESSearchParams({
+    req,
     index,
-    type,
+    // type,
     query,
+    filter: allowedFilters,
   });
+
+
+  const result = await submitESSearch(searchParams);
 
   const { meta, results } = aggregateESResult(result);
 
@@ -152,17 +155,19 @@ async function getSingleGraphic(params) {
 
 async function getGraphics(req) {
   const query = createESFilterMatchParams(req);
+  const searchParams = createESSearchParams({
+    req,
+    index,
+    // type,
+    query,
+    filter: allowedFilters,
+  });
+
   // const query = {
   //   match_all: { },
   // };
 
-  const result = await submitESSearch({
-    req,
-    index,
-    type,
-    query,
-    filter: allowedFilters,
-  });
+  const result = await submitESSearch(searchParams);
   result.setAsAvailable = true;
   const { meta, results, filters } = aggregateESResult(result);
 
