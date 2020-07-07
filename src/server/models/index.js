@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const { esclient, index, type } = require('../../elastic');
 const { mappings } = require('../mappings');
+
 const allowedFilters = mappings.filter((mapping) => mapping.filter === true);
 
 function createESFilterMatchParams(filterParams) {
@@ -22,10 +23,10 @@ function createESFilterMatchParams(filterParams) {
   const matchParams = [];
   // create es filter params
   Object.keys(allowedFilterParams).forEach((filterKey) => {
-    const mapping = mappings.find((mapping) => mapping.key == filterKey);
+    const currentMapping = mappings.find((mapping) => mapping.key === filterKey);
     matchParams.push({
       match: {
-        [mapping.value]: allowedFilterParams[filterKey],
+        [currentMapping.value]: allowedFilterParams[filterKey],
       },
     });
   });
@@ -37,7 +38,6 @@ function createESFilterMatchParams(filterParams) {
   };
   return result;
 }
-
 
 function createESQuery(params) {
   const currentAggs = { };
@@ -78,7 +78,6 @@ async function submitESSearch(params) {
     return result;
   }
   catch (error) {
-    console.error(error.meta.body.error);
     throw new Error(`Elasticsearch does not provide a response: ${error.meta.body.error}`);
   }
 }
@@ -152,9 +151,7 @@ async function getSingleGraphic(params) {
 }
 
 async function getGraphics(req) {
-
   const query = createESFilterMatchParams(req);
-  console.log(query.bool.must);
   // const query = {
   //   match_all: { },
   // };
