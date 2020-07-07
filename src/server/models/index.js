@@ -38,7 +38,8 @@ function createESFilterMatchParams(filterParams) {
   return result;
 }
 
-async function submitESSearch(params) {
+
+function createESQuery(params) {
   const currentAggs = { };
   if (params.filter) {
     params.filter.forEach((filterItem) => {
@@ -56,7 +57,6 @@ async function submitESSearch(params) {
       };
     });
   }
-
   const esParams = {
     from: params.req.from || 0,
     size: params.req.size || 100,
@@ -68,18 +68,24 @@ async function submitESSearch(params) {
       aggs: currentAggs,
     },
   };
+  return esParams;
+}
+
+async function submitESSearch(params) {
+  const esParams = createESQuery(params);
   try {
     const result = await esclient.search(esParams);
     return result;
   }
-  catch(error) {
+  catch (error) {
     console.error(error.meta.body.error);
-    throw new Error('Elasticsearch does not provide a respons');
+    throw new Error('Elasticsearch does not provide a response:');
   }
 }
 
 function aggregateESResult(params) {
   const { body: { took, hits, aggregations = { } } } = params;
+  const isAvailable = params.setAsAvailable || false;
   const filter = {};
   const meta = { };
   const result = { };
@@ -97,6 +103,7 @@ function aggregateESResult(params) {
       ret.doc_count = bucket.doc_count;
       ret.value = bucket.key;
       ret.display_value = buckets[0].key;
+      ret.is_availabe = isAvailable;
       return ret;
     });
     filter[aggregationKey] = currentFilter;
@@ -135,6 +142,7 @@ async function getSingleGraphic(params) {
     type,
     query,
   });
+
   const { meta, results } = aggregateESResult(result);
 
   return {
@@ -158,7 +166,9 @@ async function getGraphics(req) {
     query,
     filter: allowedFilters,
   });
+  result.setAsAvailable = true;
   const { meta, results, filters } = aggregateESResult(result);
+
 
   const ret = {};
   ret.meta = meta;
