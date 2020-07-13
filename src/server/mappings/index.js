@@ -3,30 +3,48 @@ const mappings = [{
   key: 'dating_begin',
   filter: true,
   value: 'dating.begin',
+  filter_types: ['equals', 'notequals', 'range', 'notrange'],
 },
 {
   display_value: 'dating.end',
   key: 'dating_end',
   filter: true,
   value: 'dating.end',
+  filter_types: ['equals', 'notequals', 'range', 'notrange'],
 },
 {
   display_value: 'classification.classification.keyword',
   key: 'classification',
   filter: true,
   value: 'classification.classification.keyword',
+  filter_types: ['equals', 'notequals'],
 },
 {
   display_value: 'images.infos.maxDimensions.width',
   key: 'size_width',
   filter: true,
   value: 'images.infos.maxDimensions.width',
+  filter_types: ['equals', 'notequals', 'range', 'notrange'],
 },
 {
   display_value: 'images.infos.maxDimensions.height',
   key: 'size_height',
   filter: true,
   value: 'images.infos.maxDimensions.height',
+  filter_types: ['equals', 'notequals', 'range', 'notrange'],
 }];
 
-module.exports = { mappings };
+const availableFilterTypes = {
+  eq: 'equals',
+  neq: 'notequals',
+  gt: 'range',
+  gte: 'range',
+  lt: 'range',
+  lte: 'range',
+  ngt: 'notrange',
+  ngte: 'notrange',
+  nlt: 'notrange',
+  nlte: 'notrange',
+};
+
+module.exports = { mappings, availableFilterTypes };

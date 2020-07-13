@@ -1,34 +1,83 @@
 /* eslint-disable no-underscore-dangle */
 const { esclient, index, type } = require('../../elastic');
-const { mappings } = require('../mappings');
+const { mappings, availableFilterTypes } = require('../mappings');
 
 const allowedFilters = mappings.filter((mapping) => mapping.filter === true);
 
 function createESFilterMatchParams(filterParams) {
   let result = {};
-  const allowedFilterKeys = allowedFilters.map((allowedFilter) => {
-    return allowedFilter.key;
-  });
-
   const filterParamsKeys = Object.keys(filterParams);
-  const allowedFilterParams = [];
+  const preparedESFilters = [];
 
-  // Getting only allowed allowed filter params
+  // ****** Validate filter params
   filterParamsKeys.forEach((filterParamKey) => {
-    if (allowedFilterKeys.includes(filterParamKey)) {
-      allowedFilterParams[filterParamKey] = (filterParams[filterParamKey]);
+    // Split filter param from query
+    // eslint-disable-next-line prefer-const
+    let [filterKey, filterType = 'eq'] = filterParamKey.split(':');
+
+    const filterTypeGroup = availableFilterTypes[filterType];
+    if (filterTypeGroup === undefined) {
+      throw new TypeError(`Not allowed filter type <${filterType}>`);
     }
+
+    const filteredFilter = allowedFilters.filter(
+      (allowedFilter) => allowedFilter.key === filterKey,
+    );
+
+    if (filteredFilter.length > 1) {
+      throw new TypeError(`filter key <${filterKey}> assigned serveral times`);
+    }
+
+    if (filteredFilter.length === 0) {
+      throw new TypeError(`Not allowed filter key <${filterKey}>`);
+    }
+
+    if (!filteredFilter[0].filter_types.includes(filterTypeGroup)) {
+      throw new TypeError(`Not allowed filter type <${filterType}> for filter key <${filterKey}>`);
+    }
+
+    if (filterTypeGroup === 'notrange') {
+      // cut the charachter 'n' at the beginning of the filter key
+      filterType = filterType.replace(/^n/, '');
+    }
+
+    const preparedESFilter = {
+      key: filteredFilter[0].value,
+      type: filterType,
+      typeGroup: filterTypeGroup,
+      value: filterParams[filterParamKey],
+      boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range') ? 'should' : 'must_not',
+    };
+
+    preparedESFilters.push(preparedESFilter);
   });
 
+  // ****** Create ES filter params
   const matchParams = [];
-  // create es filter params
-  Object.keys(allowedFilterParams).forEach((filterKey) => {
-    const currentMapping = mappings.find((mapping) => mapping.key === filterKey);
-    matchParams.push({
-      match: {
-        [currentMapping.value]: allowedFilterParams[filterKey],
-      },
-    });
+  preparedESFilters.forEach((preparedESFilter) => {
+    if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals') {
+      matchParams.push({
+        bool: {
+          [preparedESFilter.boolClause]: {
+            match: {
+              [preparedESFilter.key]: preparedESFilter.value,
+            },
+          },
+        },
+      });
+    } else {
+      matchParams.push({
+        bool: {
+          [preparedESFilter.boolClause]: {
+            range: {
+              [preparedESFilter.key]: {
+                [preparedESFilter.type]: preparedESFilter.value,
+              },
+            },
+          },
+        },
+      });
+    }
   });
 
   result = {
@@ -36,6 +85,7 @@ function createESFilterMatchParams(filterParams) {
       must: matchParams,
     },
   };
+
   return result;
 }
 
@@ -77,7 +127,7 @@ async function submitESSearch(params) {
     return result;
   }
   catch (error) {
-    throw new Error(`Elasticsearch does not provide a response: ${error.meta.body.error}`);
+    throw new Error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
   }
 }
 
@@ -141,7 +191,6 @@ async function getSingleGraphic(req) {
     query,
     filter: allowedFilters,
   });
-
 
   const result = await submitESSearch(searchParams);
 
