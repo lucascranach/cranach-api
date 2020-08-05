@@ -90,7 +90,13 @@ function createESFilterMatchParams(filterParams) {
 }
 
 function createESSearchParams(params) {
+  const paramsArray = [];
   const currentAggs = { };
+  paramsArray.push(
+    {
+      index: params.index,
+    },
+  );
   if (params.filter) {
     params.filter.forEach((filterItem) => {
       currentAggs[filterItem.key] = {
@@ -110,20 +116,19 @@ function createESSearchParams(params) {
   const esParams = {
     from: params.req.from || 0,
     size: params.req.size || 100,
-    index: params.index,
-    type: params.type,
     // body: { params.query, aggs: currentAggs},
-    body: {
-      query: params.query,
-      aggs: currentAggs,
-    },
+    query: params.query,
+    aggs: currentAggs,
   };
-  return esParams;
+
+  paramsArray.push(esParams);
+  const result = { body: paramsArray };
+  return result;
 }
 
 async function submitESSearch(params) {
   try {
-    const result = await esclient.search(params);
+    const result = await esclient.msearch(params);
     return result;
   }
   catch (error) {
@@ -132,7 +137,10 @@ async function submitESSearch(params) {
 }
 
 function aggregateESResult(params) {
-  const { body: { took, hits, aggregations = { } } } = params;
+  const { body: { took, responses } } = params;
+  const [responseAll, responseFiltered] = responses;
+  const { hits, aggregations } = responseAll;
+
   const isAvailable = params.setAsAvailable || false;
   const filter = {};
   const meta = { };
@@ -149,14 +157,15 @@ function aggregateESResult(params) {
     const currentFilter = buckets.map((bucket) => {
       const ret = {};
       ret.doc_count = bucket.doc_count;
-      ret.value = bucket.key;
-      ret.display_value = buckets[0].key;
+      ret.display_value = bucket.key;
+      ret.value = bucket[aggregationKey].buckets[0].key;
       ret.is_availabe = isAvailable;
       return ret;
     });
     filter[aggregationKey] = currentFilter;
   });
 
+  // TODO: Outsource mappings to Config
   // aggregate results
   const results = hits.hits.map((hit) => ({
     _data_all: hit._source,
