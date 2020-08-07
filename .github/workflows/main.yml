@@ -20,17 +20,17 @@ jobs:
       uses: garygrossgarten/github-action-ssh@release
       with:
         command: |
-          cd ${{ secrets.REMOTE_DIR }}cranach-api
+          cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose api stop -d
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.PASSWORD }}  
-    - name: docker-compose up api -d via OPEN SSH Private Key
+    - name: docker-compose stop api -d via OPEN SSH Private Key
       uses: garygrossgarten/github-action-ssh@release
       with:
         command: |
-          cd ${{ secrets.REMOTE_DIR }}cranach-api
-          docker-compose api up -d
+          cd ${{ secrets.REMOTE_DIR }}cranach-docker
+          docker-compose up api -d
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.PASSWORD }}
