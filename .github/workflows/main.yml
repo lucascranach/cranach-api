@@ -1,4 +1,4 @@
-name: Docker Compose Actions Workflow
+name: Deploy on remote server
 on: [push, pull_request]
 jobs: 
   build:
@@ -15,20 +15,22 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
-      # - name: docker-compose stop via OPEN SSH Private Key
-      # uses: garygrossgarten/github-action-ssh@release
-      # with:
-      #   command: docker-compose stop -d
-      #   host: ${{ secrets.REMOTE_HOST }}
-      #   username: ${{ secrets.SSH_USER }}
-      #   password: ${{ secrets.PASSWORD }}  
-      # - name: docker-compose up -d via OPEN SSH Private Key
-      # uses: garygrossgarten/github-action-ssh@release
-      # with:
-      #   command: docker-compose up -d
-      #   host: ${{ secrets.HOST }}
-      #   username: ${{ secrets.SSH_USER }}
-      #   password: ${{ secrets.PASSWORD }}
-    #   - uses: actions/checkout@v2
-    #   - name: Build the stack
-    #     run: docker-compose up -d
+        rm: true
+    - name: docker-compose stop api via OPEN SSH Private Key
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: |
+          cd ${{ secrets.REMOTE_DIR }}cranach-api
+          docker-compose api stop -d
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.PASSWORD }}  
+    - name: docker-compose up api -d via OPEN SSH Private Key
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: |
+          cd ${{ secrets.REMOTE_DIR }}cranach-api
+          docker-compose api up -d
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.PASSWORD }}
