@@ -21,7 +21,7 @@ jobs:
       with:
         command: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
-          docker-compose api stop -d
+          docker-compose stop api -d
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.PASSWORD }}  
