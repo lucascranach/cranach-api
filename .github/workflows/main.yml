@@ -8,7 +8,7 @@ jobs:
     - name: Copy folder content recursively to remote
       uses: garygrossgarten/github-action-scp@release
       with:
-        local: cranach-api
+        local: ./
         remote: lucascranach/cranach-api
         host: ${{ secrets.HOST }}
         username: ${{ secrets.SSH_USER }}
