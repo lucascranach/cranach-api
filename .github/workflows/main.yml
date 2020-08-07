@@ -1,0 +1,32 @@
+name: Docker Compose Actions Workflow
+on: [push, pull_request]
+jobs: 
+  build:
+    name: build image and deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy folder content recursively to remote
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: cranach-api
+        remote: lucascranach/cranach-api
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+      # - name: docker-compose stop via OPEN SSH Private Key
+      # uses: garygrossgarten/github-action-ssh@release
+      # with:
+      #   command: docker-compose stop -d
+      #   host: ${{ secrets.HOST }}
+      #   username: ${{ secrets.SSH_USER }}
+      #   password: ${{ secrets.PASSWORD }}  
+      # - name: docker-compose up -d via OPEN SSH Private Key
+      # uses: garygrossgarten/github-action-ssh@release
+      # with:
+      #   command: docker-compose up -d
+      #   host: ${{ secrets.HOST }}
+      #   username: ${{ secrets.SSH_USER }}
+      #   password: ${{ secrets.PASSWORD }}
+    #   - uses: actions/checkout@v2
+    #   - name: Build the stack
+    #     run: docker-compose up -d
