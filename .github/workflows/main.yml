@@ -9,15 +9,15 @@ jobs:
       uses: garygrossgarten/github-action-scp@release
       with:
         local: .
-        remote: lucascranach/cranach-api
-        host: ${{ secrets.HOST }}
+        remote: ${{ secrets.REMOTE_DIR }}cranach-api
+        host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
       # - name: docker-compose stop via OPEN SSH Private Key
       # uses: garygrossgarten/github-action-ssh@release
       # with:
       #   command: docker-compose stop -d
-      #   host: ${{ secrets.HOST }}
+      #   host: ${{ secrets.REMOTE_HOST }}
       #   username: ${{ secrets.SSH_USER }}
       #   password: ${{ secrets.PASSWORD }}  
       # - name: docker-compose up -d via OPEN SSH Private Key
