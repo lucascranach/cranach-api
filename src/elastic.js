@@ -1,7 +1,13 @@
 const { Client } = require('@elastic/elasticsearch');
 
-const elasticUrl = process.env.ELASTIC_URL || 'http://cranach-elk:9200';
-const esclient = new Client({ node: elasticUrl });
+const elasticUrl = process.env.ELASTIC_URL || 'http://cranach-es:9200';
+const esclient = new Client({
+  node: elasticUrl,
+  auth: {
+    username: process.env.ELASTICSEARCH_USERNAME,
+    password: process.env.ELASTICSEARCH_PASSWORD,
+  },
+});
 const index = 'graphics_de';
 
 /**

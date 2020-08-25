@@ -8,6 +8,10 @@ const app = express();
 const port = process.env.NODE_PORT || 8080;
 
 function start() {
+  if (!process.env.ELASTICSEARCH_USERNAME || !process.env.ELASTICSEARCH_PASSWORD) {
+    throw new Error('Environt variables are missing');
+  }
+
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
