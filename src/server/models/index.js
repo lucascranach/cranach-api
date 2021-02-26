@@ -130,8 +130,7 @@ async function submitESSearch(params) {
   try {
     const result = await esclient.msearch(params);
     return result;
-  }
-  catch (error) {
+  } catch (error) {
     throw new Error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
   }
 }
@@ -186,7 +185,7 @@ function aggregateESResult(params) {
   return result;
 }
 
-async function getSingleItem(params) {
+async function getSingleItem(req) {
   const query = {
     match: {
       _id: req.id,
