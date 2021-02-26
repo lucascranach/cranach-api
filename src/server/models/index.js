@@ -16,8 +16,6 @@ async function submitESSearch(params) {
 function aggregateESResult(params) {
   const { body: { took, hits } } = params;
 
-  console.log('took', took);
-
   const result = { };
   const meta = { };
   meta.took = took;
@@ -38,7 +36,7 @@ function aggregateESResult(params) {
   return result;
 }
 
-async function getSingleGraphic(params) {
+async function getSingleItem(params) {
   const query = {
     query: {
       match: {
@@ -61,7 +59,7 @@ async function getSingleGraphic(params) {
   };
 }
 
-async function getGraphics(req) {
+async function getItems(req) {
   const query = {
     query: {
       match_all: { },
@@ -83,6 +81,6 @@ async function getGraphics(req) {
 }
 
 module.exports = {
-  getSingleGraphic,
-  getGraphics,
+  getSingleItem,
+  getItems,
 };

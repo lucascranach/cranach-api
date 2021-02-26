@@ -1,6 +1,6 @@
 const model = require('../models');
 
-async function getSingleGraphic(req, res) {
+async function getSingleItem(req, res) {
   const { id } = req.params;
   if (!id) {
     res.status(422).json({
@@ -11,7 +11,7 @@ async function getSingleGraphic(req, res) {
   }
   const params = { id, req };
   try {
-    const result = await model.getSingleGraphic(params);
+    const result = await model.getSingleItem(params);
     res.json({ data: result });
   } catch (err) {
     console.log(err);
@@ -19,10 +19,10 @@ async function getSingleGraphic(req, res) {
   }
 }
 
-async function getGraphics(req, res) {
+async function getItems(req, res) {
   const { query } = req;
   try {
-    const result = await model.getGraphics(query);
+    const result = await model.getItems(query);
     res.json({ data: result });
   } catch (err) {
     console.log(err);
@@ -31,6 +31,6 @@ async function getGraphics(req, res) {
 }
 
 module.exports = {
-  getSingleGraphic,
-  getGraphics,
+  getSingleItem,
+  getItems,
 };

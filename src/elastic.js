@@ -8,7 +8,7 @@ const esclient = new Client({
     password: process.env.ELASTICSEARCH_PASSWORD,
   },
 });
-const index = 'graphics_de';
+const index = 'data_de';
 
 /**
  * @function checkConnection
