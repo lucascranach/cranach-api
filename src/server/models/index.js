@@ -186,7 +186,7 @@ function aggregateESResult(params) {
   return result;
 }
 
-async function getSingleGraphic(req) {
+async function getSingleItem(params) {
   const query = {
     match: {
       _id: req.id,
@@ -211,7 +211,7 @@ async function getSingleGraphic(req) {
   };
 }
 
-async function getGraphics(req) {
+async function getItems(req) {
   const query = createESFilterMatchParams(req);
   const searchParams = createESSearchParams({
     req,
@@ -238,6 +238,6 @@ async function getGraphics(req) {
 }
 
 module.exports = {
-  getSingleGraphic,
-  getGraphics,
+  getSingleItem,
+  getItems,
 };

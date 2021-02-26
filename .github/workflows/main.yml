@@ -1,0 +1,36 @@
+name: Deploy on remote server
+on: [push, pull_request]
+jobs: 
+  build:
+    name: build image and deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Copy folder content recursively to remote
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: ./
+        remote: ${{ secrets.REMOTE_DIR }}cranach-api
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        rm: true
+    - name: docker-compose stop api via OPEN SSH Private Key
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: |
+          cd ${{ secrets.REMOTE_DIR }}cranach-docker
+          docker-compose stop api -d
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.PASSWORD }}  
+    - name: docker-compose stop api -d via OPEN SSH Private Key
+      uses: garygrossgarten/github-action-ssh@release
+      with:
+        command: |
+          cd ${{ secrets.REMOTE_DIR }}cranach-docker
+          docker-compose up api -d
+        host: ${{ secrets.REMOTE_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        password: ${{ secrets.PASSWORD }}

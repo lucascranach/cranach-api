@@ -3,7 +3,7 @@ const controller = require('../controllers');
 
 const routes = express.Router();
 
-routes.route('/').get(controller.getGraphics);
-routes.route('/:id').get(controller.getSingleGraphic);
+routes.route('/').get(controller.getItems);
+routes.route('/:id').get(controller.getSingleItem);
 
 module.exports = routes;
