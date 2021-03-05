@@ -43,6 +43,8 @@ const mappings = [
   },
 ];
 
+const specialParams = ['size', 'from'];
+
 const availableFilterTypes = {
   eq: 'equals',
   neq: 'notequals',
@@ -56,4 +58,4 @@ const availableFilterTypes = {
   nlte: 'notrange',
 };
 
-module.exports = { mappings, availableFilterTypes };
+module.exports = { mappings, availableFilterTypes, specialParams };

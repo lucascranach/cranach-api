@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const { esclient, index, type } = require('../../elastic');
-const { mappings, availableFilterTypes } = require('../mappings');
+const { mappings, availableFilterTypes, specialParams } = require('../mappings');
 
 const allowedFilters = mappings.filter((mapping) => mapping.filter === true);
 
@@ -28,6 +28,10 @@ function createESFilterMatchParams(filterParams) {
       throw new TypeError(`filter key <${filterKey}> assigned serveral times`);
     }
 
+    if (specialParams.includes(filterKey)) {
+      return;
+    }
+
     if (filteredFilter.length === 0) {
       throw new TypeError(`Not allowed filter key <${filterKey}>`);
     }
@@ -40,6 +44,7 @@ function createESFilterMatchParams(filterParams) {
       // cut the charachter 'n' at the beginning of the filter key
       filterType = filterType.replace(/^n/, '');
     }
+
 
     const preparedESFilter = {
       key: filteredFilter[0].value,
@@ -215,19 +220,13 @@ async function getItems(req) {
   const searchParams = createESSearchParams({
     req,
     index,
-    // type,
     query,
     filter: allowedFilters,
   });
 
-  // const query = {
-  //   match_all: { },
-  // };
-
   const result = await submitESSearch(searchParams);
   result.setAsAvailable = true;
   const { meta, results, filters } = aggregateESResult(result);
-
 
   const ret = {};
   ret.meta = meta;
