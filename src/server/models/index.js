@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-const { esclient, index, type } = require('../../elastic');
+const { esclient, index } = require('../../elastic');
 const { mappings, availableFilterTypes, specialParams } = require('../mappings');
 
 const allowedFilters = mappings.filter((mapping) => mapping.filter === true);
@@ -44,7 +44,6 @@ function createESFilterMatchParams(filterParams) {
       // cut the charachter 'n' at the beginning of the filter key
       filterType = filterType.replace(/^n/, '');
     }
-
 
     const preparedESFilter = {
       key: filteredFilter[0].value,
@@ -107,11 +106,13 @@ function createESSearchParams(params) {
       currentAggs[filterItem.key] = {
         terms: {
           field: filterItem.display_value,
+          size: 1000,
         },
         aggs: {
           [filterItem.key]: {
             terms: {
               field: filterItem.value,
+              size: 1000,
             },
           },
         },
@@ -171,6 +172,7 @@ function aggregateESResult(params) {
 
   // TODO: Outsource mappings to Config
   // aggregate results
+  // TODO: In DTOs bündeln
   const results = hits.hits.map((hit) => ({
     _data_all: hit._source,
     id: hit._id,
