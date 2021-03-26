@@ -68,7 +68,7 @@ Possible operators:
 * `eq` = equals
 * `neq` = not equals
 
-The `filtervalue` is used to define the value by which the article data is to be filtered.
+The `filtervalue` is used to define the value by which the data is to be filtered.
 
 
 ### Serveral filter criteria
