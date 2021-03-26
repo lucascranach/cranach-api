@@ -1,5 +1,5 @@
-# Overview
 API to retrieve data from the Lucas Cranach Archive
+# Overview
 
 * Response to every request is sent in JSON format. In case the API request results in an error, it is represented by an "error": {} key in the JSON response.
 * The API only provides the GET method. Data changes are not possible via the API.
