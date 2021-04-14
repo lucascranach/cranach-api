@@ -15,7 +15,7 @@ async function getSingleItem(req, res) {
     res.json({ data: result });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, error: 'Unknown error.' });
+    res.status(500).json({ success: false, error: err.message });
   }
 }
 
@@ -26,7 +26,7 @@ async function getItems(req, res) {
     res.json({ data: result });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ success: false, error: 'Unknown error.' });
+    res.status(500).json({ success: false, error: err.message });
   }
 }
 
