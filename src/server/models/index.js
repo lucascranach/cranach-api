@@ -119,9 +119,10 @@ function createESSearchParams(params) {
       };
     });
   }
+
   const esParams = {
-    from: params.req.from || 0,
-    size: params.req.size || 100,
+    from: params.from || 0,
+    size: params.size || 100,
     // body: { params.query, aggs: currentAggs},
     query: params.query,
     aggs: currentAggs,
@@ -141,21 +142,13 @@ async function submitESSearch(params) {
   }
 }
 
-function aggregateESResult(params) {
-  const { body: { took, responses } } = params;
-  const [responseAll, responseFiltered] = responses;
-  const { hits, aggregations } = responseAll;
-
+function aggregateESFilterBuckets(params) {
+  const { aggregations } = params;
   const isAvailable = params.setAsAvailable || false;
-  const filter = {};
-  const meta = { };
-  const result = { };
-
-  meta.took = took;
-  meta.hits = hits.total.value;
 
   // TODO: Create recursive function
   // aggregate Filter
+  const filters = {};
   const aggregationKeys = Object.keys(aggregations);
   aggregationKeys.forEach((aggregationKey) => {
     const { buckets } = aggregations[aggregationKey];
@@ -164,11 +157,25 @@ function aggregateESResult(params) {
       ret.doc_count = bucket.doc_count;
       ret.display_value = bucket.key;
       ret.value = bucket[aggregationKey].buckets[0].key;
-      ret.is_availabe = isAvailable;
+      ret.is_available = isAvailable;
       return ret;
     });
-    filter[aggregationKey] = currentFilter;
+    filters[aggregationKey] = currentFilter;
   });
+  return filters;
+}
+
+function aggregateESResult(params) {
+  const { body: { took, responses } } = params;
+  const [responseAll, responseFiltered] = responses;
+  const { hits, aggregations } = responseAll;
+
+  const isAvailable = params.setAsAvailable || false;
+  const meta = { };
+  const result = { };
+
+  meta.took = took;
+  meta.hits = hits.total.value;
 
   // TODO: Outsource mappings to Config
   // aggregate results
@@ -183,10 +190,6 @@ function aggregateESResult(params) {
     score: hit._score,
   }));
 
-  if (Object.keys(filter).length > 0) {
-    result.filters = filter;
-  }
-
   result.meta = meta;
   result.results = results;
   return result;
@@ -200,9 +203,8 @@ async function getSingleItem(req) {
   };
 
   const searchParams = createESSearchParams({
-    req,
+    ...req,
     index,
-    // type,
     query,
     filter: allowedFilters,
   });
@@ -219,21 +221,65 @@ async function getSingleItem(req) {
 
 async function getItems(req) {
   const query = createESFilterMatchParams(req);
-  const searchParams = createESSearchParams({
-    req,
+
+  const searchParamsAllArticles = createESSearchParams({
+    size: '0',
+    index,
+    query: { match_all: { } },
+    filter: allowedFilters,
+  });
+
+  const searchParamsFilteredArticles = createESSearchParams({
+    ...req,
     index,
     query,
     filter: allowedFilters,
   });
 
+  const searchParams = {
+    body: searchParamsAllArticles.body.concat(searchParamsFilteredArticles.body),
+  };
+
   const result = await submitESSearch(searchParams);
-  result.setAsAvailable = true;
-  const { meta, results, filters } = aggregateESResult(result);
+
+  const aggregationsAll = aggregateESFilterBuckets({
+    aggregations: result.body.responses[0].aggregations,
+    setAsAvailable: false,
+  });
+
+  const aggregationsFiltered = aggregateESFilterBuckets({
+    aggregations: result.body.responses[1].aggregations,
+    setAsAvailable: true,
+  });
+
+  const aggregationKeys = Object.keys(aggregationsAll);
+
+  // Merge all and available filters
+  aggregationKeys.forEach((aggregationKey) => {
+    const currentAggregationAll = aggregationsAll[aggregationKey];
+    const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
+
+    currenAggregationFiltered.forEach((aggregationFiltered) => {
+      const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
+        return aggregationAll.display_value === aggregationFiltered.display_value;
+      });
+
+      if (indexOfAggregation > -1) {
+        aggregationsAll[aggregationKey][indexOfAggregation].is_available = true;
+        // eslint-disable-next-line max-len
+        aggregationsAll[aggregationKey][indexOfAggregation].doc_count = aggregationFiltered.doc_count;
+      }
+    });
+  });
+
+  result.body.responses.shift();
+
+  const { meta, results } = aggregateESResult(result);
 
   const ret = {};
   ret.meta = meta;
   ret.results = results;
-  ret.filters = filters;
+  ret.filters = aggregationsAll;
   return ret;
 }
 
