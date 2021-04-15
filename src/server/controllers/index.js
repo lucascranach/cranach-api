@@ -14,6 +14,7 @@ async function getSingleItem(req, res) {
     const result = await model.getSingleItem(params);
     res.json({ data: result });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ success: false, error: err.message });
   }
 }
@@ -24,6 +25,7 @@ async function getItems(req, res) {
     const result = await model.getItems(query);
     res.json({ data: result });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ success: false, error: err.message });
   }
 }
