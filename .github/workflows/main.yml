@@ -16,21 +16,21 @@ jobs:
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         rm: true
-    - name: docker-compose stop api via OPEN SSH Private Key
-      uses: garygrossgarten/github-action-ssh@release
+    - name: docker-compose stop via SSH
+      uses: appleboy/ssh-action@master
       with:
-        command: |
+        script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose stop api -d
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.PASSWORD }}  
     - name: docker-compose stop api -d via OPEN SSH Private Key
-      uses: garygrossgarten/github-action-ssh@release
+      uses: appleboy/ssh-action@master
       with:
-        command: |
+        script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose up api -d
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.PASSWORD }}
+        password: ${{ secrets.SSH_PASSWORD }}
