@@ -19,7 +19,7 @@ jobs:
     - name: docker-compose stop via SSH
       uses: appleboy/ssh-action@master
       with:
-        script: |
+        script: whoami
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose stop api -d
         host: ${{ secrets.REMOTE_HOST }}
@@ -28,7 +28,7 @@ jobs:
     - name: docker-compose stop api -d via OPEN SSH Private Key
       uses: appleboy/ssh-action@master
       with:
-        script: |
+        script: whoami
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose up api -d
         host: ${{ secrets.REMOTE_HOST }}
