@@ -25,12 +25,12 @@ jobs:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}  
-    - name: docker-compose stop api -d via OPEN SSH Private Key
+    - name: docker-compose up -d api via OPEN SSH Private Key
       uses: appleboy/ssh-action@master
       with:
         script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
-          docker-compose up api -d
+          docker-compose up -d api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
