@@ -19,16 +19,16 @@ jobs:
     - name: docker-compose stop via SSH
       uses: appleboy/ssh-action@master
       with:
-        script: whoami
+        script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose stop api -d
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.PASSWORD }}  
+        password: ${{ secrets.SSH_PASSWORD }}  
     - name: docker-compose stop api -d via OPEN SSH Private Key
       uses: appleboy/ssh-action@master
       with:
-        script: whoami
+        script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose up api -d
         host: ${{ secrets.REMOTE_HOST }}
