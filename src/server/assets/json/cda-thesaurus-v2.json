@@ -1,0 +1,110 @@
+{
+    "rootTerms": [
+        {
+            "term": "Inhalt",
+            "dkultTermIdentifier": "0104",
+            "subTerms": [
+                {
+                    "term": "Klassische Mythologie und antike Geschichte",
+                    "dkultTermIdentifier": "010405",
+                    "subTerms": [
+                        {
+                            "term": "Bacchus",
+                            "dkultTermIdentifier": "01040502"
+                        },
+                        {
+                            "term": "Faunenfamilie",
+                            "dkultTermIdentifier": "01040507"
+                        },
+                        {
+                            "term": "Die drei Grazien",
+                            "dkultTermIdentifier": "01040506"
+                        },
+                        {
+                            "term": "Der Mund der Wahrheit",
+                            "dkultTermIdentifier": "01040504"
+                        },
+                        {
+                            "term": "Lucretia",
+                            "dkultTermIdentifier": "01040509"
+                        },
+                        {
+                            "term": "Das Parisurteil",
+                            "dkultTermIdentifier": "01040503"
+                        },
+                        {
+                            "term": "Pyramus und Thisbe",
+                            "dkultTermIdentifier": "01040510"
+                        },
+                        {
+                            "term": "Quellnymphe",
+                            "dkultTermIdentifier": "01040511"
+                        },
+                        {
+                            "term": "Herkules",
+                            "dkultTermIdentifier": "01040508",
+                            "subTerms": [
+                                {
+                                    "term": "Herkules bei Omphale",
+                                    "dkultTermIdentifier": "0104050802"
+                                },
+                                {
+                                    "term": "Herkules und die Pygm\u00e4en",
+                                    "dkultTermIdentifier": "0104050803"
+                                },
+                                {
+                                    "term": "Die Taten des Herkules",
+                                    "dkultTermIdentifier": "0104050801"
+                                },
+                                {
+                                    "term": "Herkules und Ant\u00e4us",
+                                    "dkultTermIdentifier": "0104050804"
+                                }
+                            ]
+                        },
+                        {
+                            "term": "Dido",
+                            "dkultTermIdentifier": "01040505"
+                        },
+                        {
+                            "term": "Diana",
+                            "dkultTermIdentifier": "01040501",
+                            "subTerms": [
+                                {
+                                    "term": "Apollo und Diana",
+                                    "dkultTermIdentifier": "0104050101"
+                                },
+                                {
+                                    "term": "Diana und Akt\u00e4on",
+                                    "dkultTermIdentifier": "0104050102"
+                                }
+                            ]
+                        },
+                        {
+                            "term": "Venus und Amor",
+                            "dkultTermIdentifier": "01040512",
+                            "subTerms": [
+                                {
+                                    "term": "Venus",
+                                    "dkultTermIdentifier": "0104051202"
+                                },
+                                {
+                                    "term": "Amor",
+                                    "dkultTermIdentifier": "0104051201"
+                                }
+                            ]
+                        },
+                        {
+                            "term": "Der Opfertod des Marcus Curtius",
+                            "dkultTermIdentifier": "01040513"
+                        },
+                        {
+                            "term": "Der sterbende Marcus Antonius",
+                            "dkultTermIdentifier": "01040514"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
