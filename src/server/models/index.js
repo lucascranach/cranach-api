@@ -204,15 +204,15 @@ function aggregateESResult(params) {
 // called with every property and its value
 function enrichDocCounts(value, esAggregation) {
   const currentValue = value;
-  const id = value.dkultTermIdentifier;
+  const id = value.alt.dkultTermIdentifier;
   const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
   if (currentAggregation[0]) {
     currentValue.doc_count = currentAggregation[0].doc_count;
-    currentValue.is_available = false;
+    currentValue.is_available = true;
   }
   else {
     currentValue.doc_count = 0;
-    currentValue.is_available = true;
+    currentValue.is_available = false;
   }
 }
 
