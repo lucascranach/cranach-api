@@ -4,12 +4,49 @@ const path = require('path');
 const { esclient, index } = require('../../elastic');
 const {
   availableFilterTypes,
+  availableSortTypes,
+  defaultFilterType,
+  defautSortDirection,
   specialParams,
   isThesaurusFilter,
   getAllowedFilters,
+  getSortableFields,
 } = require('../mappings');
 
 const allowedFilters = getAllowedFilters();
+const sortableFields = getSortableFields();
+
+function createESSortParam(filterParams) {
+  if (!filterParams['sort_by']) {
+    return [];
+  }
+
+  if (Array.isArray(filterParams['sort_by'])) {
+    throw new TypeError(`Serveral sort params are not allowed`);
+  }
+
+  const [sortFieldParam, sortDirectionParam = defautSortDirection] = filterParams.sort_by.split('.');
+  const sortDirection = availableSortTypes[sortDirectionParam];
+
+  if (sortDirection === undefined) {
+    throw new TypeError(`Not allowed sort direction <${sortDirection}>`);
+  }
+
+  const sortField = sortableFields.find(
+    (sortableField) => sortableField.key === sortFieldParam,
+  );
+
+  if (!sortField) {
+    throw new TypeError(`Not allowed sort field <${sortField}>`);
+  }
+
+  const sortParams = [{
+    [sortField.key]: {
+      order: sortDirectionParam,
+    },
+  }];
+  return sortParams;
+}
 
 function createESFilterMatchParams(filterParams) {
   let result = {};
@@ -20,7 +57,7 @@ function createESFilterMatchParams(filterParams) {
   filterParamsKeys.forEach((filterParamKey) => {
     // Split filter param from query
     // eslint-disable-next-line prefer-const
-    let [filterKey, filterType = 'eq'] = filterParamKey.split(':');
+    let [filterKey, filterType = defaultFilterType] = filterParamKey.split(':');
 
     const filterTypeGroup = availableFilterTypes[filterType];
     if (filterTypeGroup === undefined) {
@@ -257,6 +294,7 @@ async function getItems(req) {
   const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-thesaurus-v2.json'));
   const thesaurusJSON = JSON.parse(thesaurusRaw);
 
+  const sortParam = createESSortParam(req);
   const query = createESFilterMatchParams(req);
 
   const searchParamsAllArticles = createESSearchParams({
@@ -271,6 +309,7 @@ async function getItems(req) {
     index,
     query,
     filter: allowedFilters,
+    sort: sortParam
   });
 
   const searchParams = {

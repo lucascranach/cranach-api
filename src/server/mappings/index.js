@@ -23,6 +23,7 @@ const mappings = [
   {
     display_value: 'dating.end',
     filter: true,
+    sortable: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
     key: 'dating_end',
     value: 'dating.end',
@@ -95,7 +96,7 @@ const mappings = [
   },
 ];
 
-const specialParams = ['size', 'from'];
+const specialParams = ['size', 'from', 'sort_by'];
 
 const availableFilterTypes = {
   eq: 'equals',
@@ -110,6 +111,15 @@ const availableFilterTypes = {
   nlte: 'notrange',
 };
 
+const defaultFilterType = 'eq';
+
+const availableSortTypes = {
+  asc: 'ascending',
+  desc: 'descending',
+};
+
+const defautSortDirection = 'asc';
+
 function isThesaurusFilter(filterKey) {
   const index = mappings.findIndex((element) => element.key === filterKey
   && element.thesaurus
@@ -121,10 +131,18 @@ function getAllowedFilters() {
   return mappings.filter((mapping) => mapping.filter === true);
 }
 
+function getSortableFields() {
+  return mappings.filter((mapping) => mapping.sortable === true);
+}
+
 module.exports = {
+  defaultFilterType,
+  defautSortDirection,
   mappings,
   availableFilterTypes,
+  availableSortTypes,
   specialParams,
   isThesaurusFilter,
   getAllowedFilters,
+  getSortableFields,
 };

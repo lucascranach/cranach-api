@@ -16,7 +16,7 @@ function start() {
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
     .use('/', routes)
-    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found'}))
+    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }))
     .listen(port, () => console.log(`Server ready on port ${port}`));
 }
 
