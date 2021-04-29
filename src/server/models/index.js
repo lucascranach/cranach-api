@@ -254,7 +254,7 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req) {
-  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-thesaurus-v2.json'));
+  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-reduced-thesaurus-v2.json'));
   const thesaurusJSON = JSON.parse(thesaurusRaw);
 
   const query = createESFilterMatchParams(req);
