@@ -1,18 +1,22 @@
-const express = require('express');
-const cors = require('cors');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const express = require('express');
+
 const routes = require('./routes');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.NODE_PORT || 8080;
+const useHTTPS = process.env.HTTPS || false;
 
 function start() {
   if (!process.env.ELASTICSEARCH_USERNAME || !process.env.ELASTICSEARCH_PASSWORD) {
-    throw new Error('Environt variables are missing');
+    throw new Error('Enviroment variables are missing');
   }
-<<<<<<< Updated upstream
-=======
   let httpServer = null;
 
   if (useHTTPS === true) {
@@ -32,18 +36,12 @@ function start() {
   }
 
   httpServer.listen(port, () => console.log(`Server ready on port ${port}`));
->>>>>>> Stashed changes
 
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
     .use('/', routes)
-<<<<<<< Updated upstream
     .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }))
-    .listen(port, () => console.log(`Server ready on port ${port}`));
-=======
-    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }));
->>>>>>> Stashed changes
 }
 
 module.exports = {
