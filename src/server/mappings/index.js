@@ -56,13 +56,14 @@ const mappings = [
   // Daten sind in keywords und the keywrods vorhanden.
   // Datenbasis ist allerdings nicht verwertbar
 
-  // {
-  //   display_value: 'thesaurus.term.keyword',
-  //   filter: true,
-  //   filter_types: ['equals', 'notequals'],
-  //   key: 'thesaurus',
-  //   value: 'thesaurus.parentId.keyword',
-  // },
+  {
+    display_value: 'thesaurus.id.keyword',
+    key: 'thesaurus',
+    filter: true,
+    value: 'thesaurus.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    thesaurus: true,
+  },
 
   {
     display_value: 'classification.classification.keyword',
@@ -109,4 +110,21 @@ const availableFilterTypes = {
   nlte: 'notrange',
 };
 
-module.exports = { mappings, availableFilterTypes, specialParams };
+function isThesaurusFilter(filterKey) {
+  const index = mappings.findIndex((element) => element.key === filterKey
+  && element.thesaurus
+  && element.thesaurus === true);
+  return index > -1;
+}
+
+function getAllowedFilters() {
+  return mappings.filter((mapping) => mapping.filter === true);
+}
+
+module.exports = {
+  mappings,
+  availableFilterTypes,
+  specialParams,
+  isThesaurusFilter,
+  getAllowedFilters,
+};

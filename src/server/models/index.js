@@ -1,8 +1,15 @@
 /* eslint-disable no-underscore-dangle */
+const fs = require('fs');
+const path = require('path');
 const { esclient, index } = require('../../elastic');
-const { mappings, availableFilterTypes, specialParams } = require('../mappings');
+const {
+  availableFilterTypes,
+  specialParams,
+  isThesaurusFilter,
+  getAllowedFilters,
+} = require('../mappings');
 
-const allowedFilters = mappings.filter((mapping) => mapping.filter === true);
+const allowedFilters = getAllowedFilters();
 
 function createESFilterMatchParams(filterParams) {
   let result = {};
@@ -144,7 +151,7 @@ async function submitESSearch(params) {
 
 function aggregateESFilterBuckets(params) {
   const { aggregations } = params;
-  const isAvailable = params.setAsAvailable || false;
+  const { allFilters } = params;
 
   // TODO: Create recursive function
   // aggregate Filter
@@ -154,10 +161,10 @@ function aggregateESFilterBuckets(params) {
     const { buckets } = aggregations[aggregationKey];
     const currentFilter = buckets.map((bucket) => {
       const ret = {};
-      ret.doc_count = bucket.doc_count;
+      ret.doc_count = (allFilters ? 0 : bucket.doc_count);
       ret.display_value = bucket.key;
       ret.value = bucket[aggregationKey].buckets[0].key;
-      ret.is_available = isAvailable;
+      ret.is_available = false;
       return ret;
     });
     filters[aggregationKey] = currentFilter;
@@ -167,10 +174,9 @@ function aggregateESFilterBuckets(params) {
 
 function aggregateESResult(params) {
   const { body: { took, responses } } = params;
-  const [responseAll, responseFiltered] = responses;
-  const { hits, aggregations } = responseAll;
+  const [responseAll] = responses;
+  const { hits } = responseAll;
 
-  const isAvailable = params.setAsAvailable || false;
   const meta = { };
   const result = { };
 
@@ -194,6 +200,32 @@ function aggregateESResult(params) {
   result.results = results;
   return result;
 }
+
+// called with every property and its value
+function enrichDocCounts(value, esAggregation) {
+  const currentValue = value;
+  const id = value.alt.dkultTermIdentifier;
+  const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
+  if (currentAggregation[0]) {
+    currentValue.doc_count = currentAggregation[0].doc_count;
+    currentValue.is_available = true;
+  }
+  else {
+    currentValue.doc_count = 0;
+    currentValue.is_available = false;
+  }
+}
+
+function traverse(obj, esAggregation, func) {
+  Object.values(obj).forEach((value) => {
+    func(value, esAggregation);
+
+    const { subTerms } = value || {};
+    if (Array.isArray(subTerms)) {
+      traverse(value.subTerms, esAggregation, func);
+    }
+  });
+};
 
 async function getSingleItem(req) {
   const query = {
@@ -220,6 +252,9 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req) {
+  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-reduced-thesaurus-v2.json'));
+  const thesaurusJSON = JSON.parse(thesaurusRaw);
+
   const query = createESFilterMatchParams(req);
 
   const searchParamsAllArticles = createESSearchParams({
@@ -245,6 +280,7 @@ async function getItems(req) {
   const aggregationsAll = aggregateESFilterBuckets({
     aggregations: result.body.responses[0].aggregations,
     setAsAvailable: false,
+    allFilters: true,
   });
 
   const aggregationsFiltered = aggregateESFilterBuckets({
@@ -259,17 +295,21 @@ async function getItems(req) {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
 
-    currenAggregationFiltered.forEach((aggregationFiltered) => {
-      const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
-        return aggregationAll.display_value === aggregationFiltered.display_value;
+    if (isThesaurusFilter(aggregationKey)) {
+      traverse(thesaurusJSON.rootTerms, currenAggregationFiltered, enrichDocCounts);
+      aggregationsAll[aggregationKey] = thesaurusJSON.rootTerms;
+    } else {
+      currenAggregationFiltered.forEach((aggregationFiltered) => {
+        const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
+          return aggregationAll.display_value === aggregationFiltered.display_value;
+        });
+        if (indexOfAggregation > -1) {
+          aggregationsAll[aggregationKey][indexOfAggregation].is_available = true;
+          // eslint-disable-next-line max-len
+          aggregationsAll[aggregationKey][indexOfAggregation].doc_count = aggregationFiltered.doc_count;
+        }
       });
-
-      if (indexOfAggregation > -1) {
-        aggregationsAll[aggregationKey][indexOfAggregation].is_available = true;
-        // eslint-disable-next-line max-len
-        aggregationsAll[aggregationKey][indexOfAggregation].doc_count = aggregationFiltered.doc_count;
-      }
-    });
+    }
   });
 
   result.body.responses.shift();
