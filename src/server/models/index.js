@@ -217,17 +217,15 @@ function enrichDocCounts(value, esAggregation) {
 }
 
 function traverse(obj, esAggregation, func) {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const i in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, i)) {
-      func.apply(this, [obj[i], esAggregation]);
-      if (obj[i] !== null && typeof (obj[i]) === 'object') {
-        // going one step down in the object tree
-        traverse(obj[i].subTerms, esAggregation, func);
-      }
+  Object.values(obj).forEach((value) => {
+    func(value, esAggregation);
+
+    const { subTerms } = value || {};
+    if (Array.isArray(subTerms)) {
+      traverse(value.subTerms, esAggregation, func);
     }
-  }
-}
+  });
+};
 
 async function getSingleItem(req) {
   const query = {
