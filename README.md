@@ -93,5 +93,5 @@ The `sortfield` is used to define the field by which the items are to be sorted.
 
 The items can be sorted ascending or descending.
 The parameter `sortderiction` must be set accordingly.  
-`asc` = ascending order  
-`des` = descending order  
+* `asc` = ascending order  
+* `des` = descending order  
