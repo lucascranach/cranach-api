@@ -23,8 +23,6 @@ http://mivs02.gm.fh-koeln.de:8080/?from={{from}}&size={{size}}
 http://mivs02.gm.fh-koeln.de:8080/?from=100&size=10 
 
 
-
-
 ### Parameters
 The `from` parameter defines the offset from the first result you want to fetch.
 
@@ -38,7 +36,7 @@ For criteria that contain numeric values, an upper and lower limit can be specif
 http://mivs02.gm.fh-koeln.de:8080/?{{filterfield}}:{{rangeparam}}=
 
 ### Example
-http://localhost:8080/?dating_begin:gte=1920&dating_begin:lte=1950
+http://mivs02.gm.fh-koeln.de:8080/?dating_begin:gte=1920&dating_begin:lte=1950
 
 
 ### Paramters
@@ -55,10 +53,10 @@ The `filtervalue` is used to define the value for the upper or lower limit.
 
 
 ## Items filtered by value
-http://localhost:8080/?{{filterfield}}:{{equalparam}}={{filtervalue}}
+http://mivs02.gm.fh-koeln.de:8080/?{{filterfield}}:{{equalparam}}={{filtervalue}}
 
 ### Example
-http://localhost:8080/?entity_type:eq=PAINTING
+http://mivs02.gm.fh-koeln.de:8080/?entity_type:eq=PAINTING
 
 ### Paramters
 The `filterfield` is used to define the field by which the data is to be filtered.
@@ -81,3 +79,19 @@ Several values can be specified for one filter criteria.
 In this case, multiple values can be defined using a comma-separated list.
 
 http://localhost:8080/?entity_type:neq=PAINTING,GRAPHIC
+
+## Items sorted by a ceratin field
+Returns a list of items sorted by certain field ascending or descending.
+
+http://mivs02.gm.fh-koeln.de:8080/?sort_by:{{sortfield}}={{sortdirection}}
+
+### Example
+http://mivs02.gm.fh-koeln.de:8080/?sort_by=date_end.asc
+
+### Parameters
+The `sortfield` is used to define the field by which the items are to be sorted.
+
+The items can be sorted ascending or descending.
+The parameter `sortderiction` must be set accordingly.  
+`asc` = ascending order  
+`des` = descending order  
