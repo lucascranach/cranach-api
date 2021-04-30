@@ -241,30 +241,28 @@ function aggregateESResult(params) {
 // called with every property and its value
 function enrichDocCounts(value, esAggregation) {
   const currentValue = value;
-  const id = value.dkultTermIdentifier;
+  const id = value.alt.dkultTermIdentifier;
   const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
   if (currentAggregation[0]) {
     currentValue.doc_count = currentAggregation[0].doc_count;
-    currentValue.is_available = false;
+    currentValue.is_available = true;
   }
   else {
     currentValue.doc_count = 0;
-    currentValue.is_available = true;
+    currentValue.is_available = false;
   }
 }
 
 function traverse(obj, esAggregation, func) {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const i in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, i)) {
-      func.apply(this, [obj[i], esAggregation]);
-      if (obj[i] !== null && typeof (obj[i]) === 'object') {
-        // going one step down in the object tree
-        traverse(obj[i].subTerms, esAggregation, func);
-      }
+  Object.values(obj).forEach((value) => {
+    func(value, esAggregation);
+
+    const { subTerms } = value || {};
+    if (Array.isArray(subTerms)) {
+      traverse(value.subTerms, esAggregation, func);
     }
-  }
-}
+  });
+};
 
 async function getSingleItem(req) {
   const query = {
@@ -291,7 +289,7 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req) {
-  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-thesaurus-v2.json'));
+  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-reduced-thesaurus-v2.json'));
   const thesaurusJSON = JSON.parse(thesaurusRaw);
 
   const sortParam = createESSortParam(req);
