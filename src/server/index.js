@@ -19,7 +19,7 @@ function start() {
   }
   let httpServer = null;
 
-  if (useHTTPS === true) {
+  if (useHTTPS === 'true') {
     if (!process.env.DOMAIN) {
       throw new Error('Enviroment variable DOMAIN is missing');
     }
