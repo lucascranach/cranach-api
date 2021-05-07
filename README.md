@@ -86,7 +86,7 @@ Returns a list of items sorted by certain field ascending or descending.
 http://mivs02.gm.fh-koeln.de:8080/?sort_by:{{sortfield}}={{sortdirection}}
 
 ### Example
-http://mivs02.gm.fh-koeln.de:8080/?sort_by=date_end.asc
+http://mivs02.gm.fh-koeln.de:8080/?sort_by=dating_end.asc
 
 ### Parameters
 The `sortfield` is used to define the field by which the items are to be sorted.
