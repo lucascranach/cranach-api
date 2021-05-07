@@ -319,7 +319,6 @@ async function getItems(req) {
     sort: sortParam,
   });
 
-
   const searchParams = {
     body: searchParamsAllArticles.body.concat(searchParamsFilteredArticles.body),
   };
