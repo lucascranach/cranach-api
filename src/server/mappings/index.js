@@ -94,6 +94,17 @@ const mappings = [
     value: 'entityType.keyword',
     filter_types: ['equals', 'notequals'],
   },
+
+  // Sorting Number
+  {
+    display_value: 'sortingNumber.keyword',
+    filter: false,
+    sortable: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'sorting_number',
+    value: 'sortingNumber.keyword',
+  },
+
 ];
 
 const specialParams = ['size', 'from', 'sort_by'];
@@ -112,13 +123,14 @@ const availableFilterTypes = {
 };
 
 const defaultFilterType = 'eq';
+const defaultSortFieldKey = 'sorting_number';
 
 const availableSortTypes = {
   asc: 'ascending',
   desc: 'descending',
 };
 
-const defautSortDirection = 'asc';
+const defautSortDirection = 'desc';
 
 function isThesaurusFilter(filterKey) {
   const index = mappings.findIndex((element) => element.key === filterKey
@@ -135,10 +147,15 @@ function getSortableFields() {
   return mappings.filter((mapping) => mapping.sortable === true);
 }
 
+function getDefaultSortField() {
+  return mappings.find((mapping) => mapping.key === defaultSortFieldKey);
+}
+
 module.exports = {
   availableFilterTypes,
   availableSortTypes,
   defaultFilterType,
+  getDefaultSortField,
   defautSortDirection,
   mappings,
   specialParams,

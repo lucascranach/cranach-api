@@ -10,6 +10,7 @@ const {
   specialParams,
   isThesaurusFilter,
   getAllowedFilters,
+  getDefaultSortField,
   getSortableFields,
 } = require('../mappings');
 
@@ -17,34 +18,39 @@ const allowedFilters = getAllowedFilters();
 const sortableFields = getSortableFields();
 
 function createESSortParam(filterParams) {
-  if (!filterParams['sort_by']) {
-    return [];
-  }
+  let sortField = null;
+  let sortDirectionParam = null;
 
-  if (Array.isArray(filterParams['sort_by'])) {
-    throw new TypeError(`Serveral sort params are not allowed`);
-  }
+  if (!filterParams.sort_by) {
+    sortField = getDefaultSortField();
+    sortDirectionParam = defautSortDirection;
+  } else {
+    if (Array.isArray(filterParams.sort_by)) {
+      throw new TypeError('Serveral sort params are not allowed');
+    }
+    let sortFieldParam = null;
+    [sortFieldParam, sortDirectionParam = defautSortDirection] = filterParams.sort_by.split('.');
+    const sortDirection = availableSortTypes[sortDirectionParam];
 
-  const [sortFieldParam, sortDirectionParam = defautSortDirection] = filterParams.sort_by.split('.');
-  const sortDirection = availableSortTypes[sortDirectionParam];
+    if (sortDirection === undefined) {
+      throw new TypeError(`Not allowed sort direction <${sortDirection}>`);
+    }
 
-  if (sortDirection === undefined) {
-    throw new TypeError(`Not allowed sort direction <${sortDirection}>`);
-  }
+    sortField = sortableFields.find(
+      (sortableField) => sortableField.key === sortFieldParam,
+    );
 
-  const sortField = sortableFields.find(
-    (sortableField) => sortableField.key === sortFieldParam,
-  );
-
-  if (!sortField) {
-    throw new TypeError(`Not allowed sort field <${sortField}>`);
+    if (!sortField) {
+      throw new TypeError(`Not allowed sort field <${sortField}>`);
+    }
   }
 
   const sortParams = [{
-    [sortField.key]: {
+    [sortField.value]: {
       order: sortDirectionParam,
     },
   }];
+
   return sortParams;
 }
 
@@ -170,6 +176,7 @@ function createESSearchParams(params) {
     // body: { params.query, aggs: currentAggs},
     query: params.query,
     aggs: currentAggs,
+    sort: params.sort,
   };
 
   paramsArray.push(esParams);
@@ -224,13 +231,14 @@ function aggregateESResult(params) {
   // aggregate results
   // TODO: In DTOs bündeln
   const results = hits.hits.map((hit) => ({
-    _data_all: hit._source,
+    // _data_all: hit._source,
     id: hit._id,
     dating: hit._source.dating,
     images: hit._source.images,
     owner: hit._source.owner,
     titles: hit._source.titles,
     score: hit._score,
+    sorting_number: hit._source.sortingNumber,
   }));
 
   result.meta = meta;
@@ -300,6 +308,7 @@ async function getItems(req) {
     index,
     query: { match_all: { } },
     filter: allowedFilters,
+    sort: sortParam,
   });
 
   const searchParamsFilteredArticles = createESSearchParams({
@@ -307,8 +316,9 @@ async function getItems(req) {
     index,
     query,
     filter: allowedFilters,
-    sort: sortParam
+    sort: sortParam,
   });
+
 
   const searchParams = {
     body: searchParamsAllArticles.body.concat(searchParamsFilteredArticles.body),
@@ -334,11 +344,15 @@ async function getItems(req) {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
 
+    // Aggregate thesaurus filter
     if (isThesaurusFilter(aggregationKey)) {
       traverse(thesaurusJSON.rootTerms, currenAggregationFiltered, enrichDocCounts);
       aggregationsAll[aggregationKey] = thesaurusJSON.rootTerms;
+
+    // Aggregate other filters
     } else {
       currenAggregationFiltered.forEach((aggregationFiltered) => {
+        // eslint-disable-next-line arrow-body-style
         const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
           return aggregationAll.display_value === aggregationFiltered.display_value;
         });
