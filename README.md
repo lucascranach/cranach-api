@@ -11,16 +11,16 @@ API to retrieve data from the Lucas Cranach Archive
 Returns a list of all items
 
 ### Example
-http://mivs02.gm.fh-koeln.de:8080/
+https://mivs02.gm.fh-koeln.de:8080/
 
 
 ## Items paginated
 Returns a list of the items paginated by the defined parameters.
 
-http://mivs02.gm.fh-koeln.de:8080/?from={{from}}&size={{size}}
+https://mivs02.gm.fh-koeln.de:8080/?from={{from}}&size={{size}}
 
 ### Example
-http://mivs02.gm.fh-koeln.de:8080/?from=100&size=10 
+https://mivs02.gm.fh-koeln.de:8080/?from=100&size=10 
 
 
 ### Parameters
@@ -33,10 +33,10 @@ The `size` parameter allows you to configure the maximum amount of hits to be re
 Returns a list of items filtered by the specified range.  
 For criteria that contain numeric values, an upper and lower limit can be specified for filtering.
 
-http://mivs02.gm.fh-koeln.de:8080/?{{filterfield}}:{{rangeparam}}=
+https://mivs02.gm.fh-koeln.de:8080/?{{filterfield}}:{{rangeparam}}=
 
 ### Example
-http://mivs02.gm.fh-koeln.de:8080/?dating_begin:gte=1920&dating_begin:lte=1950
+https://mivs02.gm.fh-koeln.de:8080/?dating_begin:gte=1920&dating_begin:lte=1950
 
 
 ### Paramters
@@ -53,10 +53,10 @@ The `filtervalue` is used to define the value for the upper or lower limit.
 
 
 ## Items filtered by value
-http://mivs02.gm.fh-koeln.de:8080/?{{filterfield}}:{{equalparam}}={{filtervalue}}
+https://mivs02.gm.fh-koeln.de:8080/?{{filterfield}}:{{equalparam}}={{filtervalue}}
 
 ### Example
-http://mivs02.gm.fh-koeln.de:8080/?entity_type:eq=PAINTING
+https://mivs02.gm.fh-koeln.de:8080/?entity_type:eq=PAINTING
 
 ### Paramters
 The `filterfield` is used to define the field by which the data is to be filtered.
@@ -72,21 +72,21 @@ The `filtervalue` is used to define the value by which the data is to be filtere
 ### Serveral filter criteria
 Several criteria can be passed for filtering.
 
-http://localhost:8080/?dating_begin:gte=1900&entity_type:eq=PAINTING
+https://mivs02.gm.fh-koeln.de:8080/?dating_begin:gte=1900&entity_type:eq=PAINTING
 
 ### Multiple values
 Several values can be specified for one filter criteria.
 In this case, multiple values can be defined using a comma-separated list.
 
-http://localhost:8080/?entity_type:neq=PAINTING,GRAPHIC
+https://mivs02.gm.fh-koeln.de:8080/?entity_type:neq=PAINTING,GRAPHIC
 
 ## Items sorted by a ceratin field
 Returns a list of items sorted by certain field ascending or descending.
 
-http://mivs02.gm.fh-koeln.de:8080/?sort_by:{{sortfield}}={{sortdirection}}
+https://mivs02.gm.fh-koeln.de:8080/?sort_by:{{sortfield}}={{sortdirection}}
 
 ### Example
-http://mivs02.gm.fh-koeln.de:8080/?sort_by=dating_end.asc
+https://mivs02.gm.fh-koeln.de:8080/?sort_by=dating_end.asc
 
 ### Parameters
 The `sortfield` is used to define the field by which the items are to be sorted.
