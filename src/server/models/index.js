@@ -231,7 +231,7 @@ function aggregateESResult(params) {
   // aggregate results
   // TODO: In DTOs bündeln
   const results = hits.hits.map((hit) => ({
-    // _data_all: hit._source,
+    _data_all: hit._source,
     id: hit._id,
     dating: hit._source.dating,
     images: hit._source.images,
