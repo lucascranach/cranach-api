@@ -74,17 +74,17 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
   },
   {
-    display_value: 'images.representative.infos.maxDimensions.width',
+    display_value: 'images.overall.infos.maxDimensions.width',
     key: 'size_width',
     filter: true,
-    value: 'images.representative.infos.maxDimensions.width',
+    value: 'images.overall.infos.maxDimensions.width',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
   {
-    display_value: 'images.representative.infos.maxDimensions.height',
+    display_value: 'images.overall.infos.maxDimensions.height',
     key: 'size_height',
     filter: true,
-    value: 'images.representative.infos.maxDimensions.height',
+    value: 'images.overall.infos.maxDimensions.height',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
   {
