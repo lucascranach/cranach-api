@@ -88,10 +88,10 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
   {
-    display_value: 'entityType.keyword',
+    display_value: 'metadata.entityType.keyword',
     key: 'entity_type',
     filter: true,
-    value: 'entityType.keyword',
+    value: 'metadata.entityType.keyword',
     filter_types: ['equals', 'notequals'],
   },
 
