@@ -233,10 +233,11 @@ function aggregateESResult(params) {
   const results = hits.hits.map((hit) => ({
     _data_all: hit._source,
     id: hit._id,
-    dating: hit._source.dating,
+    date: hit._source.meta.title.date,
+    classification: hit._source.metadata.classification,
     images: hit._source.images,
     owner: hit._source.owner,
-    titles: hit._source.titles,
+    title: hit._source.meta.title,
     score: hit._score,
     sorting_number: hit._source.sortingNumber,
   }));
