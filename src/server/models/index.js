@@ -238,6 +238,7 @@ function aggregateESResult(params) {
     images: hit._source.images,
     owner: hit._source.owner,
     title: hit._source.metadata.title,
+    subtitle: hit._source.metadata.subtitle,
     score: hit._score,
     sorting_number: hit._source.sortingNumber,
   }));
