@@ -1,5 +1,26 @@
 const mappings = [
 
+  /*
+  Documentation of the fields from the mappings
+  {
+    display_value: <string>
+    Value to be displayed in the frontend,
+
+    filter: <string>
+    Indicates if this value can be used as a filter
+
+    filter_types: Array<string>
+    For this group allowed filter types.
+    Possible values: 'equals', 'notequals', 'range', 'notrange'
+
+    key: <string>
+    Value under which the filters are grouped
+
+    value: <string>
+    Value that can be filtered by (This value is language independent)
+  }
+  */
+
   // Zuschreibung
   // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
