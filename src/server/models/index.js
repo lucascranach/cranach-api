@@ -12,10 +12,12 @@ const {
   getAllowedFilters,
   getDefaultSortField,
   getSortableFields,
+  getVisibleFilters,
 } = require('../mappings');
 
 const allowedFilters = getAllowedFilters();
 const sortableFields = getSortableFields();
+const visibleFilters = getVisibleFilters();
 
 function createESSortParam(filterParams) {
   let sortField = null;
@@ -291,7 +293,7 @@ async function getSingleItem(req) {
     ...req,
     index,
     query,
-    filter: allowedFilters,
+    filter: visibleFilters,
   });
 
   const result = await submitESSearch(searchParams);
@@ -315,7 +317,7 @@ async function getItems(req) {
     size: '0',
     index,
     query: { match_all: { } },
-    filter: allowedFilters,
+    filter: visibleFilters,
     sort: sortParam,
   });
 
@@ -323,7 +325,7 @@ async function getItems(req) {
     ...req,
     index,
     query,
-    filter: allowedFilters,
+    filter: visibleFilters,
     sort: sortParam,
   });
 

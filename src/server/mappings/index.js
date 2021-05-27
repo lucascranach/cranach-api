@@ -6,7 +6,7 @@ const mappings = [
     display_value: <string>
     Value to be displayed in the frontend,
 
-    filter: <string>
+    showAsFilter: <string>
     Indicates if this value can be used as a filter
 
     filter_types: Array<string>
@@ -25,7 +25,7 @@ const mappings = [
   // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
     display_value: 'involvedPersons.name.keyword',
-    filter: true,
+    showAsFilter: true,
     filter_types: ['equals', 'notequals'],
     key: 'involved_persons',
     value: 'involvedPersons.name.keyword',
@@ -34,7 +34,7 @@ const mappings = [
   // Datierung
   {
     display_value: 'dating.begin',
-    filter: true,
+    showAsFilter: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
     key: 'dating_begin',
     value: 'dating.begin',
@@ -43,7 +43,7 @@ const mappings = [
   // Datierung
   {
     display_value: 'dating.end',
-    filter: true,
+    showAsFilter: true,
     sortable: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
     key: 'dating_end',
@@ -57,7 +57,7 @@ const mappings = [
   // Privatsammlung, Unbekannter Standort, Verlust nicht in den Daten gespeichert
   {
     display_value: 'locations.term.keyword',
-    filter: true,
+    showAsFilter: true,
     filter_types: ['equals', 'notequals'],
     key: 'location',
     value: 'locations.term.keyword',
@@ -68,7 +68,7 @@ const mappings = [
   // Infrarot Reflektographie - Infrared reflectography
   {
     display_value: 'restorationSurveys.tests.keywords.name.keyword',
-    filter: true,
+    showAsFilter: true,
     filter_types: ['equals', 'notequals'],
     key: 'subtitling_techniques',
     value: 'restorationSurveys.tests.keywords.name.keyword',
@@ -81,7 +81,7 @@ const mappings = [
   {
     display_value: 'thesaurus.id.keyword',
     key: 'thesaurus',
-    filter: true,
+    showAsFilter: true,
     value: 'thesaurus.id.keyword',
     filter_types: ['equals', 'notequals'],
     thesaurus: true,
@@ -90,14 +90,14 @@ const mappings = [
   {
     display_value: 'classification.classification.keyword',
     key: 'classification',
-    filter: true,
+    showAsFilter: true,
     value: 'classification.classification.keyword',
     filter_types: ['equals', 'notequals'],
   },
   {
     display_value: 'images.overall.infos.maxDimensions.width',
     key: 'size_width',
-    filter: true,
+    showAsFilter: true,
     value: 'images.overall.infos.maxDimensions.width',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
@@ -105,7 +105,7 @@ const mappings = [
   {
     display_value: 'images.overall.infos.maxDimensions.height',
     key: 'size_height',
-    filter: true,
+    showAsFilter: true,
     value: 'images.overall.infos.maxDimensions.height',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
@@ -113,7 +113,7 @@ const mappings = [
   {
     display_value: '_id',
     key: 'id',
-    filter: true,
+    showAsFilter: false,
     value: '_id',
     filter_types: ['equals', 'notequals'],
   },
@@ -121,7 +121,7 @@ const mappings = [
   {
     display_value: 'metadata.entityType.keyword',
     key: 'entity_type',
-    filter: true,
+    showAsFilter: true,
     value: 'metadata.entityType.keyword',
     filter_types: ['equals', 'notequals'],
   },
@@ -129,7 +129,7 @@ const mappings = [
   // Sorting Number
   {
     display_value: 'sortingNumber.keyword',
-    filter: false,
+    showAsFilter: false,
     sortable: true,
     filter_types: ['equals', 'notequals'],
     key: 'sorting_number',
@@ -171,11 +171,15 @@ function isThesaurusFilter(filterKey) {
 }
 
 function getAllowedFilters() {
-  return mappings.filter((mapping) => mapping.filter === true);
+  return mappings.filter((mapping) => mapping.filter_types.length > 0);
 }
 
 function getSortableFields() {
   return mappings.filter((mapping) => mapping.sortable === true);
+}
+
+function getVisibleFilters() {
+  return mappings.filter((mapping) => mapping.showAsFilter === true);
 }
 
 function getDefaultSortField() {
@@ -193,4 +197,5 @@ module.exports = {
   isThesaurusFilter,
   getAllowedFilters,
   getSortableFields,
+  getVisibleFilters,
 };
