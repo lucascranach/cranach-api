@@ -10,8 +10,7 @@ const mappings = [
     value: 'involvedPersons.name.keyword',
   },
 
-  // Zuschreibung
-  // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
+  // Die 100 besten Werke
   {
     display_value: 'isBestOf',
     filter: true,
