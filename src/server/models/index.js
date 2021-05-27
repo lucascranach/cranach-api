@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const fs = require('fs');
 const path = require('path');
+const util = require('util')
 const { esclient, index } = require('../../elastic');
 const {
   availableFilterTypes,
@@ -95,11 +96,17 @@ function createESFilterMatchParams(filterParams) {
       filterType = filterType.replace(/^n/, '');
     }
 
+    let filterKeys = filterParams[filterParamKey];
+
+    if (filterTypeGroup === 'equals' || filterTypeGroup === 'notequals') {
+      filterKeys = filterParams[filterParamKey].split(',');
+    }
+
     const preparedESFilter = {
       key: filteredFilter[0].value,
       type: filterType,
       typeGroup: filterTypeGroup,
-      value: filterParams[filterParamKey],
+      value: filterKeys,
       boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range') ? 'should' : 'must_not',
     };
 
@@ -113,7 +120,7 @@ function createESFilterMatchParams(filterParams) {
       matchParams.push({
         bool: {
           [preparedESFilter.boolClause]: {
-            match: {
+            terms: {
               [preparedESFilter.key]: preparedESFilter.value,
             },
           },
