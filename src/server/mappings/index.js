@@ -80,6 +80,7 @@ const mappings = [
     value: 'images.overall.infos.maxDimensions.width',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
+
   {
     display_value: 'images.overall.infos.maxDimensions.height',
     key: 'size_height',
@@ -87,6 +88,15 @@ const mappings = [
     value: 'images.overall.infos.maxDimensions.height',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
+
+  {
+    display_value: '_id',
+    key: 'id',
+    filter: true,
+    value: '_id',
+    filter_types: ['equals', 'notequals'],
+  },
+
   {
     display_value: 'metadata.entityType.keyword',
     key: 'entity_type',
