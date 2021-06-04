@@ -248,6 +248,7 @@ function aggregateESResult(params) {
     score: hit._score,
     sorting_number: hit._source.sortingNumber,
     object_name: hit._source.metadata.objectName,
+    is_best_of: hit._source.isBestOf,
   }));
 
   result.meta = meta;

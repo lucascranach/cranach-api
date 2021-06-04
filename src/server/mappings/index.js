@@ -31,6 +31,15 @@ const mappings = [
     value: 'involvedPersons.name.keyword',
   },
 
+  // Die 100 besten Werke
+  {
+    display_value: 'isBestOf',
+    filter: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'is_best_of',
+    value: 'isBestOf',
+  },
+
   // Datierung
   {
     display_value: 'dating.begin',
