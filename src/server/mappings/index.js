@@ -40,6 +40,15 @@ const mappings = [
     value: 'involvedPersons.name.keyword',
   },
 
+  // Die 100 besten Werke
+  {
+    display_value: 'isBestOf',
+    filter: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'is_best_of',
+    value: 'isBestOf',
+  },
+
   // Datierung
   {
     display_value: 'metadata.date',
@@ -195,7 +204,7 @@ const mappings = [
   },
 ];
 
-const specialParams = ['size', 'from', 'sort_by'];
+const specialParams = ['size', 'from', 'sort_by', 'language'];
 
 const availableFilterTypes = {
   eq: 'equals',
