@@ -147,7 +147,7 @@ const mappings = [
 
 ];
 
-const specialParams = ['size', 'from', 'sort_by'];
+const specialParams = ['size', 'from', 'sort_by', 'language'];
 
 const availableFilterTypes = {
   eq: 'equals',

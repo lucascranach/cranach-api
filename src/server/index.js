@@ -8,6 +8,7 @@ const express = require('express');
 
 const routes = require('./routes');
 require('dotenv').config();
+const language = require('./language');
 
 const app = express();
 const port = process.env.NODE_PORT || 8080;
@@ -40,6 +41,7 @@ function start() {
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
+    .use(language)
     .use('/', routes)
     .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }))
 }

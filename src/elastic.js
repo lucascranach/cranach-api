@@ -8,7 +8,14 @@ const esclient = new Client({
     password: process.env.ELASTICSEARCH_PASSWORD,
   },
 });
-const index = 'data_de';
+const indices = {
+  de: 'data_de',
+  en: 'data_en',
+};
+
+function getIndexByLanguageKey(key) {
+  return indices[key];
+}
 
 /**
  * @function checkConnection
@@ -36,5 +43,5 @@ function checkConnection() {
 module.exports = {
   esclient,
   checkConnection,
-  index,
+  getIndexByLanguageKey,
 };
