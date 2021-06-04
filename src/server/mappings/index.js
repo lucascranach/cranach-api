@@ -100,14 +100,13 @@ const mappings = [
   },
 
   {
-    display_value: 'metadata.inventoryNumber.keyword',
+    display_value: 'inventoryNumber.keyword',
     key: 'inventory_number',
     showAsFilter: false,
     showAsResult: true,
-    value: 'metadata.inventoryNumber.keyword',
+    value: 'inventoryNumber.keyword',
     filter_types: [],
   },
-
 
   // Standort
   // Bisher kann nur der Ort aggregiet werden, da das Land
@@ -195,11 +194,12 @@ const mappings = [
   },
 
   {
-    display_value: '_id',
-    key: 'id',
+    display_value: 'objectId',
+    key: 'object_id',
     showAsFilter: false,
-    value: '_id',
-    filter_types: ['equals', 'notequals'],
+    showAsResult: true,
+    value: 'objectId',
+    filter_types: [],
   },
 
   {
