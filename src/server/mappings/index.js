@@ -6,7 +6,7 @@ const mappings = [
     display_value: <string>
     Value to be displayed in the frontend,
 
-    filter: <string>
+    showAsFilter: <string>
     Indicates if this value can be used as a filter
 
     filter_types: Array<string>
@@ -20,12 +20,21 @@ const mappings = [
     Value that can be filtered by (This value is language independent)
   }
   */
+  {
+    display_value: 'classification.classification.keyword',
+    key: 'classification',
+    showAsFilter: true,
+    showAsResult: true,
+    value: 'classification.classification.keyword',
+    filter_types: ['equals', 'notequals'],
+  },
 
   // Zuschreibung
   // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
     display_value: 'involvedPersons.name.keyword',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     filter_types: ['equals', 'notequals'],
     key: 'involved_persons',
     value: 'involvedPersons.name.keyword',
@@ -42,22 +51,63 @@ const mappings = [
 
   // Datierung
   {
+    display_value: 'metadata.date',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
+    filter_types: [],
+    key: 'dating',
+    value: 'metadata.date',
+  },
+
+  // Datierung Beginn
+  {
     display_value: 'dating.begin',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
     key: 'dating_begin',
     value: 'dating.begin',
   },
 
-  // Datierung
+  // Datierung Ende
   {
     display_value: 'dating.end',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     sortable: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
     key: 'dating_end',
     value: 'dating.end',
   },
+
+  {
+    display_value: 'metadata.entityType.keyword',
+    key: 'entity_type',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'metadata.entityType.keyword',
+    filter_types: ['equals', 'notequals'],
+  },
+
+  {
+    display_value: 'images',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'images',
+    value: 'images',
+  },
+
+  {
+    display_value: 'metadata.inventoryNumber.keyword',
+    key: 'inventory_number',
+    showAsFilter: false,
+    showAsResult: true,
+    value: 'metadata.inventoryNumber.keyword',
+    filter_types: [],
+  },
+
 
   // Standort
   // Bisher kann nur der Ort aggregiet werden, da das Land
@@ -66,10 +116,20 @@ const mappings = [
   // Privatsammlung, Unbekannter Standort, Verlust nicht in den Daten gespeichert
   {
     display_value: 'locations.term.keyword',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     filter_types: ['equals', 'notequals'],
     key: 'location',
     value: 'locations.term.keyword',
+  },
+
+  {
+    display_value: 'owner',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'owner',
+    value: 'owner',
   },
 
   // Untersuchungstechniken
@@ -77,7 +137,8 @@ const mappings = [
   // Infrarot Reflektographie - Infrared reflectography
   {
     display_value: 'restorationSurveys.tests.keywords.name.keyword',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     filter_types: ['equals', 'notequals'],
     key: 'subtitling_techniques',
     value: 'restorationSurveys.tests.keywords.name.keyword',
@@ -90,23 +151,27 @@ const mappings = [
   {
     display_value: 'thesaurus.id.keyword',
     key: 'thesaurus',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     value: 'thesaurus.id.keyword',
     filter_types: ['equals', 'notequals'],
     thesaurus: true,
   },
 
   {
-    display_value: 'classification.classification.keyword',
-    key: 'classification',
-    filter: true,
-    value: 'classification.classification.keyword',
-    filter_types: ['equals', 'notequals'],
+    display_value: 'metadata.title',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'title',
+    value: 'metadata.title',
   },
+
   {
     display_value: 'images.overall.infos.maxDimensions.width',
     key: 'size_width',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     value: 'images.overall.infos.maxDimensions.width',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
@@ -114,37 +179,49 @@ const mappings = [
   {
     display_value: 'images.overall.infos.maxDimensions.height',
     key: 'size_height',
-    filter: true,
+    showAsFilter: true,
+    showAsResult: false,
     value: 'images.overall.infos.maxDimensions.height',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
 
   {
+    display_value: 'metadata.subtitle',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'subtitle',
+    value: 'metadata.subtitle',
+  },
+
+  {
     display_value: '_id',
     key: 'id',
-    filter: true,
+    showAsFilter: false,
     value: '_id',
     filter_types: ['equals', 'notequals'],
   },
 
   {
-    display_value: 'metadata.entityType.keyword',
-    key: 'entity_type',
-    filter: true,
-    value: 'metadata.entityType.keyword',
-    filter_types: ['equals', 'notequals'],
+    display_value: 'objectName.keyword',
+    key: 'object_name',
+    showAsFilter: false,
+    showAsResult: true,
+    value: 'objectName.keyword',
+    filter_types: [],
   },
+
 
   // Sorting Number
   {
     display_value: 'sortingNumber.keyword',
-    filter: false,
+    showAsFilter: false,
+    showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals'],
     key: 'sorting_number',
     value: 'sortingNumber.keyword',
   },
-
 ];
 
 const specialParams = ['size', 'from', 'sort_by', 'language'];
@@ -180,11 +257,25 @@ function isThesaurusFilter(filterKey) {
 }
 
 function getAllowedFilters() {
-  return mappings.filter((mapping) => mapping.filter === true);
+  return mappings.filter((mapping) => mapping.filter_types.length > 0);
 }
 
 function getSortableFields() {
   return mappings.filter((mapping) => mapping.sortable === true);
+}
+
+function getVisibleFilters() {
+  return mappings.filter((mapping) => mapping.showAsFilter === true);
+}
+
+function getVisibleResults() {
+  const filteredMappings = mappings.filter((mapping) => mapping.showAsResult === true);
+  const ret = filteredMappings.map((mapping) => {
+    const currentMapping = { ...mapping };
+    currentMapping.display_value = mapping.display_value.replace(/\.keyword$/, '');
+    return currentMapping;
+  });
+  return ret;
 }
 
 function getDefaultSortField() {
@@ -202,4 +293,6 @@ module.exports = {
   isThesaurusFilter,
   getAllowedFilters,
   getSortableFields,
+  getVisibleFilters,
+  getVisibleResults,
 };

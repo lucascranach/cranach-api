@@ -12,10 +12,14 @@ const {
   getAllowedFilters,
   getDefaultSortField,
   getSortableFields,
+  getVisibleFilters,
+  getVisibleResults,
 } = require('../mappings');
 
 const allowedFilters = getAllowedFilters();
 const sortableFields = getSortableFields();
+const visibleFilters = getVisibleFilters();
+const visibleResults = getVisibleResults();
 
 function createESSortParam(filterParams) {
   let sortField = null;
@@ -233,23 +237,26 @@ function aggregateESResult(params) {
   meta.took = took;
   meta.hits = hits.total.value;
 
-  // TODO: Outsource mappings to Config
   // aggregate results
   // TODO: In DTOs bündeln
-  const results = hits.hits.map((hit) => ({
-    _data_all: hit._source,
-    id: hit._id,
-    date: hit._source.metadata.date,
-    classification: hit._source.metadata.classification,
-    images: hit._source.images,
-    owner: hit._source.owner,
-    title: hit._source.metadata.title,
-    subtitle: hit._source.metadata.subtitle,
-    score: hit._score,
-    sorting_number: hit._source.sortingNumber,
-    object_name: hit._source.metadata.objectName,
-    is_best_of: hit._source.isBestOf,
-  }));
+  const results = hits.hits.map((hit) => {
+    const item = { };
+    item.data_all = hit._source;
+
+    visibleResults.forEach((configItem) => {
+      let currentObject = hit._source;
+
+      // Split the display value
+      const splittedDisplayValues = configItem.display_value.split('.');
+
+      splittedDisplayValues.forEach((currentDisplayValue) => {
+        // create Object of config parts
+        currentObject = currentObject[currentDisplayValue];
+      });
+      item[configItem.key] = currentObject;
+    });
+    return item;
+  });
 
   result.meta = meta;
   result.results = results;
@@ -260,6 +267,7 @@ function aggregateESResult(params) {
 function enrichDocCounts(value, esAggregation) {
   const currentValue = value;
   const id = value.alt.dkultTermIdentifier;
+  // eslint-disable-next-line max-len
   const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
   if (currentAggregation[0]) {
     currentValue.doc_count = currentAggregation[0].doc_count;
@@ -294,7 +302,7 @@ async function getSingleItem(req) {
     ...req,
     index,
     query,
-    filter: allowedFilters,
+    filter: visibleFilters,
   });
 
   const result = await submitESSearch(searchParams);
@@ -319,7 +327,7 @@ async function getItems(req) {
     size: '0',
     index,
     query: { match_all: { } },
-    filter: allowedFilters,
+    filter: visibleFilters,
     sort: sortParam,
   });
 
@@ -327,7 +335,7 @@ async function getItems(req) {
     ...req,
     index,
     query,
-    filter: allowedFilters,
+    filter: visibleFilters,
     sort: sortParam,
   });
 
