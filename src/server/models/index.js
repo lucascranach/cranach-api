@@ -95,11 +95,17 @@ function createESFilterMatchParams(filterParams) {
       filterType = filterType.replace(/^n/, '');
     }
 
+    let filterKeys = filterParams[filterParamKey];
+
+    if (filterTypeGroup === 'equals' || filterTypeGroup === 'notequals') {
+      filterKeys = filterParams[filterParamKey].split(',');
+    }
+
     const preparedESFilter = {
       key: filteredFilter[0].value,
       type: filterType,
       typeGroup: filterTypeGroup,
-      value: filterParams[filterParamKey],
+      value: filterKeys,
       boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range') ? 'should' : 'must_not',
     };
 
@@ -113,7 +119,7 @@ function createESFilterMatchParams(filterParams) {
       matchParams.push({
         bool: {
           [preparedESFilter.boolClause]: {
-            match: {
+            terms: {
               [preparedESFilter.key]: preparedESFilter.value,
             },
           },
@@ -241,7 +247,7 @@ function aggregateESResult(params) {
     subtitle: hit._source.metadata.subtitle,
     score: hit._score,
     sorting_number: hit._source.sortingNumber,
-    object_name: hit._source.objectName,
+    object_name: hit._source.metadata.objectName,
     is_best_of: hit._source.isBestOf,
   }));
 

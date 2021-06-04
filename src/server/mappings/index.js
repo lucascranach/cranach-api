@@ -1,5 +1,26 @@
 const mappings = [
 
+  /*
+  Documentation of the fields from the mappings
+  {
+    display_value: <string>
+    Value to be displayed in the frontend,
+
+    filter: <string>
+    Indicates if this value can be used as a filter
+
+    filter_types: Array<string>
+    For this group allowed filter types.
+    Possible values: 'equals', 'notequals', 'range', 'notrange'
+
+    key: <string>
+    Value under which the filters are grouped
+
+    value: <string>
+    Value that can be filtered by (This value is language independent)
+  }
+  */
+
   // Zuschreibung
   // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
@@ -89,6 +110,7 @@ const mappings = [
     value: 'images.overall.infos.maxDimensions.width',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
+
   {
     display_value: 'images.overall.infos.maxDimensions.height',
     key: 'size_height',
@@ -96,6 +118,15 @@ const mappings = [
     value: 'images.overall.infos.maxDimensions.height',
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
+
+  {
+    display_value: '_id',
+    key: 'id',
+    filter: true,
+    value: '_id',
+    filter_types: ['equals', 'notequals'],
+  },
+
   {
     display_value: 'metadata.entityType.keyword',
     key: 'entity_type',

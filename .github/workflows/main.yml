@@ -1,5 +1,11 @@
 name: Deploy on remote server
-on: [push, pull_request]
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+    types: [closed]
+
 jobs: 
   build:
     name: build image and deploy
