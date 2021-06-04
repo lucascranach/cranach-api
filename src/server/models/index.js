@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const fs = require('fs');
 const path = require('path');
-const { esclient, index } = require('../../elastic');
+const { esclient, getIndexByLanguageKey } = require('../../elastic');
 const {
   availableFilterTypes,
   availableSortTypes,
@@ -152,6 +152,7 @@ function createESFilterMatchParams(filterParams) {
 function createESSearchParams(params) {
   const paramsArray = [];
   const currentAggs = { };
+  console.log(params.index);
   paramsArray.push(
     {
       index: params.index,
@@ -287,6 +288,7 @@ async function getSingleItem(req) {
       _id: req.id,
     },
   };
+  const index = getIndexByLanguageKey(req.language);
 
   const searchParams = createESSearchParams({
     ...req,
@@ -311,6 +313,8 @@ async function getItems(req) {
 
   const sortParam = createESSortParam(req);
   const query = createESFilterMatchParams(req);
+  const index = getIndexByLanguageKey(req.language);
+  console.log(index);
 
   const searchParamsAllArticles = createESSearchParams({
     size: '0',
