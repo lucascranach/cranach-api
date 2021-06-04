@@ -266,28 +266,30 @@ function aggregateESResult(params) {
 }
 
 // called with every property and its value
-function enrichDocCounts(value, esAggregation) {
-  const currentValue = value;
-  const { id } = value;
+function enrichDocCounts(value, data) {
+  const { esAggregation, language } = data;
+
   // eslint-disable-next-line max-len
-  const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
+  const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === value.id);
   if (currentAggregation[0]) {
-    currentValue.doc_count = currentAggregation[0].doc_count;
-    currentValue.is_available = true;
+    value.doc_count = currentAggregation[0].doc_count;
+    value.is_available = true;
   }
   else {
-    currentValue.doc_count = 0;
-    currentValue.is_available = false;
+    value.doc_count = 0;
+    value.is_available = false;
   }
+
+  value.text = value.text[language];
 }
 
-function traverse(obj, esAggregation, func) {
+function traverse(obj, func, data) {
   Object.values(obj).forEach((value) => {
-    func(value, esAggregation);
+    func(value, data);
 
     const { children } = value || {};
     if (Array.isArray(children)) {
-      traverse(value.children, esAggregation, func);
+      traverse(value.children, func, data);
     }
   });
 };
@@ -362,10 +364,15 @@ async function getItems(req) {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
 
+    const filterInfosClone = JSON.parse(JSON.stringify(filterInfos));
+
     // Aggregate filterInfos filter
     if (isFilterInfosFilter(aggregationKey)) {
-      traverse(filterInfos, currenAggregationFiltered, enrichDocCounts);
-      aggregationsAll[aggregationKey] = filterInfos;
+      traverse(filterInfosClone, enrichDocCounts, {
+        esAggregation: currenAggregationFiltered,
+        language: req.language,
+      });
+      aggregationsAll[aggregationKey] = filterInfosClone;
 
     // Aggregate other filters
     } else {
