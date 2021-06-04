@@ -8,13 +8,15 @@ const {
   defaultFilterType,
   defautSortDirection,
   specialParams,
-  isThesaurusFilter,
+  isFilterInfosFilter,
   getAllowedFilters,
   getDefaultSortField,
   getSortableFields,
   getVisibleFilters,
   getVisibleResults,
 } = require('../mappings');
+
+const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
 const allowedFilters = getAllowedFilters();
 const sortableFields = getSortableFields();
@@ -266,7 +268,7 @@ function aggregateESResult(params) {
 // called with every property and its value
 function enrichDocCounts(value, esAggregation) {
   const currentValue = value;
-  const id = value.alt.dkultTermIdentifier;
+  const { id } = value;
   // eslint-disable-next-line max-len
   const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
   if (currentAggregation[0]) {
@@ -283,9 +285,9 @@ function traverse(obj, esAggregation, func) {
   Object.values(obj).forEach((value) => {
     func(value, esAggregation);
 
-    const { subTerms } = value || {};
-    if (Array.isArray(subTerms)) {
-      traverse(value.subTerms, esAggregation, func);
+    const { children } = value || {};
+    if (Array.isArray(children)) {
+      traverse(value.children, esAggregation, func);
     }
   });
 };
@@ -316,9 +318,6 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req) {
-  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-reduced-thesaurus-v2.json'));
-  const thesaurusJSON = JSON.parse(thesaurusRaw);
-
   const sortParam = createESSortParam(req);
   const query = createESFilterMatchParams(req);
   const index = getIndexByLanguageKey(req.language);
@@ -363,10 +362,10 @@ async function getItems(req) {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
 
-    // Aggregate thesaurus filter
-    if (isThesaurusFilter(aggregationKey)) {
-      traverse(thesaurusJSON.rootTerms, currenAggregationFiltered, enrichDocCounts);
-      aggregationsAll[aggregationKey] = thesaurusJSON.rootTerms;
+    // Aggregate filterInfos filter
+    if (isFilterInfosFilter(aggregationKey)) {
+      traverse(filterInfos, currenAggregationFiltered, enrichDocCounts);
+      aggregationsAll[aggregationKey] = filterInfos;
 
     // Aggregate other filters
     } else {
