@@ -82,6 +82,15 @@ const mappings = [
   },
 
   {
+    display_value: 'metadata.entityType.keyword',
+    key: 'entity_type',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'metadata.entityType.keyword',
+    filter_types: ['equals', 'notequals'],
+  },
+
+  {
     display_value: 'images',
     showAsFilter: false,
     showAsResult: false,
@@ -89,6 +98,16 @@ const mappings = [
     key: 'images',
     value: 'images',
   },
+
+  {
+    display_value: 'metadata.inventoryNumber.keyword',
+    key: 'inventory_number',
+    showAsFilter: false,
+    showAsResult: true,
+    value: 'metadata.inventoryNumber.keyword',
+    filter_types: [],
+  },
+
 
   // Standort
   // Bisher kann nur der Ort aggregiet werden, da das Land
@@ -184,13 +203,14 @@ const mappings = [
   },
 
   {
-    display_value: 'metadata.entityType.keyword',
-    key: 'entity_type',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'metadata.entityType.keyword',
-    filter_types: ['equals', 'notequals'],
+    display_value: 'objectName.keyword',
+    key: 'object_name',
+    showAsFilter: false,
+    showAsResult: true,
+    value: 'objectName.keyword',
+    filter_types: [],
   },
+
 
   // Sorting Number
   {
