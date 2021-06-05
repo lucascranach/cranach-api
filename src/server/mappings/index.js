@@ -93,7 +93,7 @@ const mappings = [
   {
     display_value: 'images',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: [],
     key: 'images',
     value: 'images',
@@ -102,14 +102,14 @@ const mappings = [
   {
     display_value: 'inventoryNumber.keyword',
     key: 'inventory_number',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: true,
+    filter_types: ['equals', 'notequals'],
     value: 'inventoryNumber.keyword',
-    filter_types: [],
   },
 
   // Standort
-  // Bisher kann nur der Ort aggregiet werden, da das Land
+  // Bisher kann nur der Ort aggregiert werden, da das Land
   // nur in einem zusammenhängenden String gespeichert wird
   // locations -> path: "Schweiz > cantons > Zürich > inhabited places > Winterthur"
   // Privatsammlung, Unbekannter Standort, Verlust nicht in den Daten gespeichert
