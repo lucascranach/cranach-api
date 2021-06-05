@@ -85,7 +85,7 @@ const mappings = [
     display_value: 'metadata.entityType.keyword',
     key: 'entity_type',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     value: 'metadata.entityType.keyword',
     filter_types: ['equals', 'notequals'],
   },
@@ -93,24 +93,32 @@ const mappings = [
   {
     display_value: 'images',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: [],
     key: 'images',
     value: 'images',
   },
 
   {
-    display_value: 'metadata.inventoryNumber.keyword',
-    key: 'inventory_number',
+    display_value: 'reprints',
     showAsFilter: false,
     showAsResult: true,
-    value: 'metadata.inventoryNumber.keyword',
     filter_types: [],
+    key: 'reprints',
+    value: 'references.reprints',
   },
 
+  {
+    display_value: 'inventoryNumber.keyword',
+    key: 'inventory_number',
+    showAsFilter: true,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    value: 'inventoryNumber.keyword',
+  },
 
   // Standort
-  // Bisher kann nur der Ort aggregiet werden, da das Land
+  // Bisher kann nur der Ort aggregiert werden, da das Land
   // nur in einem zusammenhängenden String gespeichert wird
   // locations -> path: "Schweiz > cantons > Zürich > inhabited places > Winterthur"
   // Privatsammlung, Unbekannter Standort, Verlust nicht in den Daten gespeichert
@@ -195,11 +203,12 @@ const mappings = [
   },
 
   {
-    display_value: '_id',
-    key: 'id',
+    display_value: 'objectId',
+    key: 'object_id',
     showAsFilter: false,
-    value: '_id',
-    filter_types: ['equals', 'notequals'],
+    showAsResult: true,
+    value: 'objectId',
+    filter_types: [],
   },
 
   {
