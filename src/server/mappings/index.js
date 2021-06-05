@@ -85,7 +85,7 @@ const mappings = [
     display_value: 'metadata.entityType.keyword',
     key: 'entity_type',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     value: 'metadata.entityType.keyword',
     filter_types: ['equals', 'notequals'],
   },
