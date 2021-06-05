@@ -100,6 +100,15 @@ const mappings = [
   },
 
   {
+    display_value: 'reprints',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'reprints',
+    value: 'references.reprints',
+  },
+
+  {
     display_value: 'inventoryNumber.keyword',
     key: 'inventory_number',
     showAsFilter: true,
