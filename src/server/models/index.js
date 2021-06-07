@@ -8,13 +8,15 @@ const {
   defaultFilterType,
   defautSortDirection,
   specialParams,
-  isThesaurusFilter,
+  isFilterInfosFilter,
   getAllowedFilters,
   getDefaultSortField,
   getSortableFields,
   getVisibleFilters,
   getVisibleResults,
 } = require('../mappings');
+
+const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
 const allowedFilters = getAllowedFilters();
 const sortableFields = getSortableFields();
@@ -264,28 +266,30 @@ function aggregateESResult(params) {
 }
 
 // called with every property and its value
-function enrichDocCounts(value, esAggregation) {
-  const currentValue = value;
-  const id = value.alt.dkultTermIdentifier;
+function enrichDocCounts(value, data) {
+  const { esAggregation, language } = data;
+
   // eslint-disable-next-line max-len
-  const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === id);
+  const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === value.id);
   if (currentAggregation[0]) {
-    currentValue.doc_count = currentAggregation[0].doc_count;
-    currentValue.is_available = true;
+    value.doc_count = currentAggregation[0].doc_count;
+    value.is_available = true;
   }
   else {
-    currentValue.doc_count = 0;
-    currentValue.is_available = false;
+    value.doc_count = 0;
+    value.is_available = false;
   }
+
+  value.text = value.text[language];
 }
 
-function traverse(obj, esAggregation, func) {
+function traverse(obj, func, data) {
   Object.values(obj).forEach((value) => {
-    func(value, esAggregation);
+    func(value, data);
 
-    const { subTerms } = value || {};
-    if (Array.isArray(subTerms)) {
-      traverse(value.subTerms, esAggregation, func);
+    const { children } = value || {};
+    if (Array.isArray(children)) {
+      traverse(value.children, func, data);
     }
   });
 };
@@ -316,9 +320,6 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req) {
-  const thesaurusRaw = fs.readFileSync(path.join(__dirname, 'assets', '..', '..', 'assets', 'json', 'cda-reduced-thesaurus-v2.json'));
-  const thesaurusJSON = JSON.parse(thesaurusRaw);
-
   const sortParam = createESSortParam(req);
   const query = createESFilterMatchParams(req);
   const index = getIndexByLanguageKey(req.language);
@@ -363,10 +364,15 @@ async function getItems(req) {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
 
-    // Aggregate thesaurus filter
-    if (isThesaurusFilter(aggregationKey)) {
-      traverse(thesaurusJSON.rootTerms, currenAggregationFiltered, enrichDocCounts);
-      aggregationsAll[aggregationKey] = thesaurusJSON.rootTerms;
+    const filterInfosClone = JSON.parse(JSON.stringify(filterInfos));
+
+    // Aggregate filterInfos filter
+    if (isFilterInfosFilter(aggregationKey)) {
+      traverse(filterInfosClone, enrichDocCounts, {
+        esAggregation: currenAggregationFiltered,
+        language: req.language,
+      });
+      aggregationsAll[aggregationKey] = filterInfosClone;
 
     // Aggregate other filters
     } else {

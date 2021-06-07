@@ -157,13 +157,13 @@ const mappings = [
   // Datenbasis ist allerdings nicht verwertbar
 
   {
-    display_value: 'thesaurus.id.keyword',
-    key: 'thesaurus',
+    display_value: 'filterInfos.id.keyword',
+    key: 'filterInfos',
     showAsFilter: true,
     showAsResult: false,
-    value: 'thesaurus.id.keyword',
+    value: 'filterInfos.id.keyword',
     filter_types: ['equals', 'notequals'],
-    thesaurus: true,
+    filterInfos: true,
   },
 
   {
@@ -258,10 +258,10 @@ const availableSortTypes = {
 
 const defautSortDirection = 'desc';
 
-function isThesaurusFilter(filterKey) {
+function isFilterInfosFilter(filterKey) {
   const index = mappings.findIndex((element) => element.key === filterKey
-  && element.thesaurus
-  && element.thesaurus === true);
+  && element.filterInfos
+  && element.filterInfos === true);
   return index > -1;
 }
 
@@ -299,7 +299,7 @@ module.exports = {
   defautSortDirection,
   mappings,
   specialParams,
-  isThesaurusFilter,
+  isFilterInfosFilter,
   getAllowedFilters,
   getSortableFields,
   getVisibleFilters,
