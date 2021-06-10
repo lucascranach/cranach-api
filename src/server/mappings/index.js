@@ -6,18 +6,25 @@ const mappings = [
     display_value: <string>
     Value to be displayed in the frontend,
 
-    showAsFilter: <string>
-    Indicates if this value can be used as a filter
+    key: <string>
+    Value under which the filters are grouped
+
+    showAsResult: <boolean>
+    Indicates if this field will be outputted as result item
+
+    showAsFilter: <boolean>
+    Indicates if this field will be outputted as filter
+
+    searchTermField: <boolean>
+    Indicates if this field is considered in filtering by searchterm
+
+    value: <string>
+    Value that can be filtered by (This value is language independent)
 
     filter_types: Array<string>
     For this group allowed filter types.
     Possible values: 'equals', 'notequals', 'range', 'notrange'
 
-    key: <string>
-    Value under which the filters are grouped
-
-    value: <string>
-    Value that can be filtered by (This value is language independent)
   }
   */
   {
@@ -173,6 +180,7 @@ const mappings = [
     filter_types: [],
     key: 'title',
     value: 'metadata.title',
+    searchTermField: true,
   },
 
   {
@@ -200,6 +208,7 @@ const mappings = [
     filter_types: [],
     key: 'subtitle',
     value: 'metadata.subtitle',
+    searchTermField: true,
   },
 
   {
@@ -233,7 +242,7 @@ const mappings = [
   },
 ];
 
-const specialParams = ['size', 'from', 'sort_by', 'language'];
+const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm'];
 
 const availableFilterTypes = {
   eq: 'equals',
@@ -277,6 +286,10 @@ function getVisibleFilters() {
   return mappings.filter((mapping) => mapping.showAsFilter === true);
 }
 
+function getSearchTermFields() {
+  return mappings.filter((mapping) => mapping.searchTermField === true);
+}
+
 function getVisibleResults() {
   const filteredMappings = mappings.filter((mapping) => mapping.showAsResult === true);
   const ret = filteredMappings.map((mapping) => {
@@ -301,6 +314,7 @@ module.exports = {
   specialParams,
   isFilterInfosFilter,
   getAllowedFilters,
+  getSearchTermFields,
   getSortableFields,
   getVisibleFilters,
   getVisibleResults,
