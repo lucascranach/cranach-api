@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
-const fs = require('fs');
 const path = require('path');
+const util = require('util')
+
 const { esclient, getIndexByLanguageKey } = require('../../elastic');
 const {
   availableFilterTypes,
@@ -11,6 +12,7 @@ const {
   isFilterInfosFilter,
   getAllowedFilters,
   getDefaultSortField,
+  getSearchTermFields,
   getSortableFields,
   getVisibleFilters,
   getVisibleResults,
@@ -19,6 +21,7 @@ const {
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
 const allowedFilters = getAllowedFilters();
+const searchTermFields = getSearchTermFields();
 const sortableFields = getSortableFields();
 const visibleFilters = getVisibleFilters();
 const visibleResults = getVisibleResults();
@@ -58,6 +61,23 @@ function createESSortParam(filterParams) {
   }];
 
   return sortParams;
+}
+
+function createSearchtermParams(searchTerm) {
+  const preparedESFilters = [];
+  searchTermFields.forEach((searchTermField) => {
+    const param = {
+      wildcard: {
+        [searchTermField.value]: `*${searchTerm}*`,
+      },
+    };
+    preparedESFilters.push(param);
+  });
+  return ({
+    bool: {
+      should: preparedESFilters,
+    },
+  });
 }
 
 function createESFilterMatchParams(filterParams) {
@@ -120,6 +140,13 @@ function createESFilterMatchParams(filterParams) {
 
   // ****** Create ES filter params
   const matchParams = [];
+
+  // Create query for searchtearm
+  if (filterParamsKeys.includes('searchterm')) {
+    const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
+    matchParams.push(searchTermQueryParams);
+  }
+
   preparedESFilters.forEach((preparedESFilter) => {
     if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals') {
       matchParams.push({
@@ -151,7 +178,6 @@ function createESFilterMatchParams(filterParams) {
       must: matchParams,
     },
   };
-
   return result;
 }
 
