@@ -424,7 +424,7 @@ async function getItems(req) {
     setAsAvailable: true,
   });
 
-  const agregationsMultiFilter = [];
+  const agregationsMultiFilter = {};
   Object.keys(searchParamsMultiFilters).forEach((searchParamsMultiFilterKey, currentIndex) => {
     const currentAggregation = aggregateESFilterBuckets({
       aggregations: result.body.responses[currentIndex + 2].aggregations,
