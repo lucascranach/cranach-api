@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
-const util = require('util')
 
 const { esclient, getIndexByLanguageKey } = require('../../elastic');
 const {
@@ -16,6 +15,7 @@ const {
   getSortableFields,
   getVisibleFilters,
   getVisibleResults,
+  getFilterByKey,
 } = require('../mappings');
 
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
@@ -117,13 +117,18 @@ function createESFilterMatchParams(filterParams) {
     }
 
     if (filterTypeGroup === 'notrange') {
-      // cut the charachter 'n' at the beginning of the filter key
+      // cut the character 'n' at the beginning of the filter key
       filterType = filterType.replace(/^n/, '');
+    }
+
+    if (filterTypeGroup === 'multiequals') {
+      // cut the character 'm' at the beginning of the filter key
+      filterType = filterType.replace(/^m/, '');
     }
 
     let filterKeys = filterParams[filterParamKey];
 
-    if (filterTypeGroup === 'equals' || filterTypeGroup === 'notequals') {
+    if (filterTypeGroup === 'equals' || filterTypeGroup === 'notequals' || filterTypeGroup === 'multiequals') {
       filterKeys = filterParams[filterParamKey].split(',');
     }
 
@@ -132,7 +137,7 @@ function createESFilterMatchParams(filterParams) {
       type: filterType,
       typeGroup: filterTypeGroup,
       value: filterKeys,
-      boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range') ? 'should' : 'must_not',
+      boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') ? 'should' : 'must_not',
     };
 
     preparedESFilters.push(preparedESFilter);
@@ -148,7 +153,7 @@ function createESFilterMatchParams(filterParams) {
   }
 
   preparedESFilters.forEach((preparedESFilter) => {
-    if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals') {
+    if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals' || preparedESFilter.typeGroup === 'multiequals') {
       matchParams.push({
         bool: {
           [preparedESFilter.boolClause]: {
@@ -178,12 +183,13 @@ function createESFilterMatchParams(filterParams) {
       must: matchParams,
     },
   };
+
   return result;
 }
 
 function createESSearchParams(params) {
   const paramsArray = [];
-  const currentAggs = { };
+  const currentAggs = {};
   paramsArray.push(
     {
       index: params.index,
@@ -232,6 +238,7 @@ async function submitESSearch(params) {
 }
 
 function aggregateESFilterBuckets(params) {
+  const { setAsAvailable } = params;
   const { aggregations } = params;
   const { allFilters } = params;
 
@@ -246,7 +253,7 @@ function aggregateESFilterBuckets(params) {
       ret.doc_count = (allFilters ? 0 : bucket.doc_count);
       ret.display_value = bucket.key;
       ret.value = bucket[aggregationKey].buckets[0].key;
-      ret.is_available = false;
+      ret.is_available = setAsAvailable || false;
       return ret;
     });
     filters[aggregationKey] = currentFilter;
@@ -259,8 +266,8 @@ function aggregateESResult(params) {
   const [responseAll] = responses;
   const { hits } = responseAll;
 
-  const meta = { };
-  const result = { };
+  const meta = {};
+  const result = {};
 
   meta.took = took;
   meta.hits = hits.total.value;
@@ -268,7 +275,7 @@ function aggregateESResult(params) {
   // aggregate results
   // TODO: In DTOs bündeln
   const results = hits.hits.map((hit) => {
-    const item = { };
+    const item = {};
     item.data_all = hit._source;
 
     visibleResults.forEach((configItem) => {
@@ -349,11 +356,39 @@ async function getItems(req) {
   const sortParam = createESSortParam(req);
   const query = createESFilterMatchParams(req);
   const index = getIndexByLanguageKey(req.language);
+  const multiEqualsParams = Object.entries(req).filter((multiEqualsParam) => {
+    const str = multiEqualsParam[0];
+
+    // TODO: Swap to configuration variable
+    const target = ':meq';
+    return str.endsWith(target);
+  });
+
+  const searchParamsMultiFilters = [];
+
+  // Create search params for setted multi filters
+  multiEqualsParams.forEach((multiEqualsParam) => {
+    const params = { ...req };
+    params.size = '0';
+    delete params[multiEqualsParam[0]];
+
+    const filterKey = (multiEqualsParam[0].replace(/:meq$/, ''));
+    const filterMapping = getFilterByKey(filterKey);
+    const currentQuery = createESFilterMatchParams(params);
+
+    searchParamsMultiFilters[filterKey] = createESSearchParams({
+      ...params,
+      index,
+      query: currentQuery,
+      filter: filterMapping,
+      sort: sortParam,
+    });
+  });
 
   const searchParamsAllArticles = createESSearchParams({
-    size: '0',
+    size: 0,
     index,
-    query: { match_all: { } },
+    query: { match_all: {} },
     filter: visibleFilters,
     sort: sortParam,
   });
@@ -370,6 +405,10 @@ async function getItems(req) {
     body: searchParamsAllArticles.body.concat(searchParamsFilteredArticles.body),
   };
 
+  Object.entries(searchParamsMultiFilters).forEach((searchParamsMultiFilter) => {
+    searchParams.body = searchParams.body.concat(searchParamsMultiFilter[1].body);
+  });
+
   const result = await submitESSearch(searchParams);
 
   const aggregationsAll = aggregateESFilterBuckets({
@@ -381,6 +420,18 @@ async function getItems(req) {
   const aggregationsFiltered = aggregateESFilterBuckets({
     aggregations: result.body.responses[1].aggregations,
     setAsAvailable: true,
+  });
+
+  const agregationsMultiFilter = {};
+  Object.keys(searchParamsMultiFilters).forEach((searchParamsMultiFilterKey, currentIndex) => {
+    const currentAggregation = aggregateESFilterBuckets({
+      aggregations: result.body.responses[currentIndex + 2].aggregations,
+      setAsAvailable: true,
+    });
+
+    const filterKey = searchParamsMultiFilterKey;
+    // TODO: Das geht bestimmt auch eleganter
+    agregationsMultiFilter[filterKey] = currentAggregation[filterKey];
   });
 
   const aggregationKeys = Object.keys(aggregationsAll);
@@ -400,7 +451,7 @@ async function getItems(req) {
       });
       aggregationsAll[aggregationKey] = filterInfosClone;
 
-    // Aggregate other filters
+      // Aggregate other filters
     } else {
       currenAggregationFiltered.forEach((aggregationFiltered) => {
         // eslint-disable-next-line arrow-body-style
@@ -414,6 +465,11 @@ async function getItems(req) {
         }
       });
     }
+  });
+
+  // Merge multi filters
+  Object.entries(agregationsMultiFilter).forEach(([aggregationKey, aggregationData]) => {
+    aggregationsAll[aggregationKey] = aggregationData;
   });
 
   result.body.responses.shift();
