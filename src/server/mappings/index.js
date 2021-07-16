@@ -146,7 +146,7 @@ const mappings = [
     display_value: 'locations.term.keyword',
     showAsFilter: true,
     showAsResult: false,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'multiequals'],
     key: 'location',
     value: 'locations.term.keyword',
   },
@@ -242,7 +242,6 @@ const mappings = [
     filter_types: [],
   },
 
-
   // Sorting Number
   {
     display_value: 'sortingNumber.keyword',
@@ -260,6 +259,7 @@ const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm'];
 const availableFilterTypes = {
   eq: 'equals',
   neq: 'notequals',
+  meq: 'multiequals',
   gt: 'range',
   gte: 'range',
   lt: 'range',
@@ -313,6 +313,10 @@ function getVisibleResults() {
   return ret;
 }
 
+function getFilterByKey(filterKey) {
+  return mappings.filter((mapping) => mapping.key === filterKey);
+}
+
 function getDefaultSortField() {
   return mappings.find((mapping) => mapping.key === defaultSortFieldKey);
 }
@@ -326,6 +330,7 @@ module.exports = {
   mappings,
   specialParams,
   isFilterInfosFilter,
+  getFilterByKey,
   getAllowedFilters,
   getSearchTermFields,
   getSortableFields,
