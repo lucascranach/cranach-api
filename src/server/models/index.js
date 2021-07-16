@@ -1,7 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
-const { prependListener } = require('process');
-const util = require('util');
 
 const { esclient, getIndexByLanguageKey } = require('../../elastic');
 const {
