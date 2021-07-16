@@ -429,7 +429,7 @@ async function getItems(req) {
       setAsAvailable: true,
     });
 
-    const filterKey = searchParamsMultiFilterKey[0];
+    const filterKey = searchParamsMultiFilterKey;
     // TODO: Das geht bestimmt auch eleganter
     agregationsMultiFilter[filterKey] = currentAggregation[filterKey];
   });
