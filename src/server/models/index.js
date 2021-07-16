@@ -425,13 +425,13 @@ async function getItems(req) {
   });
 
   const agregationsMultiFilter = [];
-  Object.entries(searchParamsMultiFilters).forEach((searchParamsMultiFilter, currentIndex) => {
+  Object.keys(searchParamsMultiFilters).forEach((searchParamsMultiFilterKey, currentIndex) => {
     const currentAggregation = aggregateESFilterBuckets({
       aggregations: result.body.responses[currentIndex + 2].aggregations,
       setAsAvailable: true,
     });
 
-    const filterKey = searchParamsMultiFilter[0];
+    const filterKey = searchParamsMultiFilterKey[0];
     // TODO: Das geht bestimmt auch eleganter
     agregationsMultiFilter[filterKey] = currentAggregation[filterKey];
   });
