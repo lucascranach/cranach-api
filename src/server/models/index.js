@@ -468,10 +468,7 @@ async function getItems(req) {
   });
 
   // Merge multi filters
-  Object.entries(agregationsMultiFilter).forEach((aggregation) => {
-    const aggregationKey = aggregation[0];
-    const aggregationData = aggregation[1];
-
+  Object.entries(agregationsMultiFilter).forEach(([aggregationKey, aggregationData]) => {
     aggregationsAll[aggregationKey] = aggregationData;
   });
 
