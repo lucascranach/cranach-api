@@ -1,0 +1,14 @@
+{
+  "attribution": {
+    "de": "Zuschreibung",
+    "en": "attribution"
+  },
+  "entity_type": {
+    "de": "Art",
+    "en": "type"
+  },
+  "location": {
+    "de": "Standort",
+    "en": "location"
+  }
+}
