@@ -1,4 +1,4 @@
-name: Deploy on remote server
+name: Deploy on remote dev server
 on:
   push:
     branches: [integration]
