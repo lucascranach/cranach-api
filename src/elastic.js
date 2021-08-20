@@ -8,10 +8,14 @@ const esclient = new Client({
     password: process.env.ELASTICSEARCH_PASSWORD,
   },
 });
+
+const indicesPrefix = process.env.ELASTICSEARCH_INDICES_PREFIX;
 const indices = {
-  de: 'data_de',
-  en: 'data_en',
+  de: `${indicesPrefix}de`,
+  en: `${indicesPrefix}en`,
 };
+
+console.log(indices);
 
 function getIndexByLanguageKey(key) {
   return indices[key];
