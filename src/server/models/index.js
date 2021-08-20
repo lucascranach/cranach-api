@@ -17,7 +17,6 @@ const {
   getVisibleResults,
   getFilterByKey,
 } = require('../mappings');
-const { param } = require('../routes');
 
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
