@@ -43,7 +43,7 @@ function start() {
     .use(bodyParser.json())
     .use(language)
     .use('/', routes)
-    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }))
+    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }));
 }
 
 module.exports = {
