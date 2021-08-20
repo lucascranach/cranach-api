@@ -19,6 +19,10 @@ function start() {
   if (!process.env.ELASTICSEARCH_USERNAME || !process.env.ELASTICSEARCH_PASSWORD) {
     throw new Error('Enviroment variables are missing');
   }
+
+  if (!process.env.ELASTICSEARCH_INDICES_PREFIX) {
+    throw new Error('Enviroment variable ELASTICSEARCH_INDICES_PREFIX are missing');
+  }
   let httpServer = null;
 
   if (useHTTPS === 'true') {
@@ -44,7 +48,7 @@ function start() {
     .use(bodyParser.json())
     .use(language)
     .use('/', routes)
-    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }))
+    .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }));
 }
 
 module.exports = {
