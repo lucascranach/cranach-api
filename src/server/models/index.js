@@ -1,7 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
 
-const { esclient, getIndexByLanguageKey } = require('../../elastic');
+const translations = require(path.join(__dirname, '..', 'translations'));
+
+const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
 const {
   availableFilterTypes,
   availableSortTypes,
@@ -353,6 +355,7 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req) {
+  const { language } = req;
   const sortParam = createESSortParam(req);
   const query = createESFilterMatchParams(req);
   const index = getIndexByLanguageKey(req.language);
@@ -472,7 +475,14 @@ async function getItems(req) {
     aggregationsAll[aggregationKey] = aggregationData;
   });
 
-  result.body.responses.shift();
+  // Enrich filter key with translations
+  Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
+    const translationKey = translations.getTranslation(aggregationKey, language) || aggregationKey;
+    aggregationsAll[aggregationKey] = {
+      display_value: translationKey,
+      values: aggregationData,
+    };
+  });
 
   const { meta, results } = aggregateESResult(result);
 
