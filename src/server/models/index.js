@@ -17,6 +17,7 @@ const {
   getVisibleResults,
   getFilterByKey,
 } = require('../mappings');
+const { param } = require('../routes');
 
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
@@ -214,9 +215,11 @@ function createESSearchParams(params) {
     });
   }
 
+  const size = ( typeof params.size === 'undefined') ? 100 : params.size;
+
   const esParams = {
     from: params.from || 0,
-    size: params.size || 100,
+    size,
     // body: { params.query, aggs: currentAggs},
     query: params.query,
     aggs: currentAggs,
