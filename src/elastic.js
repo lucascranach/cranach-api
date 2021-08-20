@@ -15,8 +15,6 @@ const indices = {
   en: `${indicesPrefix}en`,
 };
 
-console.log(indices);
-
 function getIndexByLanguageKey(key) {
   return indices[key];
 }
