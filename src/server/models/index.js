@@ -449,12 +449,12 @@ async function getItems(req) {
 
     // Aggregate filterInfos filter
     if (isFilterInfosFilter(aggregationKey)) {
-      const curruentFilterInfos = filterInfosClone[aggregationKey];
-      traverse(curruentFilterInfos, enrichDocCounts, {
+      const currentFilterInfos = filterInfosClone[aggregationKey];
+      traverse(currentFilterInfos, enrichDocCounts, {
         esAggregation: currenAggregationFiltered,
         language: req.language,
       });
-      aggregationsAll[aggregationKey] = curruentFilterInfos;
+      aggregationsAll[aggregationKey] = currentFilterInfos;
 
       // Aggregate other filters
     } else {
