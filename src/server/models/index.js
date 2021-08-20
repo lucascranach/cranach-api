@@ -214,9 +214,11 @@ function createESSearchParams(params) {
     });
   }
 
+  const size = ( typeof params.size === 'undefined') ? 100 : params.size;
+
   const esParams = {
     from: params.from || 0,
-    size: params.size || 100,
+    size,
     // body: { params.query, aggs: currentAggs},
     query: params.query,
     aggs: currentAggs,
