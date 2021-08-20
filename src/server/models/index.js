@@ -208,7 +208,7 @@ function createESSearchParams(params) {
           [filterItem.key]: {
             terms: {
               field: filterItem.value,
-              size: 1000,
+              size: 1,
             },
           },
         },
@@ -329,7 +329,7 @@ function traverse(obj, func, data) {
       traverse(value.children, func, data);
     }
   });
-};
+}
 
 async function getSingleItem(req) {
   const query = {
@@ -414,6 +414,7 @@ async function getItems(req) {
     searchParams.body = searchParams.body.concat(searchParamsMultiFilter[1].body);
   });
 
+
   const result = await submitESSearch(searchParams);
 
   const aggregationsAll = aggregateESFilterBuckets({
@@ -450,11 +451,12 @@ async function getItems(req) {
 
     // Aggregate filterInfos filter
     if (isFilterInfosFilter(aggregationKey)) {
-      traverse(filterInfosClone, enrichDocCounts, {
+      const currentFilterInfos = filterInfosClone[aggregationKey];
+      traverse(currentFilterInfos, enrichDocCounts, {
         esAggregation: currenAggregationFiltered,
         language: req.language,
       });
-      aggregationsAll[aggregationKey] = filterInfosClone;
+      aggregationsAll[aggregationKey] = currentFilterInfos;
 
       // Aggregate other filters
     } else {
@@ -485,6 +487,7 @@ async function getItems(req) {
       values: aggregationData,
     };
   });
+
 
   const { meta, results } = aggregateESResult(result);
 

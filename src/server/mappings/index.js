@@ -27,6 +27,17 @@ const mappings = [
 
   }
   */
+  // Zuschreibung
+  {
+    display_value: 'filterInfos.attribution.id.keyword',
+    key: 'attribution',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.attribution.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
   {
     display_value: 'classification.classification.keyword',
     key: 'classification',
@@ -35,6 +46,28 @@ const mappings = [
     value: 'classification.classification.keyword',
     filter_types: ['equals', 'notequals'],
     searchTermField: true,
+  },
+
+  // Sammlung / Standort
+  {
+    display_value: 'filterInfos.collection_repository.id.keyword',
+    key: 'collection_repository',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.collection_repository.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Untersuchungstechniken
+  {
+    display_value: 'filterInfos.examination_analysis.id.keyword',
+    key: 'examination_analysis',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.examination_analysis.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
   },
 
   // Zuschreibung
@@ -110,6 +143,28 @@ const mappings = [
     searchTermField: true,
   },
 
+  // Form
+  {
+    display_value: 'filterInfos.form.id.keyword',
+    key: 'form',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.form.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Funktion
+  {
+    display_value: 'filterInfos.function.id.keyword',
+    key: 'function',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.function.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
   {
     display_value: 'images',
     showAsFilter: false,
@@ -160,6 +215,17 @@ const mappings = [
     value: 'owner',
   },
 
+  // Subject
+  {
+    display_value: 'filterInfos.subject.id.keyword',
+    key: 'subject',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.subject.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
   // Untersuchungstechniken
   // Mischung von deutschen und englischen Begriffen
   // Infrarot Reflektographie - Infrared reflectography
@@ -170,20 +236,6 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
     key: 'subtitling_techniques',
     value: 'restorationSurveys.tests.keywords.name.keyword',
-  },
-
-  // Form, Funktion und Bestandteile
-  // Daten sind in keywords und the keywrods vorhanden.
-  // Datenbasis ist allerdings nicht verwertbar
-
-  {
-    display_value: 'filterInfos.id.keyword',
-    key: 'filterInfos',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.id.keyword',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
   },
 
   {
