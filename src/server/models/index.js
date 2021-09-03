@@ -216,7 +216,7 @@ function createESSearchParams(params) {
     });
   }
 
-  const size = ( typeof params.size === 'undefined') ? 100 : params.size;
+  const size = (typeof params.size === 'undefined') ? 100 : params.size;
 
   const esParams = {
     from: params.from || 0,
@@ -414,7 +414,6 @@ async function getItems(req) {
     searchParams.body = searchParams.body.concat(searchParamsMultiFilter[1].body);
   });
 
-
   const result = await submitESSearch(searchParams);
 
   const aggregationsAll = aggregateESFilterBuckets({
@@ -487,7 +486,6 @@ async function getItems(req) {
       values: aggregationData,
     };
   });
-
 
   const { meta, results } = aggregateESResult(result);
 
