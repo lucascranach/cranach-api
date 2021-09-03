@@ -267,8 +267,8 @@ function aggregateESFilterBuckets(params) {
 
 function aggregateESResult(params) {
   const { body: { took, responses } } = params;
-  const [responseAll] = responses;
-  const { hits } = responseAll;
+  const response = responses[1];
+  const { hits } = response;
 
   const meta = {};
   const result = {};
