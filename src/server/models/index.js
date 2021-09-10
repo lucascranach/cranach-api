@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-const { accessSync } = require('fs');
 const path = require('path');
 
 const translations = require(path.join(__dirname, '..', 'translations'));
