@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+const { accessSync } = require('fs');
 const path = require('path');
 
 const translations = require(path.join(__dirname, '..', 'translations'));
@@ -140,23 +141,30 @@ function createESFilterMatchParams(filterParams) {
       typeGroup: filterTypeGroup,
       value: filterKeys,
       boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') ? 'should' : 'must_not',
+      nestedPath: filteredFilter[0].nestedPath || null,
+      sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy) 
+        ? filteredFilter[0].sortBy
+        : null,
     };
 
     preparedESFilters.push(preparedESFilter);
   });
 
   // ****** Create ES filter params
-  const matchParams = [];
+  const matchParams = {};
+  matchParams.queryParams = [];
+  matchParams.sortParams = {};
 
   // Create query for searchtearm
   if (filterParamsKeys.includes('searchterm')) {
     const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
-    matchParams.push(searchTermQueryParams);
+    matchParams.queryParams.push(searchTermQueryParams);
   }
 
   preparedESFilters.forEach((preparedESFilter) => {
+    let filterParam = null;
     if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals' || preparedESFilter.typeGroup === 'multiequals') {
-      matchParams.push({
+      filterParam = {
         bool: {
           [preparedESFilter.boolClause]: {
             terms: {
@@ -164,9 +172,9 @@ function createESFilterMatchParams(filterParams) {
             },
           },
         },
-      });
+      };
     } else {
-      matchParams.push({
+      filterParam = {
         bool: {
           [preparedESFilter.boolClause]: {
             range: {
@@ -176,14 +184,39 @@ function createESFilterMatchParams(filterParams) {
             },
           },
         },
-      });
+      };
+    }
+
+    if (preparedESFilter.nestedPath) {
+      const copyFilterParam = { ...filterParam };
+      filterParam = null;
+      if (preparedESFilter.sortBy) {
+        matchParams.sortParams[preparedESFilter.sortBy] = {
+          order: 'asc',
+          nested: {
+            path: preparedESFilter.nestedPath,
+            filter: {
+              ...copyFilterParam,
+            },
+          },
+        };
+      }
+      filterParam = {
+        nested: {
+          path: preparedESFilter.nestedPath,
+          query: copyFilterParam,
+        },
+      };
+      matchParams.queryParams.push(filterParam);
     }
   });
-
   result = {
-    bool: {
-      must: matchParams,
+    queryParam: {
+      bool: {
+        filter: matchParams.queryParams,
+      },
     },
+    sortParam: matchParams.sortParams,
   };
 
   return result;
@@ -246,6 +279,7 @@ function aggregateESFilterBuckets(params) {
   const { aggregations } = params;
   const { allFilters } = params;
 
+
   // TODO: Create recursive function
   // aggregate Filter
   const filters = {};
@@ -290,7 +324,9 @@ function aggregateESResult(params) {
 
       splittedDisplayValues.forEach((currentDisplayValue) => {
         // create Object of config parts
-        currentObject = currentObject[currentDisplayValue];
+        currentObject = (currentObject[currentDisplayValue])
+          ? currentObject[currentDisplayValue]
+          : '';
       });
       item[configItem.key] = currentObject;
     });
@@ -358,8 +394,13 @@ async function getSingleItem(req) {
 
 async function getItems(req) {
   const { language } = req;
-  const sortParam = createESSortParam(req);
-  const query = createESFilterMatchParams(req);
+  let sortParam = createESSortParam(req);
+  const filterMatchParams = createESFilterMatchParams(req);
+  const query = filterMatchParams.queryParam;
+  if (filterMatchParams.sortParam) {
+    sortParam = filterMatchParams.sortParam;
+  }
+
   const index = getIndexByLanguageKey(req.language);
   const multiEqualsParams = Object.entries(req).filter((multiEqualsParam) => {
     const str = multiEqualsParam[0];
@@ -379,7 +420,7 @@ async function getItems(req) {
 
     const filterKey = (multiEqualsParam[0].replace(/:meq$/, ''));
     const filterMapping = getFilterByKey(filterKey);
-    const currentQuery = createESFilterMatchParams(params);
+    const currentQuery = createESFilterMatchParams(params).queryParam;
 
     searchParamsMultiFilters[filterKey] = createESSearchParams({
       ...params,

@@ -73,12 +73,14 @@ const mappings = [
   // Zuschreibung
   // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
-    display_value: 'involvedPersons.name.keyword',
+    display_value: 'involvedPersons.name',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals'],
     key: 'involved_persons',
-    value: 'involvedPersons.name.keyword',
+    value: 'involvedPersons.name',
+    nestedPath: 'involvedPersons',
+    sortBy: 'involvedPersons.displayOrder',
   },
 
   // Die 100 besten Werke
@@ -98,7 +100,7 @@ const mappings = [
     sortable: true,
     filter_types: [],
     key: 'dating',
-    value: 'metadata.date',
+    value: 'metadata.date.keyword',
   },
 
   // Datierung Beginn
