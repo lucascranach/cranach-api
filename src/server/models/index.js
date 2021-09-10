@@ -12,6 +12,7 @@ const {
   defautSortDirection,
   specialParams,
   isFilterInfosFilter,
+  isNestedFilter,
   getAllowedFilters,
   getDefaultSortField,
   getSearchTermFields,
@@ -187,9 +188,12 @@ function createESFilterMatchParams(filterParams) {
       };
     }
 
+    // Prepare filter param for nested values
     if (preparedESFilter.nestedPath) {
       const copyFilterParam = { ...filterParam };
       filterParam = null;
+
+      // Prepare filter for sorting nested values
       if (preparedESFilter.sortBy) {
         matchParams.sortParams[preparedESFilter.sortBy] = {
           order: 'asc',
@@ -224,7 +228,7 @@ function createESFilterMatchParams(filterParams) {
 
 function createESSearchParams(params) {
   const paramsArray = [];
-  const currentAggs = {};
+  const currentAggsArray = {};
   paramsArray.push(
     {
       index: params.index,
@@ -232,7 +236,7 @@ function createESSearchParams(params) {
   );
   if (params.filter) {
     params.filter.forEach((filterItem) => {
-      currentAggs[filterItem.key] = {
+      let currentAggs = {
         terms: {
           field: filterItem.display_value,
           size: 1000,
@@ -246,6 +250,19 @@ function createESSearchParams(params) {
           },
         },
       };
+
+      if (filterItem.nestedPath) {
+        const copyCurrentAggs = { ...currentAggs };
+        currentAggs = {
+          nested: {
+            path: filterItem.nestedPath,
+          },
+          aggs: {
+            [filterItem.key]: copyCurrentAggs,
+          },
+        };
+      }
+      currentAggsArray[filterItem.key] = currentAggs;
     });
   }
 
@@ -256,7 +273,7 @@ function createESSearchParams(params) {
     size,
     // body: { params.query, aggs: currentAggs},
     query: params.query,
-    aggs: currentAggs,
+    aggs: currentAggsArray,
     sort: params.sort,
   };
 
@@ -279,13 +296,18 @@ function aggregateESFilterBuckets(params) {
   const { aggregations } = params;
   const { allFilters } = params;
 
-
   // TODO: Create recursive function
   // aggregate Filter
   const filters = {};
   const aggregationKeys = Object.keys(aggregations);
   aggregationKeys.forEach((aggregationKey) => {
-    const { buckets } = aggregations[aggregationKey];
+    let currentAggregation = aggregations[aggregationKey];
+
+    // if nested field then take nested values
+    if (isNestedFilter(aggregationKey)) {
+      currentAggregation = currentAggregation[aggregationKey];
+    }
+    const { buckets } = currentAggregation;
     const currentFilter = buckets.map((bucket) => {
       const ret = {};
       ret.doc_count = (allFilters ? 0 : bucket.doc_count);

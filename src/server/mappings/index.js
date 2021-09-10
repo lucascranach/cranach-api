@@ -133,7 +133,7 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
   },
 
-  // Datierung Ende
+  // Description
   {
     display_value: 'description.keyword',
     showAsFilter: false,
@@ -338,6 +338,11 @@ function isFilterInfosFilter(filterKey) {
   const index = mappings.findIndex((element) => element.key === filterKey
   && element.filterInfos
   && element.filterInfos === true);
+}
+
+function isNestedFilter(filterkey) {
+  const index = mappings.findIndex((mapping) => mapping.key === filterkey
+    && mapping.nestedPath);
   return index > -1;
 }
 
@@ -384,6 +389,7 @@ module.exports = {
   mappings,
   specialParams,
   isFilterInfosFilter,
+  isNestedFilter,
   getFilterByKey,
   getAllowedFilters,
   getSearchTermFields,
