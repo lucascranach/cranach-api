@@ -73,12 +73,14 @@ const mappings = [
   // Zuschreibung
   // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
-    display_value: 'involvedPersons.name.keyword',
+    display_value: 'involvedPersons.name',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals'],
     key: 'involved_persons',
-    value: 'involvedPersons.name.keyword',
+    value: 'involvedPersons.name',
+    nestedPath: 'involvedPersons',
+    sortBy: 'involvedPersons.displayOrder',
   },
 
   // Die 100 besten Werke
@@ -98,7 +100,7 @@ const mappings = [
     sortable: true,
     filter_types: [],
     key: 'dating',
-    value: 'metadata.date',
+    value: 'metadata.date.keyword',
   },
 
   // Datierung Beginn
@@ -131,7 +133,7 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
   },
 
-  // Datierung Ende
+  // Description
   {
     display_value: 'description.keyword',
     showAsFilter: false,
@@ -333,9 +335,15 @@ const availableSortTypes = {
 const defautSortDirection = 'desc';
 
 function isFilterInfosFilter(filterKey) {
-  const index = mappings.findIndex((element) => element.key === filterKey
-  && element.filterInfos
-  && element.filterInfos === true);
+  const index = mappings.findIndex((mapping) => mapping.key === filterKey
+    && mapping.filterInfos
+    && mapping.filterInfos === true);
+  return index > -1;
+}
+
+function isNestedFilter(filterkey) {
+  const index = mappings.findIndex((mapping) => mapping.key === filterkey
+    && mapping.nestedPath);
   return index > -1;
 }
 
@@ -382,6 +390,7 @@ module.exports = {
   mappings,
   specialParams,
   isFilterInfosFilter,
+  isNestedFilter,
   getFilterByKey,
   getAllowedFilters,
   getSearchTermFields,

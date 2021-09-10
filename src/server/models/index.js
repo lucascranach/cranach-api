@@ -11,6 +11,7 @@ const {
   defautSortDirection,
   specialParams,
   isFilterInfosFilter,
+  isNestedFilter,
   getAllowedFilters,
   getDefaultSortField,
   getSearchTermFields,
@@ -140,23 +141,30 @@ function createESFilterMatchParams(filterParams) {
       typeGroup: filterTypeGroup,
       value: filterKeys,
       boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') ? 'should' : 'must_not',
+      nestedPath: filteredFilter[0].nestedPath || null,
+      sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy) 
+        ? filteredFilter[0].sortBy
+        : null,
     };
 
     preparedESFilters.push(preparedESFilter);
   });
 
   // ****** Create ES filter params
-  const matchParams = [];
+  const matchParams = {};
+  matchParams.queryParams = [];
+  matchParams.sortParams = {};
 
   // Create query for searchtearm
   if (filterParamsKeys.includes('searchterm')) {
     const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
-    matchParams.push(searchTermQueryParams);
+    matchParams.queryParams.push(searchTermQueryParams);
   }
 
   preparedESFilters.forEach((preparedESFilter) => {
+    let filterParam = null;
     if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals' || preparedESFilter.typeGroup === 'multiequals') {
-      matchParams.push({
+      filterParam = {
         bool: {
           [preparedESFilter.boolClause]: {
             terms: {
@@ -164,9 +172,9 @@ function createESFilterMatchParams(filterParams) {
             },
           },
         },
-      });
+      };
     } else {
-      matchParams.push({
+      filterParam = {
         bool: {
           [preparedESFilter.boolClause]: {
             range: {
@@ -176,30 +184,58 @@ function createESFilterMatchParams(filterParams) {
             },
           },
         },
-      });
+      };
+    }
+
+    // Prepare filter param for nested values
+    if (preparedESFilter.nestedPath) {
+      const copyFilterParam = { ...filterParam };
+      filterParam = null;
+
+      // Prepare filter for sorting nested values
+      if (preparedESFilter.sortBy) {
+        matchParams.sortParams[preparedESFilter.sortBy] = {
+          order: 'asc',
+          nested: {
+            path: preparedESFilter.nestedPath,
+            filter: {
+              ...copyFilterParam,
+            },
+          },
+        };
+      }
+      filterParam = {
+        nested: {
+          path: preparedESFilter.nestedPath,
+          query: copyFilterParam,
+        },
+      };
+      matchParams.queryParams.push(filterParam);
     }
   });
-
   result = {
-    bool: {
-      must: matchParams,
+    queryParam: {
+      bool: {
+        filter: matchParams.queryParams,
+      },
     },
+    sortParam: matchParams.sortParams,
   };
 
   return result;
 }
 
 function createESSearchParams(params) {
-  const paramsArray = [];
-  const currentAggs = {};
-  paramsArray.push(
+  const allParams = [];
+  const allAggs = {};
+  allParams.push(
     {
       index: params.index,
     },
   );
   if (params.filter) {
     params.filter.forEach((filterItem) => {
-      currentAggs[filterItem.key] = {
+      let currentAggs = {
         terms: {
           field: filterItem.display_value,
           size: 1000,
@@ -213,22 +249,35 @@ function createESSearchParams(params) {
           },
         },
       };
+
+      if (filterItem.nestedPath) {
+        const copyCurrentAggs = { ...currentAggs };
+        currentAggs = {
+          nested: {
+            path: filterItem.nestedPath,
+          },
+          aggs: {
+            [filterItem.key]: copyCurrentAggs,
+          },
+        };
+      }
+      allAggs[filterItem.key] = currentAggs;
     });
   }
 
-  const size = ( typeof params.size === 'undefined') ? 100 : params.size;
+  const size = (typeof params.size === 'undefined') ? 100 : params.size;
 
   const esParams = {
     from: params.from || 0,
     size,
     // body: { params.query, aggs: currentAggs},
     query: params.query,
-    aggs: currentAggs,
+    aggs: allAggs,
     sort: params.sort,
   };
 
-  paramsArray.push(esParams);
-  const result = { body: paramsArray };
+  allParams.push(esParams);
+  const result = { body: allParams };
   return result;
 }
 
@@ -251,7 +300,13 @@ function aggregateESFilterBuckets(params) {
   const filters = {};
   const aggregationKeys = Object.keys(aggregations);
   aggregationKeys.forEach((aggregationKey) => {
-    const { buckets } = aggregations[aggregationKey];
+    let currentAggregation = aggregations[aggregationKey];
+
+    // if nested field then take nested values
+    if (isNestedFilter(aggregationKey)) {
+      currentAggregation = currentAggregation[aggregationKey];
+    }
+    const { buckets } = currentAggregation;
     const currentFilter = buckets.map((bucket) => {
       const ret = {};
       ret.doc_count = (allFilters ? 0 : bucket.doc_count);
@@ -267,8 +322,8 @@ function aggregateESFilterBuckets(params) {
 
 function aggregateESResult(params) {
   const { body: { took, responses } } = params;
-  const [responseAll] = responses;
-  const { hits } = responseAll;
+  const response = responses[1];
+  const { hits } = response;
 
   const meta = {};
   const result = {};
@@ -290,7 +345,9 @@ function aggregateESResult(params) {
 
       splittedDisplayValues.forEach((currentDisplayValue) => {
         // create Object of config parts
-        currentObject = currentObject[currentDisplayValue];
+        currentObject = (currentObject[currentDisplayValue])
+          ? currentObject[currentDisplayValue]
+          : '';
       });
       item[configItem.key] = currentObject;
     });
@@ -358,8 +415,13 @@ async function getSingleItem(req) {
 
 async function getItems(req) {
   const { language } = req;
-  const sortParam = createESSortParam(req);
-  const query = createESFilterMatchParams(req);
+  let sortParam = createESSortParam(req);
+  const filterMatchParams = createESFilterMatchParams(req);
+  const query = filterMatchParams.queryParam;
+  if (filterMatchParams.sortParam) {
+    sortParam = filterMatchParams.sortParam;
+  }
+
   const index = getIndexByLanguageKey(req.language);
   const multiEqualsParams = Object.entries(req).filter((multiEqualsParam) => {
     const str = multiEqualsParam[0];
@@ -379,7 +441,7 @@ async function getItems(req) {
 
     const filterKey = (multiEqualsParam[0].replace(/:meq$/, ''));
     const filterMapping = getFilterByKey(filterKey);
-    const currentQuery = createESFilterMatchParams(params);
+    const currentQuery = createESFilterMatchParams(params).queryParam;
 
     searchParamsMultiFilters[filterKey] = createESSearchParams({
       ...params,
@@ -413,7 +475,6 @@ async function getItems(req) {
   Object.entries(searchParamsMultiFilters).forEach((searchParamsMultiFilter) => {
     searchParams.body = searchParams.body.concat(searchParamsMultiFilter[1].body);
   });
-
 
   const result = await submitESSearch(searchParams);
 
@@ -487,7 +548,6 @@ async function getItems(req) {
       values: aggregationData,
     };
   });
-
 
   const { meta, results } = aggregateESResult(result);
 
