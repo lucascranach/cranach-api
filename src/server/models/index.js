@@ -83,6 +83,17 @@ function createSearchtermParams(searchTerm) {
   });
 }
 
+function createHighlightParams(params) {
+  const preparedParams = {};
+  if (params.searchterm) {
+    searchTermFields.forEach((searchTermField) => {
+      preparedParams[searchTermField.value] = {};
+    });
+    return { fields: preparedParams };
+  }
+  return preparedParams;
+}
+
 function createESFilterMatchParams(filterParams) {
   let result = {};
   const filterParamsKeys = Object.keys(filterParams);
@@ -270,10 +281,10 @@ function createESSearchParams(params) {
   const esParams = {
     from: params.from || 0,
     size,
-    // body: { params.query, aggs: currentAggs},
     query: params.query,
     aggs: allAggs,
     sort: params.sort,
+    highlight: params.highlight || {},
   };
 
   allParams.push(esParams);
@@ -351,6 +362,15 @@ function aggregateESResult(params) {
       });
       item[configItem.key] = currentObject;
     });
+
+    if (hit.highlight) {
+      item._highlight = {};
+      searchTermFields.forEach((configItem) => {
+        if (hit.highlight[configItem.value]) {
+          item._highlight[configItem.key] = hit.highlight[configItem.value];
+        }
+      });
+    }
     return item;
   });
 
@@ -423,6 +443,7 @@ async function getItems(req) {
   }
 
   const index = getIndexByLanguageKey(req.language);
+  const highlightParams = createHighlightParams(req);
   const multiEqualsParams = Object.entries(req).filter((multiEqualsParam) => {
     const str = multiEqualsParam[0];
 
@@ -466,6 +487,7 @@ async function getItems(req) {
     query,
     filter: visibleFilters,
     sort: sortParam,
+    highlight: highlightParams,
   });
 
   const searchParams = {
@@ -555,6 +577,7 @@ async function getItems(req) {
   ret.meta = meta;
   ret.results = results;
   ret.filters = aggregationsAll;
+  ret.highlights = result.body.responses[1].highlight;
   return ret;
 }
 
