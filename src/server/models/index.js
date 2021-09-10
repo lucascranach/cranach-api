@@ -226,9 +226,9 @@ function createESFilterMatchParams(filterParams) {
 }
 
 function createESSearchParams(params) {
-  const paramsArray = [];
-  const currentAggsArray = {};
-  paramsArray.push(
+  const allParams = [];
+  const allAggs = {};
+  allParams.push(
     {
       index: params.index,
     },
@@ -261,7 +261,7 @@ function createESSearchParams(params) {
           },
         };
       }
-      currentAggsArray[filterItem.key] = currentAggs;
+      allAggs[filterItem.key] = currentAggs;
     });
   }
 
@@ -272,12 +272,12 @@ function createESSearchParams(params) {
     size,
     // body: { params.query, aggs: currentAggs},
     query: params.query,
-    aggs: currentAggsArray,
+    aggs: allAggs,
     sort: params.sort,
   };
 
-  paramsArray.push(esParams);
-  const result = { body: paramsArray };
+  allParams.push(esParams);
+  const result = { body: allParams };
   return result;
 }
 
