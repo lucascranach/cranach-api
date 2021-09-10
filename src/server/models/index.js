@@ -307,10 +307,10 @@ function aggregateESResult(params) {
     });
 
     if (hit.highlight) {
-      item.highlight = {};
+      item._highlight = {};
       searchTermFields.forEach((configItem) => {
         if (hit.highlight[configItem.value]) {
-          item.highlight[configItem.key] = hit.highlight[configItem.value];
+          item._highlight[configItem.key] = hit.highlight[configItem.value];
         }
       });
     }
