@@ -335,9 +335,10 @@ const availableSortTypes = {
 const defautSortDirection = 'desc';
 
 function isFilterInfosFilter(filterKey) {
-  const index = mappings.findIndex((element) => element.key === filterKey
-  && element.filterInfos
-  && element.filterInfos === true);
+  const index = mappings.findIndex((mapping) => mapping.key === filterKey
+    && mapping.filterInfos
+    && mapping.filterInfos === true);
+  return index > -1;
 }
 
 function isNestedFilter(filterkey) {
