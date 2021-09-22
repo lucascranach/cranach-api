@@ -92,6 +92,6 @@ https://mivs02.gm.fh-koeln.de/?sort_by=dating_end.asc
 The `sortfield` is used to define the field by which the items are to be sorted.
 
 The items can be sorted ascending or descending.
-The parameter `sortderiction` must be set accordingly.  
+The parameter `sortdirection` must be set accordingly.  
 * `asc` = ascending order  
 * `des` = descending order  
