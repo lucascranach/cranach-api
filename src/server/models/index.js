@@ -332,15 +332,11 @@ function aggregateESFilterBuckets(params) {
 }
 
 function aggregateESResult(params) {
-  const { body: { took, responses } } = params;
-  const response = responses[1];
+  const response = params;
   const { hits } = response;
 
   const meta = {};
   const result = {};
-
-  meta.took = took;
-  meta.hits = hits.total.value;
 
   // aggregate results
   // TODO: In DTOs bündeln
@@ -424,8 +420,13 @@ async function getSingleItem(req) {
   });
 
   const result = await submitESSearch(searchParams);
+  const { body: { took } } = result;
+  const meta = {
+    took,
+    hits: result.body.responses[0].hits.total.value,
+  };
 
-  const { meta, results } = aggregateESResult(result);
+  const results = aggregateESResult(result.body.responses[0]);
 
   return {
     meta,
@@ -571,7 +572,13 @@ async function getItems(req) {
     };
   });
 
-  const { meta, results } = aggregateESResult(result);
+  const { body: { took } } = result;
+  const meta = {
+    took,
+    hits: result.body.responses[1].hits.total.value,
+  };
+
+  const results = aggregateESResult(result.body.responses[1]);
 
   const ret = {};
   ret.meta = meta;
