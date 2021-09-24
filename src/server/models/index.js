@@ -221,8 +221,8 @@ function createESFilterMatchParams(filterParams) {
           query: copyFilterParam,
         },
       };
-      matchParams.queryParams.push(filterParam);
     }
+    matchParams.queryParams.push(filterParam);
   });
   result = {
     queryParam: {
