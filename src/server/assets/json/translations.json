@@ -1,14 +1,22 @@
 {
   "attribution": {
     "de": "Zuschreibung",
-    "en": "attribution"
+    "en": "Attribution"
   },
   "entity_type": {
     "de": "Art",
-    "en": "type"
+    "en": "Type"
   },
   "location": {
     "de": "Standort",
-    "en": "location"
+    "en": "Location"
+  },
+  "examination_analysis": {
+    "de": "Untersuchungstechniken",
+    "en": "Examination analysis"
+  },
+  "subject": {
+    "de": "Inhalt",
+    "en": "Subject"
   }
 }
