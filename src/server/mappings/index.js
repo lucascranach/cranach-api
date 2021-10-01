@@ -159,6 +159,28 @@ const mappings = [
     filterInfos: true,
   },
 
+  // Bestandteile
+  {
+    display_value: 'filterInfos.component_parts.id.keyword',
+    key: 'component_parts',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.component_parts.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Technik
+  {
+    display_value: 'filterInfos.technique.id.keyword',
+    key: 'technique',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.technique.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
   // Abbildungen
   {
     display_value: 'images',

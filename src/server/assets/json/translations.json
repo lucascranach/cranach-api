@@ -18,5 +18,25 @@
   "subject": {
     "de": "Inhalt",
     "en": "Subject"
+  },
+  "collection_repository": {
+    "de": "Sammlung / Standort",
+    "en": "Collection / repository"
+  },
+  "form": {
+    "de": "Form",
+    "en": "Form"
+  },
+  "function": {
+    "de": "Funktion",
+    "en": "Function"
+  },
+  "component_parts": {
+    "de": "Bestandteile",
+    "en": "Component parts"
+  },
+  "technique": {
+    "de": "Technik",
+    "en": "Technique"
   }
 }
