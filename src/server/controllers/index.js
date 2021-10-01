@@ -9,7 +9,10 @@ async function getSingleItem(req, res) {
     });
     return;
   }
-  const params = { id, req };
+  const params = {
+    id,
+    language: req.query.language,
+  };
   try {
     const result = await model.getSingleItem(params);
     res.json({ data: result });

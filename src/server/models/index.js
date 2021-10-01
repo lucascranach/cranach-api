@@ -413,7 +413,6 @@ async function getSingleItem(req) {
   const index = getIndexByLanguageKey(req.language);
 
   const searchParams = createESSearchParams({
-    ...req,
     index,
     query,
     filter: visibleFilters,
