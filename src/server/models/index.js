@@ -380,7 +380,7 @@ function enrichDocCounts(value, data) {
   const { esAggregation, language } = data;
 
   // eslint-disable-next-line max-len
-  const currentAggregation = esAggregation.filter((aggregation) => aggregation.display_value === value.id);
+  const currentAggregation = esAggregation.filter((aggregation) => aggregation.value === value.id);
   if (currentAggregation[0]) {
     value.doc_count = currentAggregation[0].doc_count;
     value.is_available = true;
