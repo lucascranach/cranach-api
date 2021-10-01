@@ -9,8 +9,7 @@ function setLanguage(req, res, next) {
   if (req.query.language) {
     if (availableLanguages.includes(req.query.language)) {
       next();
-    }
-    else {
+    } else {
       res.status(500).json({ success: false, error: `Passed language is not supported. Available languages: ${availableLanguages.join(', ')}` });
       res.end();
     }
