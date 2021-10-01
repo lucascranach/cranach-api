@@ -46,8 +46,8 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
     value: 'involvedPersons.id.keyword',
-    // nestedPath: 'involvedPersons',
-    // sortBy: 'involvedPersons.displayOrder',
+    nestedPath: 'involvedPersons',
+    sortBy: 'involvedPersons.displayOrder',
     filterInfos: true,
   },
 
