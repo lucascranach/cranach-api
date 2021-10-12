@@ -194,10 +194,10 @@ const mappings = [
   // Inventarnummer
   {
     display_value: 'inventoryNumber.keyword',
-    key: 'inventory_number',
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
+    key: 'inventory_number',
     value: 'inventoryNumber.keyword',
   },
 
@@ -209,6 +209,16 @@ const mappings = [
     filter_types: [],
     key: 'owner',
     value: 'owner',
+  },
+
+  // Print Process
+  {
+    display_value: 'classification.printProcess',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'print_process',
+    value: 'classification.printProcess',
   },
 
   // Inhalt
