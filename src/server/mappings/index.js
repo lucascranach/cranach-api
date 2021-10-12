@@ -137,6 +137,16 @@ const mappings = [
     searchTermField: true,
   },
 
+  // Dimensionen
+  {
+    display_value: 'dimensions',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'dimensions',
+    value: 'dimensions',
+  },
+
   // Form
   {
     display_value: 'filterInfos.form.id.keyword',
