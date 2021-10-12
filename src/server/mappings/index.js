@@ -42,7 +42,7 @@ const mappings = [
   {
     display_value: 'involvedPersons.name',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
     value: 'involvedPersons.id.keyword',
