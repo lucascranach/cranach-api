@@ -42,7 +42,7 @@ const mappings = [
   {
     display_value: 'involvedPersons.name',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
     value: 'involvedPersons.id.keyword',
@@ -137,6 +137,16 @@ const mappings = [
     searchTermField: true,
   },
 
+  // Dimensionen
+  {
+    display_value: 'dimensions',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'dimensions',
+    value: 'dimensions',
+  },
+
   // Form
   {
     display_value: 'filterInfos.form.id.keyword',
@@ -194,10 +204,10 @@ const mappings = [
   // Inventarnummer
   {
     display_value: 'inventoryNumber.keyword',
-    key: 'inventory_number',
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
+    key: 'inventory_number',
     value: 'inventoryNumber.keyword',
   },
 
@@ -209,6 +219,16 @@ const mappings = [
     filter_types: [],
     key: 'owner',
     value: 'owner',
+  },
+
+  // Print Process
+  {
+    display_value: 'classification.printProcess',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'print_process',
+    value: 'classification.printProcess',
   },
 
   // Inhalt
