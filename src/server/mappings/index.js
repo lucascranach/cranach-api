@@ -294,6 +294,26 @@ const mappings = [
     key: 'sorting_number',
     value: 'sortingNumber.keyword',
   },
+
+  // Catalog Work Reference
+  {
+    display_value: 'catalogWorkReferences.description.keyword',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals'],
+    key: 'catalog_name',
+    value: 'catalogWorkReferences.description.keyword',
+  },
+
+  // Catalog Work Reference Number
+  {
+    display_value: 'catalogWorkReferences.referenceNumber.keyword',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals'],
+    key: 'catalog_work_reference_number',
+    value: 'catalogWorkReferences.referenceNumber.keyword',
+  },
 ];
 
 const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm'];
