@@ -1,0 +1,42 @@
+{
+  "attribution": {
+    "de": "Zuschreibung",
+    "en": "Attribution"
+  },
+  "entity_type": {
+    "de": "Art",
+    "en": "Type"
+  },
+  "location": {
+    "de": "Standort",
+    "en": "Location"
+  },
+  "examination_analysis": {
+    "de": "Untersuchungstechniken",
+    "en": "Examination analysis"
+  },
+  "subject": {
+    "de": "Inhalt",
+    "en": "Subject"
+  },
+  "collection_repository": {
+    "de": "Sammlung / Standort",
+    "en": "Collection / repository"
+  },
+  "form": {
+    "de": "Form",
+    "en": "Form"
+  },
+  "function": {
+    "de": "Funktion",
+    "en": "Function"
+  },
+  "component_parts": {
+    "de": "Bestandteile",
+    "en": "Component parts"
+  },
+  "technique": {
+    "de": "Technik",
+    "en": "Technique"
+  }
+}

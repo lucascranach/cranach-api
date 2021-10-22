@@ -26,35 +26,61 @@ const mappings = [
     Possible values: 'equals', 'notequals', 'range', 'notrange'
 
   }
-  */
-  {
-    display_value: 'classification.classification.keyword',
-    key: 'classification',
-    showAsFilter: true,
-    showAsResult: true,
-    value: 'classification.classification.keyword',
-    filter_types: ['equals', 'notequals'],
-    searchTermField: true,
-  },
+  // */
+  // // Zuschreibung
+  // {
+  //   display_value: 'involvedPersons.name.keyword',
+  //   key: 'attribution',
+  //   showAsFilter: true,
+  //   showAsResult: false,
+  //   value: 'involvedPersons.id.keyword',
+  //   filter_types: ['equals', 'notequals'],
+  //   filterInfos: true,
+  // },
 
   // Zuschreibung
-  // "Bekannte Meister der Cranach Werkstatt" nicht in Daten enthalten
   {
-    display_value: 'involvedPersons.name.keyword',
+    display_value: 'involvedPersons.name',
+    showAsFilter: true,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'attribution',
+    value: 'involvedPersons.id.keyword',
+    nestedPath: 'involvedPersons',
+    sortBy: 'involvedPersons.displayOrder',
+    filterInfos: true,
+  },
+
+  // Sammlung / Standort
+  {
+    display_value: 'filterInfos.collection_repository.id.keyword',
+    key: 'collection_repository',
     showAsFilter: true,
     showAsResult: false,
+    value: 'filterInfos.collection_repository.id.keyword',
     filter_types: ['equals', 'notequals'],
-    key: 'involved_persons',
-    value: 'involvedPersons.name.keyword',
+    filterInfos: true,
+  },
+
+  // Untersuchungstechniken
+  {
+    display_value: 'filterInfos.examination_analysis.id.keyword',
+    key: 'examination_analysis',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.examination_analysis.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
   },
 
   // Die 100 besten Werke
   {
     display_value: 'isBestOf',
-    filter: true,
     filter_types: ['equals', 'notequals'],
     key: 'is_best_of',
     value: 'isBestOf',
+    showAsResult: true,
+
   },
 
   // Datierung
@@ -65,7 +91,7 @@ const mappings = [
     sortable: true,
     filter_types: [],
     key: 'dating',
-    value: 'metadata.date',
+    value: 'metadata.date.keyword',
   },
 
   // Datierung Beginn
@@ -89,6 +115,7 @@ const mappings = [
     value: 'dating.end',
   },
 
+  // Entitäts typ
   {
     display_value: 'metadata.entityType.keyword',
     key: 'entity_type',
@@ -98,11 +125,11 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
   },
 
-  // Datierung Ende
+  // Description
   {
     display_value: 'description.keyword',
     showAsFilter: false,
-    showAsResult: true,
+    showAsResult: false,
     sortable: false,
     filter_types: [],
     key: 'description',
@@ -110,47 +137,81 @@ const mappings = [
     searchTermField: true,
   },
 
+  // Dimensionen
+  {
+    display_value: 'dimensions',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'dimensions',
+    value: 'dimensions',
+  },
+
+  // Form
+  {
+    display_value: 'filterInfos.form.id.keyword',
+    key: 'form',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.form.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Funktion
+  {
+    display_value: 'filterInfos.function.id.keyword',
+    key: 'function',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.function.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Bestandteile
+  {
+    display_value: 'filterInfos.component_parts.id.keyword',
+    key: 'component_parts',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.component_parts.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Technik
+  {
+    display_value: 'filterInfos.technique.id.keyword',
+    key: 'technique',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.technique.id.keyword',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Abbildungen
   {
     display_value: 'images',
     showAsFilter: false,
-    showAsResult: true,
+    showAsResult: false,
     filter_types: [],
     key: 'images',
     value: 'images',
   },
 
-  {
-    display_value: 'reprints',
-    showAsFilter: false,
-    showAsResult: true,
-    filter_types: [],
-    key: 'reprints',
-    value: 'references.reprints',
-  },
-
+  // Inventarnummer
   {
     display_value: 'inventoryNumber.keyword',
-    key: 'inventory_number',
-    showAsFilter: true,
+    showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
+    key: 'inventory_number',
     value: 'inventoryNumber.keyword',
   },
 
-  // Standort
-  // Bisher kann nur der Ort aggregiert werden, da das Land
-  // nur in einem zusammenhängenden String gespeichert wird
-  // locations -> path: "Schweiz > cantons > Zürich > inhabited places > Winterthur"
-  // Privatsammlung, Unbekannter Standort, Verlust nicht in den Daten gespeichert
-  {
-    display_value: 'locations.term.keyword',
-    showAsFilter: true,
-    showAsResult: false,
-    filter_types: ['equals', 'notequals', 'multiequals'],
-    key: 'location',
-    value: 'locations.term.keyword',
-  },
-
+  // Eigentümer
   {
     display_value: 'owner',
     showAsFilter: false,
@@ -160,32 +221,28 @@ const mappings = [
     value: 'owner',
   },
 
-  // Untersuchungstechniken
-  // Mischung von deutschen und englischen Begriffen
-  // Infrarot Reflektographie - Infrared reflectography
+  // Print Process
   {
-    display_value: 'restorationSurveys.tests.keywords.name.keyword',
-    showAsFilter: true,
-    showAsResult: false,
-    filter_types: ['equals', 'notequals'],
-    key: 'subtitling_techniques',
-    value: 'restorationSurveys.tests.keywords.name.keyword',
+    display_value: 'classification.printProcess',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'print_process',
+    value: 'classification.printProcess',
   },
 
-  // Form, Funktion und Bestandteile
-  // Daten sind in keywords und the keywrods vorhanden.
-  // Datenbasis ist allerdings nicht verwertbar
-
+  // Inhalt
   {
-    display_value: 'filterInfos.id.keyword',
-    key: 'filterInfos',
+    display_value: 'filterInfos.subject.id.keyword',
+    key: 'subject',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.id.keyword',
+    value: 'filterInfos.subject.id.keyword',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
   },
 
+  // Titel
   {
     display_value: 'metadata.title',
     showAsFilter: false,
@@ -196,6 +253,7 @@ const mappings = [
     searchTermField: true,
   },
 
+  // Dimension - Breite
   {
     display_value: 'images.overall.infos.maxDimensions.width',
     key: 'size_width',
@@ -205,6 +263,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
 
+  // Dimension - Höhe
   {
     display_value: 'images.overall.infos.maxDimensions.height',
     key: 'size_height',
@@ -214,6 +273,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange'],
   },
 
+  // Untertitel
   {
     display_value: 'metadata.subtitle',
     showAsFilter: false,
@@ -222,24 +282,6 @@ const mappings = [
     key: 'subtitle',
     value: 'metadata.subtitle',
     searchTermField: true,
-  },
-
-  {
-    display_value: 'objectId',
-    key: 'object_id',
-    showAsFilter: false,
-    showAsResult: true,
-    value: 'objectId',
-    filter_types: [],
-  },
-
-  {
-    display_value: 'objectName.keyword',
-    key: 'object_name',
-    showAsFilter: false,
-    showAsResult: true,
-    value: 'objectName.keyword',
-    filter_types: [],
   },
 
   // Sorting Number
@@ -251,6 +293,26 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
     key: 'sorting_number',
     value: 'sortingNumber.keyword',
+  },
+
+  // Catalog Work Reference
+  {
+    display_value: 'catalogWorkReferences.description.keyword',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals'],
+    key: 'catalog_name',
+    value: 'catalogWorkReferences.description.keyword',
+  },
+
+  // Catalog Work Reference Number
+  {
+    display_value: 'catalogWorkReferences.referenceNumber.keyword',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals'],
+    key: 'catalog_work_reference_number',
+    value: 'catalogWorkReferences.referenceNumber.keyword',
   },
 ];
 
@@ -278,12 +340,18 @@ const availableSortTypes = {
   desc: 'descending',
 };
 
-const defautSortDirection = 'desc';
+const defautSortDirection = 'asc';
 
 function isFilterInfosFilter(filterKey) {
-  const index = mappings.findIndex((element) => element.key === filterKey
-  && element.filterInfos
-  && element.filterInfos === true);
+  const index = mappings.findIndex((mapping) => mapping.key === filterKey
+    && mapping.filterInfos
+    && mapping.filterInfos === true);
+  return index > -1;
+}
+
+function isNestedFilter(filterkey) {
+  const index = mappings.findIndex((mapping) => mapping.key === filterkey
+    && mapping.nestedPath);
   return index > -1;
 }
 
@@ -330,6 +398,7 @@ module.exports = {
   mappings,
   specialParams,
   isFilterInfosFilter,
+  isNestedFilter,
   getFilterByKey,
   getAllowedFilters,
   getSearchTermFields,
