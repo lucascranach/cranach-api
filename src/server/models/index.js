@@ -153,7 +153,7 @@ function createESFilterMatchParams(filterParams) {
       value: filterKeys,
       boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') ? 'should' : 'must_not',
       nestedPath: filteredFilter[0].nestedPath || null,
-      sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy) 
+      sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy)
         ? filteredFilter[0].sortBy
         : null,
     };
@@ -438,7 +438,7 @@ async function getItems(req) {
   let sortParam = createESSortParam(req);
   const filterMatchParams = createESFilterMatchParams(req);
   const query = filterMatchParams.queryParam;
-  if (filterMatchParams.sortParam) {
+  if (filterMatchParams.sortParam && Object.keys(filterMatchParams.sortParam).length === 0) {
     sortParam = filterMatchParams.sortParam;
   }
 
@@ -480,6 +480,7 @@ async function getItems(req) {
     filter: visibleFilters,
     sort: sortParam,
   });
+
 
   const searchParamsFilteredArticles = createESSearchParams({
     ...req,

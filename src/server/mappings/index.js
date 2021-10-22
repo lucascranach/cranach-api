@@ -288,7 +288,7 @@ const mappings = [
   {
     display_value: 'sortingNumber.keyword',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals'],
     key: 'sorting_number',
@@ -340,7 +340,7 @@ const availableSortTypes = {
   desc: 'descending',
 };
 
-const defautSortDirection = 'desc';
+const defautSortDirection = 'asc';
 
 function isFilterInfosFilter(filterKey) {
   const index = mappings.findIndex((mapping) => mapping.key === filterKey
