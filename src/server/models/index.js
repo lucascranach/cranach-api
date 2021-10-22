@@ -438,7 +438,7 @@ async function getItems(req) {
   let sortParam = createESSortParam(req);
   const filterMatchParams = createESFilterMatchParams(req);
   const query = filterMatchParams.queryParam;
-  if (filterMatchParams.sortParam && Object.keys(filterMatchParams).length === 0) {
+  if (filterMatchParams.sortParam && Object.keys(filterMatchParams.sortParam).length === 0) {
     sortParam = filterMatchParams.sortParam;
   }
 
