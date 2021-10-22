@@ -161,7 +161,7 @@ function createESFilterMatchParams(filterParams) {
       type: filterType,
       typeGroup: filterTypeGroup,
       value: filterKeys,
-      boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') ? 'should' : 'must_not',
+      boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals' || filterTypeGroup === 'differ') ? 'should' : 'must_not',
       nestedPath: filteredFilter[0].nestedPath || null,
       sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy)
         ? filteredFilter[0].sortBy
