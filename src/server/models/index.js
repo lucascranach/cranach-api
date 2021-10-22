@@ -142,8 +142,18 @@ function createESFilterMatchParams(filterParams) {
 
     let filterKeys = filterParams[filterParamKey];
 
-    if (filterTypeGroup === 'equals' || filterTypeGroup === 'notequals' || filterTypeGroup === 'multiequals') {
+    if (
+      filterTypeGroup === 'equals'
+      || filterTypeGroup === 'notequals'
+      || filterTypeGroup === 'multiequals'
+      || filterTypeGroup === 'differ'
+    ) {
       filterKeys = filterParams[filterParamKey].split(',');
+    }
+
+    // Wildcard search allows only one filter value
+    if (filterTypeGroup === 'differ') {
+      [filterKeys] = filterKeys;
     }
 
     const preparedESFilter = {
@@ -179,6 +189,16 @@ function createESFilterMatchParams(filterParams) {
         bool: {
           [preparedESFilter.boolClause]: {
             terms: {
+              [preparedESFilter.key]: preparedESFilter.value,
+            },
+          },
+        },
+      };
+    } else if (preparedESFilter.typeGroup === 'differ') {
+      filterParam = {
+        bool: {
+          should: {
+            wildcard: {
               [preparedESFilter.key]: preparedESFilter.value,
             },
           },

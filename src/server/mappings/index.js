@@ -300,7 +300,7 @@ const mappings = [
     display_value: 'catalogWorkReferences.description.keyword',
     showAsFilter: false,
     showAsResult: false,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'differ'],
     key: 'catalog_name',
     value: 'catalogWorkReferences.description.keyword',
   },
@@ -308,9 +308,9 @@ const mappings = [
   // Catalog Work Reference Number
   {
     display_value: 'catalogWorkReferences.referenceNumber.keyword',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: false,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'differ'],
     key: 'catalog_work_reference_number',
     value: 'catalogWorkReferences.referenceNumber.keyword',
   },
@@ -330,6 +330,7 @@ const availableFilterTypes = {
   ngte: 'notrange',
   nlt: 'notrange',
   nlte: 'notrange',
+  diff: 'differ',
 };
 
 const defaultFilterType = 'eq';
