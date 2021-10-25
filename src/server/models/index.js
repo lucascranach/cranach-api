@@ -631,7 +631,7 @@ async function getItems(req) {
 
   const ret = {};
   ret.meta = meta;
-  ret.results = results;
+  ret.results = results.results;
   ret.filters = aggregationsAll;
   ret.highlights = result.body.responses[1].highlight;
   return ret;
