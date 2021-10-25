@@ -306,22 +306,24 @@ const mappings = [
 
   // Catalog Work Reference
   {
-    display_value: 'catalogWorkReferences.description.keyword',
+    display_value: 'catalogWorkReferences.description',
     showAsFilter: false,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'differ'],
     key: 'catalog_name',
-    value: 'catalogWorkReferences.description.keyword',
+    value: 'catalogWorkReferences.description',
+    nestedPath: 'catalogWorkReferences',
   },
 
   // Catalog Work Reference Number
   {
-    display_value: 'catalogWorkReferences.referenceNumber.keyword',
+    display_value: 'catalogWorkReferences.referenceNumber',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'differ'],
     key: 'catalog_work_reference_number',
-    value: 'catalogWorkReferences.referenceNumber.keyword',
+    value: 'catalogWorkReferences.referenceNumber',
+    nestedPath: 'catalogWorkReferences',
   },
 ];
 

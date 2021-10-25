@@ -156,12 +156,21 @@ function createESFilterMatchParams(filterParams) {
       [filterKeys] = filterKeys;
     }
 
+    let boolClause = '';
+    if (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') {
+      boolClause = 'must';
+    } else if (filterTypeGroup === 'differ') {
+      boolClause = 'must';
+    } else {
+      boolClause = 'must_not';
+    }
+
     const preparedESFilter = {
       key: filteredFilter[0].value,
       type: filterType,
       typeGroup: filterTypeGroup,
       value: filterKeys,
-      boolClause: (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') ? 'should' : 'must_not',
+      boolClause,
       nestedPath: filteredFilter[0].nestedPath || null,
       sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy)
         ? filteredFilter[0].sortBy
@@ -175,6 +184,7 @@ function createESFilterMatchParams(filterParams) {
   const matchParams = {};
   matchParams.queryParams = [];
   matchParams.sortParams = {};
+  const nestedParams = {};
 
   // Create query for searchtearm
   if (filterParamsKeys.includes('searchterm')) {
@@ -197,7 +207,7 @@ function createESFilterMatchParams(filterParams) {
     } else if (preparedESFilter.typeGroup === 'differ') {
       filterParam = {
         bool: {
-          should: {
+          [preparedESFilter.boolClause]: {
             wildcard: {
               [preparedESFilter.key]: preparedESFilter.value,
             },
@@ -235,15 +245,35 @@ function createESFilterMatchParams(filterParams) {
           },
         };
       }
-      filterParam = {
-        nested: {
-          path: preparedESFilter.nestedPath,
-          query: copyFilterParam,
-        },
-      };
+
+      if (!nestedParams[preparedESFilter.nestedPath]) {
+        nestedParams[preparedESFilter.nestedPath] = [];
+      }
+
+      nestedParams[preparedESFilter.nestedPath].push(copyFilterParam);
+    } else {
+      matchParams.queryParams.push(filterParam);
     }
-    matchParams.queryParams.push(filterParam);
   });
+
+  // Group nested queries by path
+  Object.keys(nestedParams).forEach((nestedPath) => {
+    const nestedQueryParam = {
+      nested: {
+        path: [nestedPath],
+        query: {
+          bool: {
+            must: [],
+          },
+        },
+      },
+    };
+    nestedParams[nestedPath].forEach((queryParam) => {
+      nestedQueryParam.nested.query.bool.must.push(queryParam);
+    });
+    matchParams.queryParams.push(nestedQueryParam);
+  });
+
   result = {
     queryParam: {
       bool: {
@@ -252,7 +282,6 @@ function createESFilterMatchParams(filterParams) {
     },
     sortParam: matchParams.sortParams,
   };
-
   return result;
 }
 
@@ -602,7 +631,7 @@ async function getItems(req) {
 
   const ret = {};
   ret.meta = meta;
-  ret.results = results;
+  ret.results = results.results;
   ret.filters = aggregationsAll;
   ret.highlights = result.body.responses[1].highlight;
   return ret;
