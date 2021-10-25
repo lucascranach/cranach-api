@@ -51,11 +51,19 @@ const mappings = [
   // Die 100 besten Werke
   {
     display_value: 'isBestOf',
-    filter: true,
     filter_types: ['equals', 'notequals'],
     key: 'is_best_of',
     value: 'isBestOf',
   },
+
+    // Image
+    {
+      display_value: 'metadata.imgSrc.keyword',
+      showAsResult: true,
+      filter_types: [],
+      key: 'img_src',
+      value: 'metadata.imgSrc.keyword',
+    },
 
   // Datierung
   {
