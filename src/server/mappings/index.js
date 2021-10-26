@@ -83,14 +83,14 @@ const mappings = [
 
   },
 
-    // Image
-    {
-      display_value: 'metadata.imgSrc.keyword',
-      showAsResult: true,
-      filter_types: [],
-      key: 'img_src',
-      value: 'metadata.imgSrc.keyword',
-    },
+  // Image
+  {
+    display_value: 'metadata.imgSrc.keyword',
+    showAsResult: true,
+    filter_types: [],
+    key: 'img_src',
+    value: 'metadata.imgSrc.keyword',
+  },
 
   // Datierung
   {
@@ -327,7 +327,7 @@ const mappings = [
   },
 ];
 
-const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm'];
+const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all'];
 
 const availableFilterTypes = {
   eq: 'equals',
