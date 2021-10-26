@@ -486,12 +486,11 @@ async function getSingleItem(req) {
 async function getItems(req) {
   const { language } = req;
   const showDataAll = req.show_data_all;
-
-  let sortParam = createESSortParam(req);
+  const sortParam = createESSortParam(req);
   const filterMatchParams = createESFilterMatchParams(req);
   const query = filterMatchParams.queryParam;
-  if (filterMatchParams.sortParam && Object.keys(filterMatchParams.sortParam).length === 0) {
-    sortParam = filterMatchParams.sortParam;
+  if (filterMatchParams.sortParam && Object.keys(filterMatchParams.sortParam).length > 0) {
+    sortParam.unshift(filterMatchParams.sortParam);
   }
 
   const index = getIndexByLanguageKey(req.language);
