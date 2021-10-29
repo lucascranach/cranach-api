@@ -380,18 +380,18 @@ function aggregateESFilterBuckets(params) {
   return filters;
 }
 
-function aggregateESResult(params) {
+function aggregateESResult(params, showDataAll = false) {
   const response = params;
   const { hits } = response;
-
   const meta = {};
   const result = {};
-
   // aggregate results
   // TODO: In DTOs bündeln
   const results = hits.hits.map((hit) => {
     const item = {};
-    item.data_all = hit._source;
+    if (showDataAll === 'true') {
+      item.data_all = hit._source;
+    }
 
     visibleResults.forEach((configItem) => {
       let currentObject = hit._source;
@@ -460,6 +460,7 @@ async function getSingleItem(req) {
     },
   };
   const index = getIndexByLanguageKey(req.language);
+  const showDataAll = req.show_data_all;
 
   const searchParams = createESSearchParams({
     index,
@@ -474,7 +475,7 @@ async function getSingleItem(req) {
     hits: result.body.responses[0].hits.total.value,
   };
 
-  const results = aggregateESResult(result.body.responses[0]);
+  const results = aggregateESResult(result.body.responses[0], showDataAll);
 
   return {
     meta,
@@ -484,6 +485,7 @@ async function getSingleItem(req) {
 
 async function getItems(req) {
   const { language } = req;
+  const showDataAll = req.show_data_all;
   const sortParam = createESSortParam(req);
   const filterMatchParams = createESFilterMatchParams(req);
   const query = filterMatchParams.queryParam;
@@ -529,7 +531,6 @@ async function getItems(req) {
     filter: visibleFilters,
     sort: sortParam,
   });
-
 
   const searchParamsFilteredArticles = createESSearchParams({
     ...req,
@@ -627,7 +628,7 @@ async function getItems(req) {
     hits: result.body.responses[1].hits.total.value,
   };
 
-  const results = aggregateESResult(result.body.responses[1]);
+  const results = aggregateESResult(result.body.responses[1], showDataAll);
 
   const ret = {};
   ret.meta = meta;
