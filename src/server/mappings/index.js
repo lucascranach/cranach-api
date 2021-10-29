@@ -221,6 +221,16 @@ const mappings = [
     value: 'owner',
   },
 
+  // Klassifizierung
+  {
+    display_value: 'classification.classification',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'classification',
+    value: 'classification.classification',
+  },
+
   // Print Process
   {
     display_value: 'classification.printProcess',
