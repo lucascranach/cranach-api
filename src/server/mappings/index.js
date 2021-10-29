@@ -229,6 +229,16 @@ const mappings = [
     value: 'inventoryNumber.keyword',
   },
 
+  // Object name
+  {
+    display_value: 'objectName.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'object_name',
+    value: 'objectName.keyword',
+  },
+
   // Eigentümer
   {
     display_value: 'owner',
