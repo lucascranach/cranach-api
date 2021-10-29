@@ -51,6 +51,15 @@ const mappings = [
     filterInfos: true,
   },
 
+  // Zuschreibung (Array)
+  {
+    display_value: 'involvedPersons',
+    filter_types: ['equals', 'notequals'],
+    key: 'involved_persons',
+    value: 'involvedPersons',
+    showAsResult: true,
+  },
+
   // Sammlung / Standort
   {
     display_value: 'filterInfos.collection_repository.id.keyword',
@@ -218,6 +227,16 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
     key: 'inventory_number',
     value: 'inventoryNumber.keyword',
+  },
+
+  // Object name
+  {
+    display_value: 'objectName.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'object_name',
+    value: 'objectName.keyword',
   },
 
   // Eigentümer
