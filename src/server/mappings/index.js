@@ -40,14 +40,14 @@ const mappings = [
 
   // Zuschreibung
   {
-    display_value: 'involvedPersons.name',
+    display_value: 'filterInfos.attribution.id',
     showAsFilter: true,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
-    value: 'involvedPersons.id.keyword',
-    nestedPath: 'involvedPersons',
-    sortBy: 'involvedPersons.displayOrder',
+    value: 'filterInfos.attribution.id',
+    nestedPath: 'filterInfos.attribution',
+    sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
   },
 
