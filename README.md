@@ -97,4 +97,11 @@ The `sortfield` is used to define the field by which the items are to be sorted.
 The items can be sorted ascending or descending.
 The parameter `sortdirection` must be set accordingly.  
 * `asc` = ascending order  
-* `des` = descending order  
+* `des` = descending order
+
+## Show Development Data
+
+To add all available fields to the result set use the `show_data_all=true` parameter within the query string.
+
+### Example
+https://mivs02.gm.fh-koeln.de/?size=20&show_data_all=true
