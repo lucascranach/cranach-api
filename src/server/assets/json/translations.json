@@ -38,5 +38,9 @@
   "technique": {
     "de": "Technik",
     "en": "Technique"
+  },
+  "catalog": {
+    "de": "Katalog",
+    "en": "Catalog"
   }
 }
