@@ -60,7 +60,7 @@ const mappings = [
     showAsResult: true,
   },
   
-   // Medium (Array)
+   // Medium
   {
     display_value: 'medium',
     filter_types: [],
