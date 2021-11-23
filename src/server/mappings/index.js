@@ -59,6 +59,15 @@ const mappings = [
     value: 'involvedPersons',
     showAsResult: true,
   },
+  
+   // Medium (Array)
+  {
+    display_value: 'medium',
+    filter_types: [],
+    key: 'medium',
+    value: 'medium',
+    showAsResult: true,
+  },
 
   // Sammlung / Standort
   {
