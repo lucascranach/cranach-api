@@ -110,6 +110,7 @@ const mappings = [
     display_value: 'isBestOf',
     filter_types: ['equals', 'notequals'],
     key: 'is_best_of',
+    showAsFilter: true,
     value: 'isBestOf',
     showAsResult: true,
 
@@ -360,7 +361,7 @@ const mappings = [
   // Catalog Work Reference
   {
     display_value: 'catalogWorkReferences.description',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'differ'],
     key: 'catalog_name',
