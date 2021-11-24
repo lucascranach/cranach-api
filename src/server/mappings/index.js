@@ -337,7 +337,7 @@ const mappings = [
   // Catalog Work Reference
   {
     display_value: 'catalogWorkReferences.description',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'differ'],
     key: 'catalog_name',
