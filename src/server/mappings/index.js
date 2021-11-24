@@ -87,6 +87,7 @@ const mappings = [
     display_value: 'isBestOf',
     filter_types: ['equals', 'notequals'],
     key: 'is_best_of',
+    showAsFilter: true,
     value: 'isBestOf',
     showAsResult: true,
 
