@@ -59,25 +59,48 @@ const mappings = [
     value: 'involvedPersons',
     showAsResult: true,
   },
+  
+   // Medium
+  {
+    display_value: 'medium',
+    filter_types: [],
+    key: 'medium',
+    value: 'medium',
+    showAsResult: true,
+  },
 
   // Sammlung / Standort
   {
-    display_value: 'filterInfos.collection_repository.id.keyword',
+    display_value: 'filterInfos.collection_repository.id',
     key: 'collection_repository',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.collection_repository.id.keyword',
+    value: 'filterInfos.collection_repository.id',
+    nestedPath: 'filterInfos.collection_repository',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
   },
 
   // Untersuchungstechniken
   {
-    display_value: 'filterInfos.examination_analysis.id.keyword',
+    display_value: 'filterInfos.examination_analysis.id',
     key: 'examination_analysis',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.examination_analysis.id.keyword',
+    value: 'filterInfos.examination_analysis.id',
+    nestedPath: 'filterInfos.examination_analysis',
+    filter_types: ['equals', 'notequals'],
+    filterInfos: true,
+  },
+
+  // Katalog
+  {
+    display_value: 'filterInfos.catalog.id',
+    key: 'catalog',
+    showAsFilter: true,
+    showAsResult: false,
+    value: 'filterInfos.catalog.id',
+    nestedPath: 'filterInfos.catalog',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
   },
@@ -272,11 +295,12 @@ const mappings = [
 
   // Inhalt
   {
-    display_value: 'filterInfos.subject.id.keyword',
+    display_value: 'filterInfos.subject.id',
     key: 'subject',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.subject.id.keyword',
+    value: 'filterInfos.subject.id',
+    nestedPath: 'filterInfos.subject',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
   },

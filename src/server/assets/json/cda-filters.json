@@ -1976,6 +1976,14 @@
                                         "en": "Bayerisches Nationalmuseum"
                                     },
                                     "children": []
+                                },
+                                {
+                                    "id": "collection_repository.country.germany.munich.munich_3",
+                                    "text": {
+                                        "de": "Staatliche Graphische Sammlung M\u00fcnchen",
+                                        "en": "Staatliche Graphische Sammlung M\u00fcnchen"
+                                    },
+                                    "children": []
                                 }
                             ]
                         },
@@ -3792,6 +3800,57 @@
                 "en": "Stereomicroscopy"
             },
             "children": []
+        }
+    ],
+    "catalog": [
+        {
+            "id": "catalog.KKL",
+            "text": {
+                "de": "KKL",
+                "en": "KKL"
+            },
+            "children": [
+                {
+                    "id": "catalog.KKL.I",
+                    "text": {
+                        "de": "I.",
+                        "en": "I."
+                    },
+                    "children": []
+                },
+                {
+                    "id": "catalog.KKL.II",
+                    "text": {
+                        "de": "II.",
+                        "en": "II."
+                    },
+                    "children": []
+                },
+                {
+                    "id": "catalog.KKL.III",
+                    "text": {
+                        "de": "III.",
+                        "en": "III."
+                    },
+                    "children": []
+                },
+                {
+                    "id": "catalog.KKL.IV",
+                    "text": {
+                        "de": "IV.",
+                        "en": "IV."
+                    },
+                    "children": []
+                },
+                {
+                    "id": "catalog.KKL.V",
+                    "text": {
+                        "de": "V.",
+                        "en": "V."
+                    },
+                    "children": []
+                }
+            ]
         }
     ],
     "subject": [
