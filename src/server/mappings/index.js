@@ -256,9 +256,9 @@ const mappings = [
   // Object name
   {
     display_value: 'objectName.keyword',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: true,
-    filter_types: [],
+    filter_types: ['equals', 'notequals'],
     key: 'object_name',
     value: 'objectName.keyword',
   },
