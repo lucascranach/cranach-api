@@ -24,6 +24,7 @@ function getIndexByLanguageKey(key) {
  * @returns {Promise<Boolean>}
  * @description Checks if the client is connected to ElasticSearch
  */
+// TODO: Function kann entfernt werden, da sie nicht benutzt wird
 function checkConnection() {
   return new Promise(async (resolve) => {
     console.log('Checking connection to ElasticSearch...');

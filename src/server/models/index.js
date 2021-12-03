@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
 
+// TODO: Über fs module lösen
 const translations = require(path.join(__dirname, '..', 'translations'));
 
 const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
@@ -21,6 +22,7 @@ const {
   getFilterByKey,
 } = require('../mappings');
 
+// TODO: Über fs module lösen
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
 const allowedFilters = getAllowedFilters();
