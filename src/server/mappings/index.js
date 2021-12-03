@@ -256,9 +256,9 @@ const mappings = [
   // Object name
   {
     display_value: 'objectName.keyword',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: true,
-    filter_types: [],
+    filter_types: ['equals', 'notequals'],
     key: 'object_name',
     value: 'objectName.keyword',
   },
@@ -307,12 +307,12 @@ const mappings = [
 
   // Titel
   {
-    display_value: 'metadata.title',
-    showAsFilter: false,
+    display_value: 'metadata.title.keyword',
+    showAsFilter: true,
     showAsResult: true,
-    filter_types: [],
+    filter_types: ['equals', 'notequals'],
     key: 'title',
-    value: 'metadata.title',
+    value: 'metadata.title.keyword',
     searchTermField: true,
   },
 
