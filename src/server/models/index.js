@@ -40,25 +40,13 @@ function createESSortParam(filterParams) {
     sortField = getDefaultSortField();
     sortDirectionParam = defautSortDirection;
   } else {
-    if (Array.isArray(filterParams.sort_by)) {
-      throw new TypeError('Serveral sort params are not allowed');
-    }
     let sortFieldParam = null;
     [sortFieldParam, sortDirectionParam = defautSortDirection] = filterParams.sort_by.split('.');
-    const sortDirection = availableSortTypes[sortDirectionParam];
-
-    if (sortDirection === undefined) {
-      throw new TypeError(`Not allowed sort direction <${sortDirection}>`);
-    }
 
     // TODO auslagern in Mapping => isSortable
     sortField = sortableFields.find(
       (sortableField) => sortableField.key === sortFieldParam,
     );
-
-    if (!sortField) {
-      throw new TypeError(`Not allowed sort field <${sortField}>`);
-    }
   }
 
   const sortParams = [{
@@ -110,29 +98,14 @@ function createESFilterMatchParams(filterParams) {
     let [filterKey, filterType = defaultFilterType] = filterParamKey.split(':');
 
     const filterTypeGroup = availableFilterTypes[filterType];
-    if (filterTypeGroup === undefined) {
-      throw new TypeError(`Not allowed filter type <${filterType}>`);
-    }
-
     const filteredFilter = allowedFilters.filter(
       (allowedFilter) => allowedFilter.key === filterKey,
     );
-
-    if (filteredFilter.length > 1) {
-      throw new TypeError(`filter key <${filterKey}> assigned serveral times`);
-    }
 
     if (specialParams.includes(filterKey)) {
       return;
     }
 
-    if (filteredFilter.length === 0) {
-      throw new TypeError(`Not allowed filter key <${filterKey}>`);
-    }
-
-    if (!filteredFilter[0].filter_types.includes(filterTypeGroup)) {
-      throw new TypeError(`Not allowed filter type <${filterType}> for filter key <${filterKey}>`);
-    }
 
     if (filterTypeGroup === 'notrange') {
       // cut the character 'n' at the beginning of the filter key
