@@ -83,7 +83,7 @@ If searching by wildcard, only one value is possible.
 
 https://mivs02.gm.fh-koeln.de/?entity_type:neq=PAINTING,GRAPHIC
 
-## Items sorted by a ceratin field
+## Items sorted by a certain field
 Returns a list of items sorted by certain field ascending or descending.
 
 https://mivs02.gm.fh-koeln.de/?sort_by:{{sortfield}}={{sortdirection}}
