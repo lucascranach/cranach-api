@@ -36,7 +36,7 @@ For criteria that contain numeric values, an upper and lower limit can be specif
 https://mivs02.gm.fh-koeln.de/?{{filterfield}}:{{rangeparam}}=
 
 ### Example
-https://mivs02.gm.fh-koeln.de/?dating_begin:gte=1920&dating_begin:lte=1950
+https://mivs02.gm.fh-koeln.de/?dating_begin:gte=1920&dating_end:lte=1950
 
 
 ### Paramters
