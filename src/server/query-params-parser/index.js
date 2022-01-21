@@ -4,31 +4,34 @@ const {
   defaultFilterType,
   defautSortDirection,
   specialParams,
-  isFilterInfosFilter,
-  isNestedFilter,
   getAllowedFilters,
   getDefaultSortField,
-  getSearchTermFields,
   getSortableFields,
-  getVisibleFilters,
-  getVisibleResults,
-  getFilterByKey,
 } = require('../mappings');
 
-function validateSortParams(req, res, next) {
-  const filterParams = req.query;
-  const sortableFields = getSortableFields();
+const SortParam = require('../../entities/sortparam');
+const FilterParam = require('../../entities/filterparam');
 
-  if (filterParams.sort_by) {
-    if (Array.isArray(filterParams.sort_by)) {
+function validateSortParams(req, res, next) {
+  const filterParamsQuery = req.query;
+  const sortableFields = getSortableFields();
+  const resultSortParams = [];
+
+  if (!filterParamsQuery.sort_by) {
+    const defaultSortField = getDefaultSortField();
+    resultSortParams.push(new SortParam(defaultSortField.value, defautSortDirection));
+  } else {
+    if (Array.isArray(filterParamsQuery.sort_by)) {
       res.status(500).json({ success: false, error: 'Serveral sort params are not allowed' });
       res.end();
     }
 
-    const [sortFieldParam, sortDirectionParam] = filterParams.sort_by.split('.');
+    const [sortFieldParam, sortDirectionParam] = filterParamsQuery.sort_by.split('.');
 
     if (sortDirectionParam) {
       if (!availableSortTypes[sortDirectionParam]) {
+        // TODO: Error Objekt erzeugen, in in welches die Error Nachricht
+        //       reingereicht wird un welches die Ausgabe erzeugt
         res.status(500).json({ success: false, error: `Not allowed sort direction <${sortDirectionParam}>` });
         res.end();
       }
@@ -39,17 +42,24 @@ function validateSortParams(req, res, next) {
       (sortableField) => sortableField.key === sortFieldParam,
     );
 
+    resultSortParams.push(new SortParam(sortField.value, sortDirectionParam));
+
     if (!sortField) {
       res.status(500).json({ success: false, error: `Not allowed sort field <${sortFieldParam}>` });
       res.end();
     }
   }
+
+  req.api = {};
+  req.api.sortParams = resultSortParams;
   next();
 }
 
 function validateFilterParams(req, res, next) {
-  const filterParams = req.query;
-  const filterParamsKeys = Object.keys(filterParams);
+  const filterParamsQuery = req.query;
+  const filterParamsKeys = Object.keys(filterParamsQuery);
+  const resultFilterParams = [];
+  const resultFilterParamsWithoutMultiEquals = [];
   const allowedFilters = getAllowedFilters();
 
   filterParamsKeys.forEach((filterParamKey) => {
@@ -81,7 +91,34 @@ function validateFilterParams(req, res, next) {
     if (!filteredFilter[0].filter_types.includes(filterTypeGroup)) {
       res.status(500).json({ success: false, error: `Not allowed filter type <${filterType}> for filter key <${filterKey}>` });
     }
+
+    let filterValues = [];
+
+    // Ranges and Wildcard search allows only one filter value
+    if ((filterTypeGroup === 'range') || (filterTypeGroup === 'differ')) {
+      filterValues = filterParamsQuery[filterParamKey];
+    } else {
+      filterValues = filterParamsQuery[filterParamKey].split(',');
+    }
+
+    const sortBy = filteredFilter[0].nestedPath && filteredFilter[0].sortBy
+      ? filteredFilter[0].sortBy
+      : null;
+
+    const filter = new FilterParam(
+      filterKey,
+      filterValues,
+      filterType,
+      filterTypeGroup,
+      filteredFilter[0].value,
+      filteredFilter[0].nestedPath || null,
+      sortBy,
+    );
+
+    resultFilterParams.push(filter);
   });
+
+  req.api.filterParams = resultFilterParams;
   next();
 }
 

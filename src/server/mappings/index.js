@@ -152,7 +152,7 @@ const mappings = [
     showAsFilter: true,
     showAsResult: false,
     sortable: true,
-    filter_types: ['equals', 'notequals', 'range', 'notrange'],
+    filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_end',
     value: 'dating.end',
   },
