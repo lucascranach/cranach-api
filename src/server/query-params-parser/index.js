@@ -5,12 +5,30 @@ const {
   defautSortDirection,
   specialParams,
   getAllowedFilters,
+  getSearchTermFields,
   getDefaultSortField,
   getSortableFields,
 } = require('../mappings');
 
 const SortParam = require('../../entities/sortparam');
 const FilterParam = require('../../entities/filterparam');
+const SearchtermParam = require('../../entities/searchtermparam');
+
+function validateSearchTermParams(req, res, next) {
+  const searchtermParam = req.query.searchterm;
+  const searchtermFields = getSearchTermFields().map(mapping => mapping.value);
+
+  if (!searchtermParam) {
+    return next();
+  }
+
+  if (!req.api) {
+    req.api = {};
+  }
+
+  req.api.searchtermParam = new SearchtermParam(searchtermFields, searchtermParam);
+  return next();
+}
 
 function validateSortParams(req, res, next) {
   const filterParamsQuery = req.query;
@@ -31,7 +49,7 @@ function validateSortParams(req, res, next) {
     if (sortDirectionParam) {
       if (!availableSortTypes[sortDirectionParam]) {
         // TODO: Error Objekt erzeugen, in in welches die Error Nachricht
-        //       reingereicht wird un welches die Ausgabe erzeugt
+        //       reingereicht wird und welches dann die Ausgabe erzeugt
         res.status(500).json({ success: false, error: `Not allowed sort direction <${sortDirectionParam}>` });
         res.end();
       }
@@ -50,7 +68,9 @@ function validateSortParams(req, res, next) {
     }
   }
 
-  req.api = {};
+  if (!req.api) {
+    req.api = {};
+  }
   req.api.sortParams = resultSortParams;
   next();
 }
@@ -59,7 +79,6 @@ function validateFilterParams(req, res, next) {
   const filterParamsQuery = req.query;
   const filterParamsKeys = Object.keys(filterParamsQuery);
   const resultFilterParams = [];
-  const resultFilterParamsWithoutMultiEquals = [];
   const allowedFilters = getAllowedFilters();
 
   filterParamsKeys.forEach((filterParamKey) => {
@@ -118,11 +137,16 @@ function validateFilterParams(req, res, next) {
     resultFilterParams.push(filter);
   });
 
+  if (!req.api) {
+    req.api = {};
+  }
+
   req.api.filterParams = resultFilterParams;
   next();
 }
 
 module.exports = {
+  validateSearchTermParams,
   validateFilterParams,
   validateSortParams,
 };

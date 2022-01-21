@@ -16,48 +16,37 @@ const {
 
 // TODO: Über fs module lösen
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
+const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
 
 const searchTermFields = getSearchTermFields();
 const visibleFilters = getVisibleFilters();
 const visibleResults = getVisibleResults();
 
-// TODO Parameter vorher überprüfen und aufbereitete Parameter reinreichen
-function createESSortParam(params) {
-  const sortParams = [];
-
-  // method is already designed to sort by multiple fields
-  params.forEach((param) => {
-    sortParams.push({
-      [param.field]: {
-        order: param.direction,
+function createSearchtermParams(searchtermObject) {
+  const preparedESFilters = [];
+  if (searchtermObject) {
+    searchtermObject.fields.forEach((searchTermField) => {
+      const param = {
+        wildcard: {
+          [searchTermField.value]: `*${searchtermObject.value}*`,
+        },
+      };
+      preparedESFilters.push(param);
+    });
+    return ({
+      bool: {
+        should: preparedESFilters,
       },
     });
-  });
-  return sortParams;
+  }
+  return preparedESFilters;
 }
 
-function createSearchtermParams(searchTerm) {
-  const preparedESFilters = [];
-  searchTermFields.forEach((searchTermField) => {
-    const param = {
-      wildcard: {
-        [searchTermField.value]: `*${searchTerm}*`,
-      },
-    };
-    preparedESFilters.push(param);
-  });
-  return ({
-    bool: {
-      should: preparedESFilters,
-    },
-  });
-}
-
-function createHighlightParams(params) {
+function createHighlightParams(searchtermObject) {
   const preparedParams = {};
-  if (params.searchterm) {
-    searchTermFields.forEach((searchTermField) => {
-      preparedParams[searchTermField.value] = {};
+  if (searchtermObject) {
+    searchtermObject.fields.forEach((field) => {
+      preparedParams[field] = {};
     });
     return { fields: preparedParams };
   }
@@ -65,8 +54,10 @@ function createHighlightParams(params) {
 }
 
 function createESFilterMatchParams(filterParams) {
+  if (!filterParams) {
+    return { };
+  }
   let result = {};
-  const filterParamsKeys = Object.keys(filterParams);
   const preparedESFilters = [];
 
   filterParams.forEach((filterParam) => {
@@ -108,10 +99,10 @@ function createESFilterMatchParams(filterParams) {
   const nestedParams = {};
 
   // Create query for searchtearm
-  if (filterParamsKeys.includes('searchterm')) {
-    const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
-    matchParams.queryParams.push(searchTermQueryParams);
-  }
+  // if (filterParamsKeys.includes('searchterm')) {
+  //   const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
+  //   matchParams.queryParams.push(searchTermQueryParams);
+  // }
 
   preparedESFilters.forEach((preparedESFilter) => {
     let filterParam = null;
@@ -406,9 +397,17 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req, params) {
+  const queryBuilder = new Querybuilder();
+
   const { language, showDataAll } = params;
-  const sortParam = createESSortParam(params.sortParams);
-  const filterMatchParams = createESFilterMatchParams(params.filterParams);
+
+  params.sort.forEach((sortParamObject) => {
+    queryBuilder.sortBy(sortParamObject);
+  });
+
+  const searchtermParam = createSearchtermParams(params.searchterm);
+  const highlightParams = createHighlightParams(params.searchterm);
+  const filterMatchParams = createESFilterMatchParams(params.filters);
 
   const query = filterMatchParams.queryParam;
 
@@ -418,9 +417,8 @@ async function getItems(req, params) {
   }
 
   const index = getIndexByLanguageKey(language);
-  const highlightParams = createHighlightParams(params);
 
-  const filterParamsWithMultiEquals = params.filterParams.filter((filterParam) => filterParam.operator === 'meq');
+  const filterParamsWithMultiEquals = params.filters.filter((filterParam) => filterParam.operator === 'meq');
   const searchParamsMultiFilters = [];
 
   // Create search params for setted multi filters
@@ -437,16 +435,17 @@ async function getItems(req, params) {
       index,
       query: currentQuery,
       filter: filterMapping,
-      sort: sortParam,
+      sort: queryBuilder.sortQuerie,
     });
   });
+
 
   const searchParamsAllArticles = createESSearchParams({
     size: 0,
     index,
     query: { match_all: {} },
     filter: visibleFilters,
-    sort: sortParam,
+    sort: queryBuilder.sortQuerie,
   });
 
   const searchParamsFilteredArticles = createESSearchParams({
@@ -454,7 +453,7 @@ async function getItems(req, params) {
     index,
     query,
     filter: visibleFilters,
-    sort: sortParam,
+    sort: queryBuilder.sortQuerie,
     highlight: highlightParams,
   });
 

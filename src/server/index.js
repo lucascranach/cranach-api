@@ -46,6 +46,7 @@ function start() {
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
+    .use(queryParamsParser.validateSearchTermParams)
     .use(queryParamsParser.validateSortParams)
     .use(queryParamsParser.validateFilterParams)
     .use(language)
