@@ -59,8 +59,8 @@ const mappings = [
     value: 'involvedPersons',
     showAsResult: true,
   },
-  
-   // Medium
+
+  // Medium
   {
     display_value: 'medium',
     filter_types: [],

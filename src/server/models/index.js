@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
 
+// TODO: Über fs module lösen
 const translations = require(path.join(__dirname, '..', 'translations'));
 
 const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
@@ -21,6 +22,7 @@ const {
   getFilterByKey,
 } = require('../mappings');
 
+// TODO: Über fs module lösen
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 
 const allowedFilters = getAllowedFilters();
@@ -29,6 +31,7 @@ const sortableFields = getSortableFields();
 const visibleFilters = getVisibleFilters();
 const visibleResults = getVisibleResults();
 
+// TODO Parameter vorher überprüfen und aufbereitete Parameter reinreichen
 function createESSortParam(filterParams) {
   let sortField = null;
   let sortDirectionParam = null;
@@ -48,6 +51,7 @@ function createESSortParam(filterParams) {
       throw new TypeError(`Not allowed sort direction <${sortDirection}>`);
     }
 
+    // TODO auslagern in Mapping => isSortable
     sortField = sortableFields.find(
       (sortableField) => sortableField.key === sortFieldParam,
     );
