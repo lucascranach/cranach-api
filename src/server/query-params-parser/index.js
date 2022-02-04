@@ -2,6 +2,7 @@ const {
   availableFilterTypes,
   availableSortTypes,
   defaultFilterType,
+  defaultResponseSize,
   defautSortDirection,
   specialParams,
   getAllowedFilters,
@@ -142,6 +143,21 @@ function validateFilterParams(req, res, next) {
   }
 
   req.api.filterParams = resultFilterParams;
+
+  next();
+}
+
+function validatePaginationParams(req, res, next) {
+  const filterParamsQuery = req.query;
+  if (!req.api) {
+    req.api = {};
+  }
+
+  const size = parseInt(filterParamsQuery.size);
+  const from = parseInt(filterParamsQuery.from);
+
+  req.api.size = (Number.isNaN(size)) ? defaultResponseSize : size;
+  req.api.from = (Number.isNaN(from)) ? 0 : from;
   next();
 }
 
@@ -149,4 +165,5 @@ module.exports = {
   validateSearchTermParams,
   validateFilterParams,
   validateSortParams,
+  validatePaginationParams,
 };

@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
+const FilterParam = require('../../entities/filterparam');
 
 // TODO: Über fs module lösen
 const translations = require(path.join(__dirname, '..', 'translations'));
@@ -22,13 +23,14 @@ const searchTermFields = getSearchTermFields();
 const visibleFilters = getVisibleFilters();
 const visibleResults = getVisibleResults();
 
+// Delete function
 function createSearchtermParams(searchtermObject) {
   const preparedESFilters = [];
   if (searchtermObject) {
     searchtermObject.fields.forEach((searchTermField) => {
       const param = {
         wildcard: {
-          [searchTermField.value]: `*${searchtermObject.value}*`,
+          [searchTermField]: `*${searchtermObject.value}*`,
         },
       };
       preparedESFilters.push(param);
@@ -59,6 +61,7 @@ function createESFilterMatchParams(filterParams) {
   }
   let result = {};
   const preparedESFilters = [];
+  const filterParamsKeys = Object.keys(filterParams);
 
   filterParams.forEach((filterParam) => {
     const { filterTypeGroup } = filterParam;
@@ -99,10 +102,10 @@ function createESFilterMatchParams(filterParams) {
   const nestedParams = {};
 
   // Create query for searchtearm
-  // if (filterParamsKeys.includes('searchterm')) {
-  //   const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
-  //   matchParams.queryParams.push(searchTermQueryParams);
-  // }
+  if (filterParamsKeys.includes('searchterm')) {
+    const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
+    matchParams.queryParams.push(searchTermQueryParams);
+  }
 
   preparedESFilters.forEach((preparedESFilter) => {
     let filterParam = null;
@@ -397,16 +400,92 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req, params) {
-  const queryBuilder = new Querybuilder();
+  const queryBuilderFilteredItems = new Querybuilder();
+  const queryBuilderAllItems = new Querybuilder();
+  const queryBuildersMultiFilteredItems = [];
 
   const { language, showDataAll } = params;
 
+  queryBuilderFilteredItems.paginate(params.from, params.size);
+  queryBuilderAllItems.paginate(0, 0);
+
   params.sort.forEach((sortParamObject) => {
-    queryBuilder.sortBy(sortParamObject);
+    queryBuilderFilteredItems.sortBy(sortParamObject);
   });
 
-  const searchtermParam = createSearchtermParams(params.searchterm);
+  if (params.searchterm) {
+    params.searchterm.fields.forEach((field) => {
+      queryBuilderFilteredItems.mustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+      queryBuilderFilteredItems.highlight(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+    });
+  }
+
+  const index = getIndexByLanguageKey(language);
+
+  const esParams = [];
+  esParams.push(
+    {
+      index,
+    },
+  );
+
+  params.filters.forEach((filter) => {
+    switch (filter.operator) {
+      case 'eq':
+        queryBuilderFilteredItems.must(filter);
+        break;
+      case 'meq':
+        queryBuilderFilteredItems.must(filter);
+        break;
+      case 'neq':
+        queryBuilderFilteredItems.mustNot(filter);
+        break;
+      case 'diff':
+        queryBuilderFilteredItems.mustWildcard(filter);
+        break;
+      default:
+        queryBuilderFilteredItems.must(filter);
+    }
+  });
+
+
+
+
+  // // Create search params for setted multi filters
+  // filterParamsWithMultiEquals.forEach((multiEqualsParam) => {
+  //   let filterParamsCopy = [...params.filterParams];
+  //   filterParamsCopy = filterParamsCopy.filter((param) => multiEqualsParam.key !== param.key);
+
+  //   const filterKey = multiEqualsParam.key;
+  //   const filterMapping = getFilterByKey(filterKey);
+  //   const currentQuery = createESFilterMatchParams(filterParamsCopy).queryParam;
+
+  //   searchParamsMultiFilters[filterKey] = createESSearchParams({
+  //     size: 0,
+  //     index,
+  //     query: currentQuery,
+  //     filter: filterMapping,
+  //     sort: queryBuilder.sortQuerie,
+  //   });
+  // });
+
+  // // Hier geht es weiter
+  // if (params.searchterm) {
+  //   queryBuilderFilteredItems.highlight(params.searchterm);
+  // }
+
+  esParams.push(queryBuilderFilteredItems.query);
+
+  // const searchtermParam = createSearchtermParams(params.searchterm);
+
+  // console.log(JSON.stringify(esParams, null, 4));
+  const resu = await submitESSearch({ body: esParams });
+
+  return resu['body'];
+
   const highlightParams = createHighlightParams(params.searchterm);
+
+  params.filters.searchterm = params.searchterm;
   const filterMatchParams = createESFilterMatchParams(params.filters);
 
   const query = filterMatchParams.queryParam;
@@ -416,7 +495,6 @@ async function getItems(req, params) {
     sortParam.unshift(filterMatchParams.sortParam);
   }
 
-  const index = getIndexByLanguageKey(language);
 
   const filterParamsWithMultiEquals = params.filters.filter((filterParam) => filterParam.operator === 'meq');
   const searchParamsMultiFilters = [];
@@ -438,7 +516,6 @@ async function getItems(req, params) {
       sort: queryBuilder.sortQuerie,
     });
   });
-
 
   const searchParamsAllArticles = createESSearchParams({
     size: 0,
@@ -466,6 +543,7 @@ async function getItems(req, params) {
   });
 
   const result = await submitESSearch(searchParams);
+
   const aggregationsAll = aggregateESFilterBuckets({
     aggregations: result.body.responses[0].aggregations,
     setAsAvailable: false,

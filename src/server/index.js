@@ -49,6 +49,7 @@ function start() {
     .use(queryParamsParser.validateSearchTermParams)
     .use(queryParamsParser.validateSortParams)
     .use(queryParamsParser.validateFilterParams)
+    .use(queryParamsParser.validatePaginationParams)
     .use(language)
     .use('/', routes)
     .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }));

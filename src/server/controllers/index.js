@@ -24,12 +24,14 @@ async function getSingleItem(req, res) {
 
 async function getItems(req, res) {
   const params = {
-    language: req.query.language,
-    sort: req.api.sortParams,
     filters: req.api.filterParams,
     filterMultiEquals: req.api.filterParamsMultiEquals,
-    showDataAll: req.show_data_all || false,
+    from: req.api.from,
+    language: req.query.language,
+    size: req.api.size,
     searchterm: req.api.searchtermParam,
+    showDataAll: req.show_data_all || false,
+    sort: req.api.sortParams,
   };
 
   const { query } = req;
