@@ -420,6 +420,23 @@
                                     "children": []
                                 }
                             ]
+                        },
+                        {
+                            "id": "collection_repository.country.austria.lower_austria",
+                            "text": {
+                                "de": "Nieder\u00f6sterreich",
+                                "en": "Lower Austria"
+                            },
+                            "children": [
+                                {
+                                    "id": "collection_repository.country.austria.lower_austria.zwettl",
+                                    "text": {
+                                        "de": "Zisterzienserstift Zwettl, Nieder\u00f6sterreich",
+                                        "en": "Zisterzienserstift Zwettl, Nieder\u00f6sterreich"
+                                    },
+                                    "children": []
+                                }
+                            ]
                         }
                     ]
                 },
@@ -671,6 +688,14 @@
                             "children": []
                         },
                         {
+                            "id": "collection_repository.country.czech.plzni",
+                            "text": {
+                                "de": "Z\u00e1padocesk\u00e1 galerie v Plzni",
+                                "en": "Z\u00e1padocesk\u00e1 galerie v Plzni"
+                            },
+                            "children": []
+                        },
+                        {
                             "id": "collection_repository.country.czech.prague",
                             "text": {
                                 "de": "Prag",
@@ -757,6 +782,14 @@
                             "text": {
                                 "de": "S\u00f8nderborg, Castle",
                                 "en": "S\u00f8nderborg, Schloss"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.denmark.nationalmuseet",
+                            "text": {
+                                "de": "Nationalmuseet, D\u00e4nemark",
+                                "en": "Nationalmuseet, Denmark"
                             },
                             "children": []
                         }
@@ -1254,6 +1287,14 @@
                             ]
                         },
                         {
+                            "id": "collection_repository.country.germany.bretten",
+                            "text": {
+                                "de": "Melanchthonhaus, Bretten",
+                                "en": "Melanchthonhaus, Bretten"
+                            },
+                            "children": []
+                        },
+                        {
                             "id": "collection_repository.country.germany.chemnitz",
                             "text": {
                                 "de": "Chemnitz",
@@ -1404,6 +1445,14 @@
                                     "text": {
                                         "de": "Stadtmuseum",
                                         "en": "Stadtmuseum"
+                                    },
+                                    "children": []
+                                },
+                                {
+                                    "id": "collection_repository.country.germany.dresden.dresden_3",
+                                    "text": {
+                                        "de": "Milit\u00e4rhistorisches Museum der Bundeswehr, Dresden",
+                                        "en": "Milit\u00e4rhistorisches Museum der Bundeswehr, Dresden"
                                     },
                                     "children": []
                                 }
@@ -2085,6 +2134,30 @@
                             "children": []
                         },
                         {
+                            "id": "collection_repository.country.germany.oschatz",
+                            "text": {
+                                "de": "Stadt- und Waagenmuseum Oschatz",
+                                "en": "Stadt- und Waagenmuseum Oschatz"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.germany.penig",
+                            "text": {
+                                "de": "Kirche Unser Lieben Frauen Auf Dem Berge, Penig",
+                                "en": "Kirche Unser Lieben Frauen Auf Dem Berge, Penig"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.germany.pulsnitz",
+                            "text": {
+                                "de": "Ev.-Luth. Kirchgemeinde St. Nicolai, Pulsnitz",
+                                "en": "Ev.-Luth. Kirchgemeinde St. Nicolai, Pulsnitz"
+                            },
+                            "children": []
+                        },
+                        {
                             "id": "collection_repository.country.germany.regensburg",
                             "text": {
                                 "de": "Regensburg, Historisches Museum",
@@ -2235,6 +2308,14 @@
                             "text": {
                                 "de": "Wiesbaden, Museum",
                                 "en": "Wiesbaden, Museum"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.germany.bad_windsheim",
+                            "text": {
+                                "de": "Stadtarchiv und historische Stadtbibliothek Bad Windsheim",
+                                "en": "Stadtarchiv und historische Stadtbibliothek Bad Windsheim"
                             },
                             "children": []
                         },
@@ -2459,6 +2540,14 @@
                                     "children": []
                                 }
                             ]
+                        },
+                        {
+                            "id": "collection_repository.country.britain.longleat",
+                            "text": {
+                                "de": "Collection of the Marquess of Bath, Longleat, Wiltshire",
+                                "en": "Collection of the Marquess of Bath, Longleat, Wiltshire"
+                            },
+                            "children": []
                         },
                         {
                             "id": "collection_repository.country.britain.liverpool",
@@ -2924,6 +3013,14 @@
                             ]
                         },
                         {
+                            "id": "collection_repository.country.poland.nysie",
+                            "text": {
+                                "de": "muzeum powiatowe w nysie",
+                                "en": "muzeum powiatowe w nysie"
+                            },
+                            "children": []
+                        },
+                        {
                             "id": "collection_repository.country.poland.poznan",
                             "text": {
                                 "de": "Pozna\u0144, Nationalmuseum",
@@ -3210,8 +3307,24 @@
                                         "en": "Skoklosters slott"
                                     },
                                     "children": []
+                                },
+                                {
+                                    "id": "collection_repository.country.sweden.stockholm.stockholm_4",
+                                    "text": {
+                                        "de": "Thielska Galleriet",
+                                        "en": "Thielska Galleriet"
+                                    },
+                                    "children": []
                                 }
                             ]
+                        },
+                        {
+                            "id": "collection_repository.country.sweden.sverige",
+                            "text": {
+                                "de": "B\u00e4rbo kyrka, Sverige",
+                                "en": "B\u00e4rbo kyrka, Sverige"
+                            },
+                            "children": []
                         }
                     ]
                 },
@@ -3301,6 +3414,14 @@
                             "text": {
                                 "de": "Allentown Art Museum",
                                 "en": "Allentown Art Museum"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.america.atlanta",
+                            "text": {
+                                "de": "Atlanta, High Museum of Art",
+                                "en": "Atlanta, High Museum of Art"
                             },
                             "children": []
                         },
@@ -3474,6 +3595,14 @@
                             "children": []
                         },
                         {
+                            "id": "collection_repository.country.america.louiseville",
+                            "text": {
+                                "de": "Louisville, The Speed Art Museum",
+                                "en": "Louisville, The Speed Art Museum"
+                            },
+                            "children": []
+                        },
+                        {
                             "id": "collection_repository.country.america.miami",
                             "text": {
                                 "de": "Miami, Vizcaya Museum & Gardens",
@@ -3494,6 +3623,14 @@
                             "text": {
                                 "de": "Muskegon, Museum of Art",
                                 "en": "Muskegon, Museum of Art"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.america.norfolk",
+                            "text": {
+                                "de": "Norfolk, Chrysler Museum of Art",
+                                "en": "Norfolk, Chrysler Museum of Art"
                             },
                             "children": []
                         },
@@ -3600,6 +3737,14 @@
                             "text": {
                                 "de": "Raleigh, North Carolina Museum of Art",
                                 "en": "Raleigh, North Carolina Museum of Art"
+                            },
+                            "children": []
+                        },
+                        {
+                            "id": "collection_repository.country.america.richmond",
+                            "text": {
+                                "de": "Richmond, Virginia Museum of Fine Arts",
+                                "en": "Richmond, Virginia Museum of Fine Arts"
                             },
                             "children": []
                         },
@@ -3762,14 +3907,6 @@
             "children": []
         },
         {
-            "id": "examination_analysis.light_microscopy",
-            "text": {
-                "de": "Lichtmikroskopie",
-                "en": "Light microscopy"
-            },
-            "children": []
-        },
-        {
             "id": "examination_analysis.instrumental_material_analysis",
             "text": {
                 "de": "Instrumentelle Materialanalyse",
@@ -3847,6 +3984,14 @@
                     "text": {
                         "de": "V.",
                         "en": "V."
+                    },
+                    "children": []
+                },
+                {
+                    "id": "catalog.KKL.APPENDIX",
+                    "text": {
+                        "de": "Anhang",
+                        "en": "Appendix"
                     },
                     "children": []
                 }
@@ -4025,14 +4170,6 @@
                     ]
                 },
                 {
-                    "id": "01040513",
-                    "text": {
-                        "de": "Der Opfertod des Marcus Curtius",
-                        "en": "Marcus Curtius Plunging into the Chasm"
-                    },
-                    "children": []
-                },
-                {
                     "id": "01040514",
                     "text": {
                         "de": "Der sterbende Marcus Antonius",
@@ -4070,14 +4207,6 @@
                     "text": {
                         "de": "Turnier",
                         "en": "Tournament"
-                    },
-                    "children": []
-                },
-                {
-                    "id": "01040404",
-                    "text": {
-                        "de": "Werwolf",
-                        "en": "Werewolf"
                     },
                     "children": []
                 },
@@ -4387,14 +4516,6 @@
                                     "text": {
                                         "de": "David und Goliath",
                                         "en": "David and Goliath"
-                                    },
-                                    "children": []
-                                },
-                                {
-                                    "id": "010403010204",
-                                    "text": {
-                                        "de": "David und Abigail",
-                                        "en": "David and Abigail"
                                     },
                                     "children": []
                                 }
@@ -5411,14 +5532,6 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010403030149",
-                                    "text": {
-                                        "de": "Hl. Thomas",
-                                        "en": "St Thomas"
-                                    },
-                                    "children": []
-                                },
-                                {
                                     "id": "010403030123",
                                     "text": {
                                         "de": "Hl. Jakobus des J\u00fcngeren",
@@ -6172,7 +6285,7 @@
                             },
                             "children": [
                                 {
-                                    "id": "010402010134",
+                                    "id": "010402010135",
                                     "text": {
                                         "de": "Otto Brunfels",
                                         "en": "Otto Brunfels"
@@ -6180,7 +6293,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010131",
+                                    "id": "010402010132",
                                     "text": {
                                         "de": "Moritz Buchner",
                                         "en": "Moritz Buchner"
@@ -6188,7 +6301,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010122",
+                                    "id": "010402010123",
                                     "text": {
                                         "de": "Johannes Bugenhagen",
                                         "en": "Johannes Bugenhagen"
@@ -6196,7 +6309,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010123",
+                                    "id": "010402010124",
                                     "text": {
                                         "de": "Johannes Carion",
                                         "en": "Johannes Carion"
@@ -6204,7 +6317,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010128",
+                                    "id": "010402010129",
                                     "text": {
                                         "de": "Lucas Cranach der \u00c4ltere",
                                         "en": "Lucas Cranach the Elder"
@@ -6212,7 +6325,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010124",
+                                    "id": "010402010125",
                                     "text": {
                                         "de": "Johannes Cuspinian",
                                         "en": "Johannes Cuspinian"
@@ -6220,7 +6333,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010140",
+                                    "id": "010402010141",
                                     "text": {
                                         "de": "Sigmunt Kingsfeld, Ritter",
                                         "en": "Sigmunt Kingsfeld, Knight"
@@ -6228,7 +6341,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010115",
+                                    "id": "010402010116",
                                     "text": {
                                         "de": "Herr K\u00f6keritz",
                                         "en": "Mr K\u00f6keritz"
@@ -6236,7 +6349,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010112",
+                                    "id": "010402010113",
                                     "text": {
                                         "de": "Hans Luther",
                                         "en": "Hans Luther"
@@ -6244,7 +6357,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010111",
+                                    "id": "010402010112",
                                     "text": {
                                         "de": "H. Melber",
                                         "en": "H. Melber"
@@ -6252,7 +6365,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010116",
+                                    "id": "010402010117",
                                     "text": {
                                         "de": "Herr von Rava",
                                         "en": "Lord Rava"
@@ -6268,7 +6381,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010101",
+                                    "id": "010402010102",
                                     "text": {
                                         "de": "Christoph Scheurl",
                                         "en": "Christoph Scheurl"
@@ -6276,7 +6389,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010106",
+                                    "id": "010402010107",
                                     "text": {
                                         "de": "Georg Spalatin",
                                         "en": "Georg Spalatin"
@@ -6284,7 +6397,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010108",
+                                    "id": "010402010109",
                                     "text": {
                                         "de": "Gerhart Volk",
                                         "en": "Gerhart Volk"
@@ -6292,7 +6405,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010107",
+                                    "id": "010402010108",
                                     "text": {
                                         "de": "Georg von Weidebach",
                                         "en": "Georg of Weidebach"
@@ -6300,7 +6413,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010136",
+                                    "id": "010402010137",
                                     "text": {
                                         "de": "Philipp Melanchthon",
                                         "en": "Philipp Melanchthon"
@@ -6308,7 +6421,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010129",
+                                    "id": "010402010130",
                                     "text": {
                                         "de": "Martin Luther",
                                         "en": "Martin Luther"
@@ -6316,7 +6429,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010109",
+                                    "id": "010402010110",
                                     "text": {
                                         "de": "Gregor Br\u00fcck",
                                         "en": "Gregor Br\u00fcck"
@@ -6324,7 +6437,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010104",
+                                    "id": "010402010105",
                                     "text": {
                                         "de": "Gabriel von Eyb",
                                         "en": "Gabriel von Eyb"
@@ -6332,7 +6445,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010133",
+                                    "id": "010402010134",
                                     "text": {
                                         "de": "Nikolaus Seidel",
                                         "en": "Nikolaus Seidel"
@@ -6340,7 +6453,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010141",
+                                    "id": "010402010142",
                                     "text": {
                                         "de": "Veit Dietrich",
                                         "en": "Veit Dietrich"
@@ -6348,7 +6461,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010117",
+                                    "id": "010402010118",
                                     "text": {
                                         "de": "Herr von Schleinitz",
                                         "en": "Lord Schleinitz"
@@ -6356,7 +6469,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010127",
+                                    "id": "010402010128",
                                     "text": {
                                         "de": "Leonhard Badehorn",
                                         "en": "Leonhard Badehorn"
@@ -6364,7 +6477,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010110",
+                                    "id": "010402010111",
                                     "text": {
                                         "de": "Guilleaume de Croy",
                                         "en": "Guilleaume de Croy"
@@ -6372,7 +6485,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010126",
+                                    "id": "010402010127",
                                     "text": {
                                         "de": "Leon Braunsberg",
                                         "en": "Leon Braunsberg"
@@ -6380,7 +6493,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010135",
+                                    "id": "010402010136",
                                     "text": {
                                         "de": "Paulus von Berge",
                                         "en": "Paulus of Berge"
@@ -6388,7 +6501,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010139",
+                                    "id": "010402010140",
                                     "text": {
                                         "de": "Rudolph Agricola",
                                         "en": "Rudolph Agricola"
@@ -6396,7 +6509,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010132",
+                                    "id": "010402010133",
                                     "text": {
                                         "de": "Nicholas de Backer",
                                         "en": "Nicholas de Backer"
@@ -6404,7 +6517,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010118",
+                                    "id": "010402010119",
                                     "text": {
                                         "de": "Jeronimus Tedenhamer",
                                         "en": "Jeronimus Tedenhamer"
@@ -6412,7 +6525,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010130",
+                                    "id": "010402010131",
                                     "text": {
                                         "de": "Michael Meyenburg",
                                         "en": "Michael Meyenburg"
@@ -6420,7 +6533,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010102",
+                                    "id": "010402010103",
                                     "text": {
                                         "de": "Erasmus von Rotterdam",
                                         "en": "Erasmus of Rotterdam"
@@ -6428,7 +6541,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010113",
+                                    "id": "010402010114",
                                     "text": {
                                         "de": "Hans von Lindenau",
                                         "en": "Hans von Lindenau"
@@ -6436,7 +6549,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010103",
+                                    "id": "010402010104",
                                     "text": {
                                         "de": "Erich Volckmar von Berlepsch",
                                         "en": "Erich Volckmar von Berlepsch"
@@ -6444,7 +6557,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010114",
+                                    "id": "010402010115",
                                     "text": {
                                         "de": "Heinrich Stromer, Dr., gen. Auerbach",
                                         "en": "Heinrich Stromer, Dr., called Auerbach"
@@ -6452,7 +6565,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010137",
+                                    "id": "010402010138",
                                     "text": {
                                         "de": "Philipp von Wittelsbach, Bischof",
                                         "en": "Philipp von Wittelsbach, Bishop"
@@ -6460,7 +6573,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010125",
+                                    "id": "010402010126",
                                     "text": {
                                         "de": "Johannes III von Sch\u00f6nberg, Bischof",
                                         "en": "Johannes III von Sch\u00f6nberg, Bishop"
@@ -6468,7 +6581,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010138",
+                                    "id": "010402010139",
                                     "text": {
                                         "de": "Pietro Bembo",
                                         "en": "Pietro Bembo"
@@ -6476,7 +6589,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010119",
+                                    "id": "010402010120",
                                     "text": {
                                         "de": "Joachim Morlinus",
                                         "en": "Joachim Morlinus"
@@ -6484,7 +6597,7 @@
                                     "children": []
                                 },
                                 {
-                                    "id": "010402010142",
+                                    "id": "010402010101",
                                     "text": {
                                         "de": "Caspar Cruciger",
                                         "en": "Caspar Cruciger"
@@ -6749,62 +6862,6 @@
                 "en": "Circular painting\/Tondo"
             },
             "children": []
-        },
-        {
-            "id": "010205",
-            "text": {
-                "de": "Einblatt",
-                "en": "Single-leaf woodcut"
-            },
-            "children": []
-        },
-        {
-            "id": "010207",
-            "text": {
-                "de": "Frontispiz",
-                "en": "Frontispiece"
-            },
-            "children": []
-        },
-        {
-            "id": "010212",
-            "text": {
-                "de": "Serie",
-                "en": "series"
-            },
-            "children": []
-        },
-        {
-            "id": "010210",
-            "text": {
-                "de": "Buch",
-                "en": "Book"
-            },
-            "children": []
-        },
-        {
-            "id": "010218",
-            "text": {
-                "de": "I. Zustand",
-                "en": "1st state"
-            },
-            "children": []
-        },
-        {
-            "id": "010216",
-            "text": {
-                "de": "II. Zustand",
-                "en": "2nd state"
-            },
-            "children": []
-        },
-        {
-            "id": "010217",
-            "text": {
-                "de": "III. Zustand",
-                "en": "3rd state"
-            },
-            "children": []
         }
     ],
     "function": [
@@ -6845,22 +6902,6 @@
             "text": {
                 "de": "Kopie",
                 "en": "Copy"
-            },
-            "children": []
-        },
-        {
-            "id": "010107",
-            "text": {
-                "de": "Flugblatt",
-                "en": "Flier\/Broadside"
-            },
-            "children": []
-        },
-        {
-            "id": "010110",
-            "text": {
-                "de": "Buchmalerei",
-                "en": "illumination"
             },
             "children": []
         }
@@ -6921,30 +6962,6 @@
                 "en": "Illustration"
             },
             "children": []
-        },
-        {
-            "id": "010309",
-            "text": {
-                "de": "Titelblatt",
-                "en": "title page"
-            },
-            "children": []
-        },
-        {
-            "id": "010312",
-            "text": {
-                "de": "Inschrift",
-                "en": "Inscription"
-            },
-            "children": []
-        },
-        {
-            "id": "010315",
-            "text": {
-                "de": "Wappen",
-                "en": "coat of arms"
-            },
-            "children": []
         }
     ],
     "technique": [
@@ -6961,30 +6978,6 @@
             "text": {
                 "de": "Kupferstich",
                 "en": "engraving"
-            },
-            "children": []
-        },
-        {
-            "id": "010504",
-            "text": {
-                "de": "Typendruck",
-                "en": "Letterpress"
-            },
-            "children": []
-        },
-        {
-            "id": "010505",
-            "text": {
-                "de": "Handkoloriert",
-                "en": "Hand-coloured"
-            },
-            "children": []
-        },
-        {
-            "id": "010506",
-            "text": {
-                "de": "Helldunkelschnitt",
-                "en": "Chiaroscuro woodcut"
             },
             "children": []
         }
