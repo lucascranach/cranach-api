@@ -400,88 +400,61 @@ async function getSingleItem(req) {
 }
 
 async function getItems(req, params) {
-  const queryBuilderFilteredItems = new Querybuilder();
-  const queryBuilderAllItems = new Querybuilder();
-  const queryBuildersMultiFilteredItems = [];
+  const queryBuilder = new Querybuilder();
 
   const { language, showDataAll } = params;
 
-  queryBuilderFilteredItems.paginate(params.from, params.size);
-  queryBuilderAllItems.paginate(0, 0);
+  queryBuilder.index(getIndexByLanguageKey(language));
+  queryBuilder.paginate(params.from, params.size);
 
   params.sort.forEach((sortParamObject) => {
-    queryBuilderFilteredItems.sortBy(sortParamObject);
+    queryBuilder.sortBy(sortParamObject);
   });
 
   if (params.searchterm) {
     params.searchterm.fields.forEach((field) => {
-      queryBuilderFilteredItems.mustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
-      queryBuilderFilteredItems.highlight(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+      queryBuilder.mustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+      queryBuilder.highlight(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
     });
   }
 
-  const index = getIndexByLanguageKey(language);
-
-  const esParams = [];
-  esParams.push(
-    {
-      index,
-    },
-  );
+  // const esParams = [];
+  // esParams.push(
+  //   {
+  //     index,
+  //   },
+  // );
 
   params.filters.forEach((filter) => {
     switch (filter.operator) {
       case 'eq':
-        queryBuilderFilteredItems.must(filter);
+        queryBuilder.must(filter);
         break;
       case 'meq':
-        queryBuilderFilteredItems.must(filter);
+        queryBuilder.mustMulti(filter);
         break;
       case 'neq':
-        queryBuilderFilteredItems.mustNot(filter);
+        queryBuilder.mustNot(filter);
         break;
       case 'diff':
-        queryBuilderFilteredItems.mustWildcard(filter);
+        queryBuilder.mustWildcard(filter);
         break;
       default:
-        queryBuilderFilteredItems.must(filter);
+        queryBuilder.must(filter);
     }
   });
 
+console.log(JSON.stringify(queryBuilder.query, null, 4));
 
-
-
-  // // Create search params for setted multi filters
-  // filterParamsWithMultiEquals.forEach((multiEqualsParam) => {
-  //   let filterParamsCopy = [...params.filterParams];
-  //   filterParamsCopy = filterParamsCopy.filter((param) => multiEqualsParam.key !== param.key);
-
-  //   const filterKey = multiEqualsParam.key;
-  //   const filterMapping = getFilterByKey(filterKey);
-  //   const currentQuery = createESFilterMatchParams(filterParamsCopy).queryParam;
-
-  //   searchParamsMultiFilters[filterKey] = createESSearchParams({
-  //     size: 0,
-  //     index,
-  //     query: currentQuery,
-  //     filter: filterMapping,
-  //     sort: queryBuilder.sortQuerie,
-  //   });
-  // });
-
-  // // Hier geht es weiter
-  // if (params.searchterm) {
-  //   queryBuilderFilteredItems.highlight(params.searchterm);
-  // }
-
-  esParams.push(queryBuilderFilteredItems.query);
+  const index = getIndexByLanguageKey(language);
 
   // const searchtermParam = createSearchtermParams(params.searchterm);
 
   // console.log(JSON.stringify(esParams, null, 4));
-  const resu = await submitESSearch({ body: esParams });
+  const resu = await submitESSearch({ body: queryBuilder.query });
+  //return resu;
 
-  return resu['body'];
+  // return resu['body'];
 
   const highlightParams = createHighlightParams(params.searchterm);
 
@@ -494,7 +467,6 @@ async function getItems(req, params) {
   if (filterMatchParams.sortParam && Object.keys(filterMatchParams.sortParam).length > 0) {
     sortParam.unshift(filterMatchParams.sortParam);
   }
-
 
   const filterParamsWithMultiEquals = params.filters.filter((filterParam) => filterParam.operator === 'meq');
   const searchParamsMultiFilters = [];

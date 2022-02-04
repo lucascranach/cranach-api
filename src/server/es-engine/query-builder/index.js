@@ -1,5 +1,6 @@
 class Querybuilder {
   constructor() {
+    this.currentIndex = '';
     this.sortQuerieParams = [];
     this.likeQueryParams = [];
     this.mustQueryParams = [];
@@ -9,6 +10,10 @@ class Querybuilder {
     this.highlightParams = {};
     this.from = '';
     this.size = '';
+  }
+
+  index(index) {
+    this.currentIndex = index;
   }
 
   sortBy(sortParamObject) {
@@ -73,14 +78,26 @@ class Querybuilder {
     this.size = size;
   }
 
+  getFilteredMustParams(exludeField) {
+    return [...this.mustQueryParams].filter((param) => Object.keys(param.terms)[0] !== exludeField);
+  }
+
   get query() {
     const results = [];
 
+    let result = {};
+
+    result = { index: this.currentIndex };
+    results.push(result);
+
     // unfiltered Items
-    let result = {
+    result = {
       from: 0,
       size: 0,
     };
+    results.push(result);
+
+    result = { index: this.currentIndex };
     results.push(result);
 
     // filtered items
@@ -96,13 +113,29 @@ class Querybuilder {
           must: this.mustQueryParams,
           must_not: this.mustNotQueryParams,
           should: this.mustWildcardQueryParams,
-          // temporär entfernt
-          // should: this.likeQueryParams,
         },
       },
     };
-
     results.push(result);
+
+    // filtered Items for multi param filters
+    this.mustMultiFields.forEach((multiField) => {
+      result = { index: this.currentIndex };
+      results.push(result);
+
+      result = {
+        from: 0,
+        size: 0,
+        query: {
+          bool: {
+            must: this.getFilteredMustParams(multiField),
+            must_not: this.mustNotQueryParams,
+            should: this.mustWildcardQueryParams,
+          },
+        },
+      };
+      results.push(result);
+    });
 
     return results;
   }
