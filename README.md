@@ -36,7 +36,7 @@ For criteria that contain numeric values, an upper and lower limit can be specif
 https://mivs02.gm.fh-koeln.de/?{{filterfield}}:{{rangeparam}}=
 
 ### Example
-https://mivs02.gm.fh-koeln.de/?dating_begin:gte=1920&dating_begin:lte=1950
+https://mivs02.gm.fh-koeln.de/?dating_begin:gte=1920&dating_end:gte=1950
 
 
 ### Paramters
@@ -83,7 +83,7 @@ If searching by wildcard, only one value is possible.
 
 https://mivs02.gm.fh-koeln.de/?entity_type:neq=PAINTING,GRAPHIC
 
-## Items sorted by a ceratin field
+## Items sorted by a certain field
 Returns a list of items sorted by certain field ascending or descending.
 
 https://mivs02.gm.fh-koeln.de/?sort_by:{{sortfield}}={{sortdirection}}
