@@ -418,13 +418,6 @@ async function getItems(req, params) {
     });
   }
 
-  // const esParams = [];
-  // esParams.push(
-  //   {
-  //     index,
-  //   },
-  // );
-
   params.filters.forEach((filter) => {
     switch (filter.operator) {
       case 'eq':
@@ -444,7 +437,6 @@ async function getItems(req, params) {
     }
   });
 
-console.log(JSON.stringify(queryBuilder.query, null, 4));
 
   const index = getIndexByLanguageKey(language);
 
@@ -452,7 +444,7 @@ console.log(JSON.stringify(queryBuilder.query, null, 4));
 
   // console.log(JSON.stringify(esParams, null, 4));
   const resu = await submitESSearch({ body: queryBuilder.query });
-  //return resu;
+  return resu;
 
   // return resu['body'];
 

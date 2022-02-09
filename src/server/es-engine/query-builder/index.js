@@ -1,7 +1,7 @@
 class Querybuilder {
   constructor() {
     this.currentIndex = '';
-    this.sortQuerieParams = [];
+    this.sortQueryParams = [];
     this.likeQueryParams = [];
     this.mustQueryParams = [];
     this.mustMultiFields = [];
@@ -17,7 +17,7 @@ class Querybuilder {
   }
 
   sortBy(sortParamObject) {
-    this.sortQuerieParams.push({
+    this.sortQueryParams.push({
       [sortParamObject.field]: {
         order: sortParamObject.direction,
       },
@@ -38,12 +38,27 @@ class Querybuilder {
   }
 
   must(filterObject) {
-    const param = {
+    let param = {
       terms: {
         [filterObject.valueField]: filterObject.values,
       },
     };
-    this.mustQueryParams.push(param);
+
+    if (filterObject.nestedPath) {
+      param = {
+        nested: {
+          path: filterObject.nestedPath,
+          query: {
+            bool: {
+              must: {
+                ...param,
+              },
+            },
+          },
+        },
+      };
+      this.mustQueryParams.push(param);
+    }
   }
 
   mustMulti(filterObject) {
@@ -52,20 +67,52 @@ class Querybuilder {
   }
 
   mustNot(filterObject) {
-    const param = {
+    let param = {
       terms: {
         [filterObject.valueField]: filterObject.values,
       },
     };
+
+    if (filterObject.nestedPath) {
+      param = {
+        nested: {
+          path: filterObject.nestedPath,
+          query: {
+            bool: {
+              must_not: {
+                ...param,
+              },
+            },
+          },
+        },
+      };
+    }
+
     this.mustNotQueryParams.push(param);
   }
 
   mustWildcard(filterObject) {
-    const param = {
+    let param = {
       wildcard: {
         [filterObject.valueField]: `*${filterObject.values}*`,
       },
     };
+
+    if (filterObject.nestedPath) {
+      param = {
+        nested: {
+          path: filterObject.nestedPath,
+          query: {
+            bool: {
+              must_not: {
+                ...param,
+              },
+            },
+          },
+        },
+      };
+    }
+
     this.mustWildcardQueryParams.push(param);
   }
 
@@ -107,7 +154,7 @@ class Querybuilder {
       highlight: {
         fields: this.highlightParams,
       },
-      sort: this.sortQuerieParams,
+      sort: this.sortQueryParams,
       query: {
         bool: {
           must: this.mustQueryParams,
