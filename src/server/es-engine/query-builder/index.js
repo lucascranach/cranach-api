@@ -17,11 +17,19 @@ class Querybuilder {
   }
 
   sortBy(sortParamObject) {
-    this.sortQueryParams.push({
+    const param = {
       [sortParamObject.field]: {
         order: sortParamObject.direction,
       },
-    });
+    };
+
+    if (sortParamObject.nestedPath) {
+      param[sortParamObject.field].nested = {
+        path: sortParamObject.nestedPath,
+      };
+    }
+
+    this.sortQueryParams.push(param);
   }
 
   wildcard(searchtermObject) {

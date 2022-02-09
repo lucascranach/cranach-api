@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
 const FilterParam = require('../../entities/filterparam');
+const SortParam = require('../../entities/sortparam');
 
 // TODO: Über fs module lösen
 const translations = require(path.join(__dirname, '..', 'translations'));
@@ -407,10 +408,6 @@ async function getItems(req, params) {
   queryBuilder.index(getIndexByLanguageKey(language));
   queryBuilder.paginate(params.from, params.size);
 
-  params.sort.forEach((sortParamObject) => {
-    queryBuilder.sortBy(sortParamObject);
-  });
-
   if (params.searchterm) {
     params.searchterm.fields.forEach((field) => {
       queryBuilder.mustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
@@ -435,14 +432,21 @@ async function getItems(req, params) {
       default:
         queryBuilder.must(filter);
     }
+
+    if (filter.nestedPath && filter.sortBy) {
+      queryBuilder.sortBy(new SortParam(filter.valueField, 'asc', filter.nestedPath));
+    }
   });
 
+  params.sort.forEach((sortParamObject) => {
+    queryBuilder.sortBy(sortParamObject);
+  });
 
   const index = getIndexByLanguageKey(language);
 
   // const searchtermParam = createSearchtermParams(params.searchterm);
 
-  // console.log(JSON.stringify(esParams, null, 4));
+  console.log(JSON.stringify(queryBuilder.query, null, 4));
   const resu = await submitESSearch({ body: queryBuilder.query });
   return resu;
 

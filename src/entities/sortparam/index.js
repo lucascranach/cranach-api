@@ -1,7 +1,8 @@
 class SortParam {
-  constructor(field, direction) {
+  constructor(field, direction, nestedPath = null) {
     this.field = field;
     this.direction = direction;
+    this.nestedPath = nestedPath;
   }
 }
 
