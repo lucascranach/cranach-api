@@ -124,6 +124,32 @@ class Querybuilder {
     this.mustWildcardQueryParams.push(param);
   }
 
+  range(filterObject) {
+    let param = {
+      range: {
+        [filterObject.valueField]: {
+          [filterObject.operator]: filterObject.values,
+        },
+      },
+    };
+
+    if (filterObject.nestedPath) {
+      param = {
+        nested: {
+          path: filterObject.nestedPath,
+          query: {
+            bool: {
+              must: {
+                ...param,
+              },
+            },
+          },
+        },
+      };
+    }
+    this.mustQueryParams.push(param);
+  }
+
   highlight(filterObject) {
     this.highlightParams[filterObject.valueField] = {};
   }

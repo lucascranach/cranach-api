@@ -418,6 +418,16 @@ async function getItems(req, params) {
       case 'diff':
         queryBuilder.mustWildcard(filter);
         break;
+      case 'lt':
+      case 'nlt':
+      case 'lte':
+      case 'nlte':
+      case 'gt':
+      case 'ngt':
+      case 'gte':
+      case 'ngte':
+        queryBuilder.range(filter);
+        break;
       default:
         queryBuilder.must(filter);
     }
@@ -438,7 +448,7 @@ async function getItems(req, params) {
   console.log(JSON.stringify(queryBuilder.query, null, 4));
   const resu = await submitESSearch({ body: queryBuilder.query });
 
-  // return resu['body'];
+  return resu['body'];
 
   params.filters.searchterm = params.searchterm;
   const filterMatchParams = createESFilterMatchParams(params.filters);
