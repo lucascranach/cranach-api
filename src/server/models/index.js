@@ -45,17 +45,6 @@ function createSearchtermParams(searchtermObject) {
   return preparedESFilters;
 }
 
-function createHighlightParams(searchtermObject) {
-  const preparedParams = {};
-  if (searchtermObject) {
-    searchtermObject.fields.forEach((field) => {
-      preparedParams[field] = {};
-    });
-    return { fields: preparedParams };
-  }
-  return preparedParams;
-}
-
 function createESFilterMatchParams(filterParams) {
   if (!filterParams) {
     return { };
@@ -448,11 +437,8 @@ async function getItems(req, params) {
 
   console.log(JSON.stringify(queryBuilder.query, null, 4));
   const resu = await submitESSearch({ body: queryBuilder.query });
-  return resu;
 
   // return resu['body'];
-
-  const highlightParams = createHighlightParams(params.searchterm);
 
   params.filters.searchterm = params.searchterm;
   const filterMatchParams = createESFilterMatchParams(params.filters);
@@ -499,7 +485,6 @@ async function getItems(req, params) {
     query,
     filter: visibleFilters,
     sort: queryBuilder.sortQuerie,
-    highlight: highlightParams,
   });
 
   const searchParams = {
