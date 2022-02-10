@@ -66,8 +66,8 @@ class Querybuilder {
           },
         },
       };
-      this.mustQueryParams.push(param);
     }
+    this.mustQueryParams.push(param);
   }
 
   mustMulti(filterObject) {
@@ -96,7 +96,6 @@ class Querybuilder {
         },
       };
     }
-
     this.mustNotQueryParams.push(param);
   }
 
@@ -148,6 +147,8 @@ class Querybuilder {
         },
       };
     }
+
+    // Todo Distinction between must and must not (lte - nlte)
     this.mustQueryParams.push(param);
   }
 
@@ -204,16 +205,18 @@ class Querybuilder {
 
     let result = {};
 
-    result = { index: this.currentIndex };
-    results.push(result);
-
     // unfiltered Items
-    result = {
-      from: 0,
-      size: 0,
-      aggs: this.termsAggregationParams,
-    };
-    results.push(result);
+    if (this.termsAggregationParams.length > 0) {
+      result = { index: this.currentIndex };
+      results.push(result);
+
+      result = {
+        from: 0,
+        size: 0,
+        aggs: this.termsAggregationParams,
+      };
+      results.push(result);
+    }
 
     result = { index: this.currentIndex };
     results.push(result);

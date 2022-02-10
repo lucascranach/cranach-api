@@ -24,83 +24,6 @@ const searchTermFields = getSearchTermFields();
 const visibleFilters = getVisibleFilters();
 const visibleResults = getVisibleResults();
 
-// Delete function
-function createSearchtermParams(searchtermObject) {
-  const preparedESFilters = [];
-  if (searchtermObject) {
-    searchtermObject.fields.forEach((searchTermField) => {
-      const param = {
-        wildcard: {
-          [searchTermField]: `*${searchtermObject.value}*`,
-        },
-      };
-      preparedESFilters.push(param);
-    });
-    return ({
-      bool: {
-        should: preparedESFilters,
-      },
-    });
-  }
-  return preparedESFilters;
-}
-
-function createESSearchParams(params) {
-  const allParams = [];
-  const allAggs = {};
-  allParams.push(
-    {
-      index: params.index,
-    },
-  );
-  if (params.filter) {
-    params.filter.forEach((filterItem) => {
-      let currentAggs = {
-        terms: {
-          field: filterItem.display_value,
-          size: 1000,
-        },
-        aggs: {
-          [filterItem.key]: {
-            terms: {
-              field: filterItem.value,
-              size: 1,
-            },
-          },
-        },
-      };
-
-      if (filterItem.nestedPath) {
-        const copyCurrentAggs = { ...currentAggs };
-        currentAggs = {
-          nested: {
-            path: filterItem.nestedPath,
-          },
-          aggs: {
-            [filterItem.key]: copyCurrentAggs,
-          },
-        };
-      }
-      allAggs[filterItem.key] = currentAggs;
-    });
-  }
-
-  const size = (typeof params.size === 'undefined') ? 100 : params.size;
-
-  const esParams = {
-    from: params.from || 0,
-    size,
-    query: params.query,
-    aggs: allAggs,
-    sort: params.sort,
-    highlight: params.highlight || {},
-  };
-
-  allParams.push(esParams);
-  const result = { body: allParams };
-  return result;
-}
-
 async function submitESSearch(params) {
   try {
     const result = await esclient.msearch(params);
@@ -213,22 +136,19 @@ function traverse(obj, func, data) {
   });
 }
 
-async function getSingleItem(req) {
-  const query = {
-    match: {
-      _id: req.id,
-    },
-  };
-  const index = getIndexByLanguageKey(req.language);
-  const showDataAll = req.show_data_all;
+async function getSingleItem(params) {
+  const queryBuilder = new Querybuilder();
 
-  const searchParams = createESSearchParams({
-    index,
-    query,
-    filter: visibleFilters,
-  });
+  const { language, showDataAll } = params;
 
-  const result = await submitESSearch(searchParams);
+  queryBuilder.index(getIndexByLanguageKey(language));
+
+  queryBuilder.must(new FilterParam('id', [params.id], 'eq', 'equals', '_id'));
+  queryBuilder.size = 1;
+  queryBuilder.from = 0;
+
+
+  const result = await submitESSearch({ body: queryBuilder.query });
   const { body: { took } } = result;
   const meta = {
     took,
@@ -304,10 +224,6 @@ async function getItems(req, params) {
     );
     queryBuilder.termsAggregation(aggregationParam);
   });
-
-  const index = getIndexByLanguageKey(language);
-
-  // const searchtermParam = createSearchtermParams(params.searchterm);
 
   const result = await submitESSearch({ body: queryBuilder.query });
 
