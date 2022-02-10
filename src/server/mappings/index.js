@@ -448,9 +448,6 @@ function getVisibleResults() {
   return ret;
 }
 
-function getFilterByKey(filterKey) {
-  return mappings.filter((mapping) => mapping.key === filterKey);
-}
 
 function getDefaultSortField() {
   return mappings.find((mapping) => mapping.key === defaultSortFieldKey);
@@ -467,7 +464,6 @@ module.exports = {
   specialParams,
   isFilterInfosFilter,
   isNestedFilter,
-  getFilterByKey,
   getAllowedFilters,
   getSearchTermFields,
   getSortableFields,

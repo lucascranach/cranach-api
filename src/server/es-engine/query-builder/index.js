@@ -4,7 +4,7 @@ class Querybuilder {
     this.sortQueryParams = [];
     this.likeQueryParams = [];
     this.mustQueryParams = [];
-    this.mustMultiFields = [];
+    this.mustMultiFilters = [];
     this.mustNotQueryParams = [];
     this.mustWildcardQueryParams = [];
     this.termsAggregationParams = {};
@@ -72,7 +72,7 @@ class Querybuilder {
 
   mustMulti(filterObject) {
     this.must(filterObject);
-    this.mustMultiFields.push(filterObject.valueField);
+    this.mustMultiFilters.push(filterObject);
   }
 
   mustNot(filterObject) {
@@ -195,6 +195,10 @@ class Querybuilder {
     return [...this.mustQueryParams].filter((param) => Object.keys(param.terms)[0] !== exludeField);
   }
 
+  getMustMultiFilters() {
+    return this.mustMultiFilters;
+  }
+
   get query() {
     const results = [];
 
@@ -234,7 +238,7 @@ class Querybuilder {
     results.push(result);
 
     // filtered Items for multi param filters
-    this.mustMultiFields.forEach((multiField) => {
+    this.mustMultiFilters.forEach((multiFilter) => {
       result = { index: this.currentIndex };
       results.push(result);
 
@@ -243,7 +247,7 @@ class Querybuilder {
         size: 0,
         query: {
           bool: {
-            must: this.getFilteredMustParams(multiField),
+            must: this.getFilteredMustParams(multiFilter.valueField),
             must_not: this.mustNotQueryParams,
             should: this.mustWildcardQueryParams,
           },
