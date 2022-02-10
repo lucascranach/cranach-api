@@ -7,6 +7,7 @@ class Querybuilder {
     this.mustMultiFields = [];
     this.mustNotQueryParams = [];
     this.mustWildcardQueryParams = [];
+    this.termsAggregationParams = {};
     this.highlightParams = {};
     this.from = '';
     this.size = '';
@@ -159,6 +160,37 @@ class Querybuilder {
     this.size = size;
   }
 
+  termsAggregation(aggregationObject) {
+    let currentAggs = {
+      terms: {
+        field: aggregationObject.displayValue,
+        size: 1000,
+      },
+      aggs: {
+        [aggregationObject.key]: {
+          terms: {
+            field: aggregationObject.value,
+            size: 1,
+          },
+        },
+      },
+    };
+
+    if (aggregationObject.nestedPath) {
+      const copyCurrentAggs = { ...currentAggs };
+      currentAggs = {
+        nested: {
+          path: aggregationObject.nestedPath,
+        },
+        aggs: {
+          [aggregationObject.key]: copyCurrentAggs,
+        },
+      };
+    }
+
+    this.termsAggregationParams[aggregationObject.key] = currentAggs;
+  }
+
   getFilteredMustParams(exludeField) {
     return [...this.mustQueryParams].filter((param) => Object.keys(param.terms)[0] !== exludeField);
   }
@@ -175,6 +207,7 @@ class Querybuilder {
     result = {
       from: 0,
       size: 0,
+      aggs: this.termsAggregationParams,
     };
     results.push(result);
 
@@ -196,6 +229,7 @@ class Querybuilder {
           should: this.mustWildcardQueryParams,
         },
       },
+      aggs: this.termsAggregationParams,
     };
     results.push(result);
 
@@ -214,6 +248,7 @@ class Querybuilder {
             should: this.mustWildcardQueryParams,
           },
         },
+        aggs: this.termsAggregationParams,
       };
       results.push(result);
     });

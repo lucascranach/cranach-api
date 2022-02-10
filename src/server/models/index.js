@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
+const AggregationParam = require('../../entities/aggregationparam');
 const FilterParam = require('../../entities/filterparam');
 const SortParam = require('../../entities/sortparam');
 
@@ -439,6 +440,16 @@ async function getItems(req, params) {
 
   params.sort.forEach((sortParamObject) => {
     queryBuilder.sortBy(sortParamObject);
+  });
+
+  visibleFilters.forEach((filter) => {
+    const aggregationParam = new AggregationParam(
+      filter.key,
+      filter.value,
+      filter.display_value,
+      filter.nestedPath || null,
+    );
+    queryBuilder.termsAggregation(aggregationParam);
   });
 
   const index = getIndexByLanguageKey(language);
