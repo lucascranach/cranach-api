@@ -13,7 +13,7 @@
   },
   "examination_analysis": {
     "de": "Untersuchungstechniken",
-    "en": "Examination analysis"
+    "en": "Examination / analysis"
   },
   "subject": {
     "de": "Inhalt",
@@ -41,6 +41,6 @@
   },
   "catalog": {
     "de": "Katalog",
-    "en": "Catalog"
+    "en": "Catalogue"
   }
 }
