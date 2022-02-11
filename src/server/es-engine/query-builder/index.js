@@ -112,7 +112,7 @@ class Querybuilder {
           path: filterObject.nestedPath,
           query: {
             bool: {
-              must_not: {
+              must: {
                 ...param,
               },
             },
@@ -122,6 +122,35 @@ class Querybuilder {
     }
 
     this.mustWildcardQueryParams.push(param);
+  }
+
+  notRange(filterObject) {
+    // cut the character 'n' at the beginning of the operator
+    const operator = filterObject.operator.replace(/^n/, '');
+    let param = {
+      range: {
+        [filterObject.valueField]: {
+          [operator]: filterObject.values,
+        },
+      },
+    };
+
+    if (filterObject.nestedPath) {
+      param = {
+        nested: {
+          path: filterObject.nestedPath,
+          query: {
+            bool: {
+              must_not: {
+                ...param,
+              },
+            },
+          },
+        },
+      };
+    }
+
+    this.mustNotQueryParams.push(param);
   }
 
   range(filterObject) {
@@ -148,7 +177,6 @@ class Querybuilder {
       };
     }
 
-    // Todo Distinction between must and must not (lte - nlte)
     this.mustQueryParams.push(param);
   }
 
@@ -205,8 +233,8 @@ class Querybuilder {
 
     let result = {};
 
-    // unfiltered Items
-    if (this.termsAggregationParams.length > 0) {
+    // unfiltered Items, only if aggregations are added
+    if (Object.keys(this.termsAggregationParams).length > 0) {
       result = { index: this.currentIndex };
       results.push(result);
 
@@ -218,10 +246,10 @@ class Querybuilder {
       results.push(result);
     }
 
+    // filtered items
     result = { index: this.currentIndex };
     results.push(result);
 
-    // filtered items
     result = {
       from: this.from,
       size: this.size,
@@ -240,7 +268,7 @@ class Querybuilder {
     };
     results.push(result);
 
-    // filtered Items for multi param filters
+    // filtered Items for multi param filters, only if aggregations are added
     this.mustMultiFilters.forEach((multiFilter) => {
       result = { index: this.currentIndex };
       results.push(result);

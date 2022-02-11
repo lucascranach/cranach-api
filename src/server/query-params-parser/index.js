@@ -115,7 +115,7 @@ function validateFilterParams(req, res, next) {
     let filterValues = [];
 
     // Ranges and Wildcard search allows only one filter value
-    if ((filterTypeGroup === 'range') || (filterTypeGroup === 'differ')) {
+    if ((filterTypeGroup === 'range') || (filterTypeGroup === 'notrange') || (filterTypeGroup === 'differ')) {
       filterValues = filterParamsQuery[filterParamKey];
     } else {
       filterValues = filterParamsQuery[filterParamKey].split(',');

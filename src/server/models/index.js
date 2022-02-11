@@ -178,6 +178,7 @@ async function getItems(req, params) {
     });
   }
 
+  // TODO: Must be solved via an enum
   params.filters.forEach((filter) => {
     switch (filter.operator) {
       case 'eq':
@@ -193,14 +194,16 @@ async function getItems(req, params) {
         queryBuilder.mustWildcard(filter);
         break;
       case 'lt':
-      case 'nlt':
       case 'lte':
-      case 'nlte':
       case 'gt':
-      case 'ngt':
       case 'gte':
-      case 'ngte':
         queryBuilder.range(filter);
+        break;
+      case 'nlt':
+      case 'nlte':
+      case 'ngte':
+      case 'ngt':
+        queryBuilder.notRange(filter);
         break;
       default:
         queryBuilder.must(filter);
