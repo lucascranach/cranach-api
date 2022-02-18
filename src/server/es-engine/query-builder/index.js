@@ -261,6 +261,7 @@ class Querybuilder {
         bool: {
           must: this.mustQueryParams,
           must_not: this.mustNotQueryParams,
+          // TODO: Überprüfen, ob diese Paramter auch als 'must' Parameter übergeben werden können
           should: this.mustWildcardQueryParams,
         },
       },
