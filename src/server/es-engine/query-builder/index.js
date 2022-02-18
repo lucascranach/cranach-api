@@ -33,19 +33,6 @@ class Querybuilder {
     this.sortQueryParams.push(param);
   }
 
-  wildcard(searchtermObject) {
-    searchtermObject.fields.forEach((searchTermField) => {
-      const param = {
-        wildcard: {
-          [searchTermField]: `*${searchtermObject.value}*`,
-        },
-      };
-
-      // temporär geändert
-      this.mustQueryParams.push(param);
-    });
-  }
-
   must(filterObject) {
     let param = {
       terms: {
