@@ -46,10 +46,7 @@ function start() {
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
-    .use(queryParamsParser.validateSearchTermParams)
-    .use(queryParamsParser.validateSortParams)
-    .use(queryParamsParser.validateFilterParams)
-    .use(queryParamsParser.validatePaginationParams)
+    .use(queryParamsParser.validateParams)
     .use(language)
     .use('/', routes)
     .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }));

@@ -15,23 +15,20 @@ const SortParam = require('../../entities/sortparam');
 const FilterParam = require('../../entities/filterparam');
 const SearchtermParam = require('../../entities/searchtermparam');
 
-function validateSearchTermParams(req, res, next) {
+// TODO: Aufrufe in einer Middleware zusammen
+function validateSearchTermParams(req) {
   const searchtermParam = req.query.searchterm;
-  const searchtermFields = getSearchTermFields().map(mapping => mapping.value);
 
   if (!searchtermParam) {
-    return next();
+    return;
   }
 
-  if (!req.api) {
-    req.api = {};
-  }
+  const searchtermFields = getSearchTermFields().map(mapping => mapping.value);
 
   req.api.searchtermParam = new SearchtermParam(searchtermFields, searchtermParam);
-  return next();
 }
 
-function validateSortParams(req, res, next) {
+function validateSortParams(req) {
   const filterParamsQuery = req.query;
   const sortableFields = getSortableFields();
   const resultSortParams = [];
@@ -61,22 +58,18 @@ function validateSortParams(req, res, next) {
       (sortableField) => sortableField.key === sortFieldParam,
     );
 
-    resultSortParams.push(new SortParam(sortField.value, sortDirectionParam));
-
     if (!sortField) {
       res.status(500).json({ success: false, error: `Not allowed sort field <${sortFieldParam}>` });
       res.end();
     }
+
+    resultSortParams.push(new SortParam(sortField.value, sortDirectionParam));
   }
 
-  if (!req.api) {
-    req.api = {};
-  }
   req.api.sortParams = resultSortParams;
-  next();
 }
 
-function validateFilterParams(req, res, next) {
+function validateFilterParams(req) {
   const filterParamsQuery = req.query;
   const filterParamsKeys = Object.keys(filterParamsQuery);
   const resultFilterParams = [];
@@ -100,6 +93,7 @@ function validateFilterParams(req, res, next) {
       (allowedFilter) => allowedFilter.key === filterKey,
     );
 
+    // TODO: Operation überprüfen. => macht semantisch nicht das Richtige
     if (filteredFilter.length > 1) {
       res.status(500).json({ success: false, error: `filter key <${filterKey}> assigned serveral times` });
     }
@@ -138,32 +132,27 @@ function validateFilterParams(req, res, next) {
     resultFilterParams.push(filter);
   });
 
-  if (!req.api) {
-    req.api = {};
-  }
-
   req.api.filterParams = resultFilterParams;
-
-  next();
 }
 
-function validatePaginationParams(req, res, next) {
+function validatePaginationParams(req) {
   const filterParamsQuery = req.query;
-  if (!req.api) {
-    req.api = {};
-  }
-
-  const size = parseInt(filterParamsQuery.size);
-  const from = parseInt(filterParamsQuery.from);
+  const size = parseInt(filterParamsQuery.size, 10);
+  const from = parseInt(filterParamsQuery.from, 10);
 
   req.api.size = (Number.isNaN(size)) ? defaultResponseSize : size;
   req.api.from = (Number.isNaN(from)) ? 0 : from;
+}
+
+function validateParams(req, res, next) {
+  req.api = {};
+  validateSearchTermParams(req);
+  validateSortParams(req);
+  validateFilterParams(req);
+  validatePaginationParams(req);
   next();
 }
 
 module.exports = {
-  validateSearchTermParams,
-  validateFilterParams,
-  validateSortParams,
-  validatePaginationParams,
+  validateParams,
 };
