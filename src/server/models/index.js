@@ -1,349 +1,28 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
+const AggregationParam = require('../../entities/aggregationparam');
+const FilterParam = require('../../entities/filterparam');
+const SortParam = require('../../entities/sortparam');
 
 // TODO: Über fs module lösen
 const translations = require(path.join(__dirname, '..', 'translations'));
 
 const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
 const {
-  availableFilterTypes,
-  availableSortTypes,
-  defaultFilterType,
-  defautSortDirection,
-  specialParams,
   isFilterInfosFilter,
   isNestedFilter,
-  getAllowedFilters,
-  getDefaultSortField,
   getSearchTermFields,
-  getSortableFields,
   getVisibleFilters,
   getVisibleResults,
-  getFilterByKey,
 } = require('../mappings');
 
 // TODO: Über fs module lösen
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
+const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
 
-const allowedFilters = getAllowedFilters();
 const searchTermFields = getSearchTermFields();
-const sortableFields = getSortableFields();
 const visibleFilters = getVisibleFilters();
 const visibleResults = getVisibleResults();
-
-// TODO Parameter vorher überprüfen und aufbereitete Parameter reinreichen
-function createESSortParam(filterParams) {
-  let sortField = null;
-  let sortDirectionParam = null;
-
-  if (!filterParams.sort_by) {
-    sortField = getDefaultSortField();
-    sortDirectionParam = defautSortDirection;
-  } else {
-    if (Array.isArray(filterParams.sort_by)) {
-      throw new TypeError('Serveral sort params are not allowed');
-    }
-    let sortFieldParam = null;
-    [sortFieldParam, sortDirectionParam = defautSortDirection] = filterParams.sort_by.split('.');
-    const sortDirection = availableSortTypes[sortDirectionParam];
-
-    if (sortDirection === undefined) {
-      throw new TypeError(`Not allowed sort direction <${sortDirection}>`);
-    }
-
-    // TODO auslagern in Mapping => isSortable
-    sortField = sortableFields.find(
-      (sortableField) => sortableField.key === sortFieldParam,
-    );
-
-    if (!sortField) {
-      throw new TypeError(`Not allowed sort field <${sortField}>`);
-    }
-  }
-
-  const sortParams = [{
-    [sortField.value]: {
-      order: sortDirectionParam,
-    },
-  }];
-
-  return sortParams;
-}
-
-function createSearchtermParams(searchTerm) {
-  const preparedESFilters = [];
-  searchTermFields.forEach((searchTermField) => {
-    const param = {
-      wildcard: {
-        [searchTermField.value]: `*${searchTerm}*`,
-      },
-    };
-    preparedESFilters.push(param);
-  });
-  return ({
-    bool: {
-      should: preparedESFilters,
-    },
-  });
-}
-
-function createHighlightParams(params) {
-  const preparedParams = {};
-  if (params.searchterm) {
-    searchTermFields.forEach((searchTermField) => {
-      preparedParams[searchTermField.value] = {};
-    });
-    return { fields: preparedParams };
-  }
-  return preparedParams;
-}
-
-function createESFilterMatchParams(filterParams) {
-  let result = {};
-  const filterParamsKeys = Object.keys(filterParams);
-  const preparedESFilters = [];
-
-  // ****** Validate filter params
-  filterParamsKeys.forEach((filterParamKey) => {
-    // Split filter param from query
-    // eslint-disable-next-line prefer-const
-    let [filterKey, filterType = defaultFilterType] = filterParamKey.split(':');
-
-    const filterTypeGroup = availableFilterTypes[filterType];
-    if (filterTypeGroup === undefined) {
-      throw new TypeError(`Not allowed filter type <${filterType}>`);
-    }
-
-    const filteredFilter = allowedFilters.filter(
-      (allowedFilter) => allowedFilter.key === filterKey,
-    );
-
-    if (filteredFilter.length > 1) {
-      throw new TypeError(`filter key <${filterKey}> assigned serveral times`);
-    }
-
-    if (specialParams.includes(filterKey)) {
-      return;
-    }
-
-    if (filteredFilter.length === 0) {
-      throw new TypeError(`Not allowed filter key <${filterKey}>`);
-    }
-
-    if (!filteredFilter[0].filter_types.includes(filterTypeGroup)) {
-      throw new TypeError(`Not allowed filter type <${filterType}> for filter key <${filterKey}>`);
-    }
-
-    if (filterTypeGroup === 'notrange') {
-      // cut the character 'n' at the beginning of the filter key
-      filterType = filterType.replace(/^n/, '');
-    }
-
-    if (filterTypeGroup === 'multiequals') {
-      // cut the character 'm' at the beginning of the filter key
-      filterType = filterType.replace(/^m/, '');
-    }
-
-    let filterKeys = filterParams[filterParamKey];
-
-    if (
-      filterTypeGroup === 'equals'
-      || filterTypeGroup === 'notequals'
-      || filterTypeGroup === 'multiequals'
-      || filterTypeGroup === 'differ'
-    ) {
-      filterKeys = filterParams[filterParamKey].split(',');
-    }
-
-    // Wildcard search allows only one filter value
-    if (filterTypeGroup === 'differ') {
-      [filterKeys] = filterKeys;
-    }
-
-    let boolClause = '';
-    if (filterTypeGroup === 'equals' || filterTypeGroup === 'range' || filterTypeGroup === 'multiequals') {
-      boolClause = 'must';
-    } else if (filterTypeGroup === 'differ') {
-      boolClause = 'must';
-    } else {
-      boolClause = 'must_not';
-    }
-
-    const preparedESFilter = {
-      key: filteredFilter[0].value,
-      type: filterType,
-      typeGroup: filterTypeGroup,
-      value: filterKeys,
-      boolClause,
-      nestedPath: filteredFilter[0].nestedPath || null,
-      sortBy: (filteredFilter[0].nestedPath && filteredFilter[0].sortBy)
-        ? filteredFilter[0].sortBy
-        : null,
-    };
-
-    preparedESFilters.push(preparedESFilter);
-  });
-
-  // ****** Create ES filter params
-  const matchParams = {};
-  matchParams.queryParams = [];
-  matchParams.sortParams = {};
-  const nestedParams = {};
-
-  // Create query for searchtearm
-  if (filterParamsKeys.includes('searchterm')) {
-    const searchTermQueryParams = createSearchtermParams(filterParams.searchterm);
-    matchParams.queryParams.push(searchTermQueryParams);
-  }
-
-  preparedESFilters.forEach((preparedESFilter) => {
-    let filterParam = null;
-    if (preparedESFilter.typeGroup === 'equals' || preparedESFilter.typeGroup === 'notequals' || preparedESFilter.typeGroup === 'multiequals') {
-      filterParam = {
-        bool: {
-          [preparedESFilter.boolClause]: {
-            terms: {
-              [preparedESFilter.key]: preparedESFilter.value,
-            },
-          },
-        },
-      };
-    } else if (preparedESFilter.typeGroup === 'differ') {
-      filterParam = {
-        bool: {
-          [preparedESFilter.boolClause]: {
-            wildcard: {
-              [preparedESFilter.key]: preparedESFilter.value,
-            },
-          },
-        },
-      };
-    } else {
-      filterParam = {
-        bool: {
-          [preparedESFilter.boolClause]: {
-            range: {
-              [preparedESFilter.key]: {
-                [preparedESFilter.type]: preparedESFilter.value,
-              },
-            },
-          },
-        },
-      };
-    }
-
-    // Prepare filter param for nested values
-    if (preparedESFilter.nestedPath) {
-      const copyFilterParam = { ...filterParam };
-      filterParam = null;
-
-      // Prepare filter for sorting nested values
-      if (preparedESFilter.sortBy) {
-        matchParams.sortParams[preparedESFilter.sortBy] = {
-          order: 'asc',
-          nested: {
-            path: preparedESFilter.nestedPath,
-            filter: {
-              ...copyFilterParam,
-            },
-          },
-        };
-      }
-
-      if (!nestedParams[preparedESFilter.nestedPath]) {
-        nestedParams[preparedESFilter.nestedPath] = [];
-      }
-
-      nestedParams[preparedESFilter.nestedPath].push(copyFilterParam);
-    } else {
-      matchParams.queryParams.push(filterParam);
-    }
-  });
-
-  // Group nested queries by path
-  Object.keys(nestedParams).forEach((nestedPath) => {
-    const nestedQueryParam = {
-      nested: {
-        path: [nestedPath],
-        query: {
-          bool: {
-            must: [],
-          },
-        },
-      },
-    };
-    nestedParams[nestedPath].forEach((queryParam) => {
-      nestedQueryParam.nested.query.bool.must.push(queryParam);
-    });
-    matchParams.queryParams.push(nestedQueryParam);
-  });
-
-  result = {
-    queryParam: {
-      bool: {
-        filter: matchParams.queryParams,
-      },
-    },
-    sortParam: matchParams.sortParams,
-  };
-  return result;
-}
-
-function createESSearchParams(params) {
-  const allParams = [];
-  const allAggs = {};
-  allParams.push(
-    {
-      index: params.index,
-    },
-  );
-  if (params.filter) {
-    params.filter.forEach((filterItem) => {
-      let currentAggs = {
-        terms: {
-          field: filterItem.display_value,
-          size: 1000,
-        },
-        aggs: {
-          [filterItem.key]: {
-            terms: {
-              field: filterItem.value,
-              size: 1,
-            },
-          },
-        },
-      };
-
-      if (filterItem.nestedPath) {
-        const copyCurrentAggs = { ...currentAggs };
-        currentAggs = {
-          nested: {
-            path: filterItem.nestedPath,
-          },
-          aggs: {
-            [filterItem.key]: copyCurrentAggs,
-          },
-        };
-      }
-      allAggs[filterItem.key] = currentAggs;
-    });
-  }
-
-  const size = (typeof params.size === 'undefined') ? 100 : params.size;
-
-  const esParams = {
-    from: params.from || 0,
-    size,
-    query: params.query,
-    aggs: allAggs,
-    sort: params.sort,
-    highlight: params.highlight || {},
-  };
-
-  allParams.push(esParams);
-  const result = { body: allParams };
-  return result;
-}
 
 async function submitESSearch(params) {
   try {
@@ -457,22 +136,19 @@ function traverse(obj, func, data) {
   });
 }
 
-async function getSingleItem(req) {
-  const query = {
-    match: {
-      _id: req.id,
-    },
-  };
-  const index = getIndexByLanguageKey(req.language);
-  const showDataAll = req.show_data_all;
+async function getSingleItem(params) {
+  const queryBuilder = new Querybuilder();
 
-  const searchParams = createESSearchParams({
-    index,
-    query,
-    filter: visibleFilters,
-  });
+  const { language, showDataAll } = params;
 
-  const result = await submitESSearch(searchParams);
+  queryBuilder.index(getIndexByLanguageKey(language));
+
+  queryBuilder.must(new FilterParam('id', [params.id], 'eq', 'equals', '_id'));
+  queryBuilder.size = 1;
+  queryBuilder.from = 0;
+
+
+  const result = await submitESSearch({ body: queryBuilder.query });
   const { body: { took } } = result;
   const meta = {
     took,
@@ -487,73 +163,72 @@ async function getSingleItem(req) {
   };
 }
 
-async function getItems(req) {
-  const { language } = req;
-  const showDataAll = req.show_data_all;
-  const sortParam = createESSortParam(req);
-  const filterMatchParams = createESFilterMatchParams(req);
-  const query = filterMatchParams.queryParam;
-  if (filterMatchParams.sortParam && Object.keys(filterMatchParams.sortParam).length > 0) {
-    sortParam.unshift(filterMatchParams.sortParam);
+async function getItems(req, params) {
+  const queryBuilder = new Querybuilder();
+
+  const { language, showDataAll } = params;
+
+  queryBuilder.index(getIndexByLanguageKey(language));
+  queryBuilder.paginate(params.from, params.size);
+
+  if (params.searchterm) {
+    params.searchterm.fields.forEach((field) => {
+      queryBuilder.mustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+      queryBuilder.highlight(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+    });
   }
 
-  const index = getIndexByLanguageKey(req.language);
-  const highlightParams = createHighlightParams(req);
-  const multiEqualsParams = Object.entries(req).filter((multiEqualsParam) => {
-    const str = multiEqualsParam[0];
+  // TODO: Must be solved via an enum
+  params.filters.forEach((filter) => {
+    switch (filter.operator) {
+      case 'eq':
+        queryBuilder.must(filter);
+        break;
+      case 'meq':
+        queryBuilder.mustMulti(filter);
+        break;
+      case 'neq':
+        queryBuilder.mustNot(filter);
+        break;
+      case 'diff':
+        queryBuilder.mustWildcard(filter);
+        break;
+      case 'lt':
+      case 'lte':
+      case 'gt':
+      case 'gte':
+        queryBuilder.range(filter);
+        break;
+      case 'nlt':
+      case 'nlte':
+      case 'ngte':
+      case 'ngt':
+        queryBuilder.notRange(filter);
+        break;
+      default:
+        queryBuilder.must(filter);
+    }
 
-    // TODO: Swap to configuration variable
-    const target = ':meq';
-    return str.endsWith(target);
+    if (filter.nestedPath && filter.sortBy) {
+      queryBuilder.sortBy(new SortParam(filter.valueField, 'asc', filter.nestedPath));
+    }
   });
 
-  const searchParamsMultiFilters = [];
-
-  // Create search params for setted multi filters
-  multiEqualsParams.forEach((multiEqualsParam) => {
-    const params = { ...req };
-    params.size = '0';
-    delete params[multiEqualsParam[0]];
-
-    const filterKey = (multiEqualsParam[0].replace(/:meq$/, ''));
-    const filterMapping = getFilterByKey(filterKey);
-    const currentQuery = createESFilterMatchParams(params).queryParam;
-
-    searchParamsMultiFilters[filterKey] = createESSearchParams({
-      ...params,
-      index,
-      query: currentQuery,
-      filter: filterMapping,
-      sort: sortParam,
-    });
+  params.sort.forEach((sortParamObject) => {
+    queryBuilder.sortBy(sortParamObject);
   });
 
-  const searchParamsAllArticles = createESSearchParams({
-    size: 0,
-    index,
-    query: { match_all: {} },
-    filter: visibleFilters,
-    sort: sortParam,
+  visibleFilters.forEach((filter) => {
+    const aggregationParam = new AggregationParam(
+      filter.key,
+      filter.value,
+      filter.display_value,
+      filter.nestedPath || null,
+    );
+    queryBuilder.termsAggregation(aggregationParam);
   });
 
-  const searchParamsFilteredArticles = createESSearchParams({
-    ...req,
-    index,
-    query,
-    filter: visibleFilters,
-    sort: sortParam,
-    highlight: highlightParams,
-  });
-
-  const searchParams = {
-    body: searchParamsAllArticles.body.concat(searchParamsFilteredArticles.body),
-  };
-
-  Object.entries(searchParamsMultiFilters).forEach((searchParamsMultiFilter) => {
-    searchParams.body = searchParams.body.concat(searchParamsMultiFilter[1].body);
-  });
-
-  const result = await submitESSearch(searchParams);
+  const result = await submitESSearch({ body: queryBuilder.query });
 
   const aggregationsAll = aggregateESFilterBuckets({
     aggregations: result.body.responses[0].aggregations,
@@ -566,14 +241,16 @@ async function getItems(req) {
     setAsAvailable: true,
   });
 
+  const mustMultiFilters = queryBuilder.getMustMultiFilters();
+
   const agregationsMultiFilter = {};
-  Object.keys(searchParamsMultiFilters).forEach((searchParamsMultiFilterKey, currentIndex) => {
+  Object.keys(mustMultiFilters).forEach((searchParamsMultiFilter, currentIndex) => {
     const currentAggregation = aggregateESFilterBuckets({
       aggregations: result.body.responses[currentIndex + 2].aggregations,
       setAsAvailable: true,
     });
 
-    const filterKey = searchParamsMultiFilterKey;
+    const filterKey = searchParamsMultiFilter.key;
     // TODO: Das geht bestimmt auch eleganter
     agregationsMultiFilter[filterKey] = currentAggregation[filterKey];
   });
