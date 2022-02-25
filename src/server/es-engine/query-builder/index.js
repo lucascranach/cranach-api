@@ -168,8 +168,7 @@ class Querybuilder {
         },
       };
     }
-    console.log(param);
-    
+
     if (filterObject.nestedPath) {
       param = {
         nested: {
