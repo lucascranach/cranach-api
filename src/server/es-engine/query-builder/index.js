@@ -89,7 +89,10 @@ class Querybuilder {
   mustWildcard(filterObject) {
     let param = {
       wildcard: {
-        [filterObject.valueField]: `*${filterObject.values}*`,
+        [filterObject.valueField]: {
+          value: `*${filterObject.values}*`,
+          case_insensitive: true,
+        },
       },
     };
 
