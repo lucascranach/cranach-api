@@ -209,7 +209,7 @@ async function getItems(req, params) {
         } else if (filter.key === 'dating_end' && filter.operator === 'lte') {
           const filters = [];
           const secondFilter = { ...filter };
-          secondFilter.valueField = 'dating.begn';
+          secondFilter.valueField = 'dating.begin';
           secondFilter.operator = 'gte';
           secondFilter.key = 'dating_begin';
           filters.push(filter);
