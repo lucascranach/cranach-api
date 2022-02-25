@@ -61,7 +61,7 @@ https://mivs02.gm.fh-koeln.de/?entity_type:eq=PAINTING
 ### Paramters
 The `filterfield` is used to define the field by which the data is to be filtered.
 
-The `equalparam` is the operator to set equals or not equals
+The `equalparam` is the operator to set equals or not equals  
 Possible operators:
 * `eq` = equals
 * `neq` = not equals
