@@ -141,14 +141,35 @@ class Querybuilder {
   }
 
   range(filterObject) {
-    let param = {
-      range: {
-        [filterObject.valueField]: {
-          [filterObject.operator]: filterObject.values,
+    let param = {};
+    const ranges = [];
+    // If several filter objects are passed, then these are linked together via Or operators
+    if (Array.isArray(filterObject)) {
+      filterObject.forEach((element) => {
+        ranges.push({
+          range: {
+            [element.valueField]: {
+              [element.operator]: element.values,
+            },
+          },
+        });
+      });
+      param = {
+        bool: {
+          should: ranges,
         },
-      },
-    };
-
+      };
+    } else {
+      param = {
+        range: {
+          [filterObject.valueField]: {
+            [filterObject.operator]: filterObject.values,
+          },
+        },
+      };
+    }
+    console.log(param);
+    
     if (filterObject.nestedPath) {
       param = {
         nested: {
