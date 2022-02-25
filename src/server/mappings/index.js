@@ -141,7 +141,7 @@ const mappings = [
     display_value: 'dating.begin',
     showAsFilter: true,
     showAsResult: false,
-    filter_types: ['equals', 'notequals', 'range', 'notrange'],
+    filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_begin',
     value: 'dating.begin',
   },
@@ -152,7 +152,7 @@ const mappings = [
     showAsFilter: true,
     showAsResult: false,
     sortable: true,
-    filter_types: ['equals', 'notequals', 'range', 'notrange'],
+    filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_end',
     value: 'dating.end',
   },
@@ -310,7 +310,7 @@ const mappings = [
     display_value: 'metadata.title.keyword',
     showAsFilter: true,
     showAsResult: true,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'differ'],
     key: 'title',
     value: 'metadata.title.keyword',
     searchTermField: true,
@@ -400,6 +400,7 @@ const availableFilterTypes = {
 
 const defaultFilterType = 'eq';
 const defaultSortFieldKey = 'sorting_number';
+const defaultResponseSize = 100;
 
 const availableSortTypes = {
   asc: 'ascending',
@@ -447,9 +448,6 @@ function getVisibleResults() {
   return ret;
 }
 
-function getFilterByKey(filterKey) {
-  return mappings.filter((mapping) => mapping.key === filterKey);
-}
 
 function getDefaultSortField() {
   return mappings.find((mapping) => mapping.key === defaultSortFieldKey);
@@ -459,13 +457,13 @@ module.exports = {
   availableFilterTypes,
   availableSortTypes,
   defaultFilterType,
+  defaultResponseSize,
   getDefaultSortField,
   defautSortDirection,
   mappings,
   specialParams,
   isFilterInfosFilter,
   isNestedFilter,
-  getFilterByKey,
   getAllowedFilters,
   getSearchTermFields,
   getSortableFields,

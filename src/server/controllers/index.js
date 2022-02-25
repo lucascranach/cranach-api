@@ -23,9 +23,21 @@ async function getSingleItem(req, res) {
 }
 
 async function getItems(req, res) {
+  const params = {
+    filters: req.api.filterParams,
+    from: req.api.from,
+    language: req.query.language,
+    size: req.api.size,
+    searchterm: req.api.searchtermParam,
+    showDataAll: req.query.show_data_all || false,
+    sort: req.api.sortParams,
+  };
+
   const { query } = req;
+
+  // }
   try {
-    const result = await model.getItems(query);
+    const result = await model.getItems(query, params);
     res.json({ data: result });
   } catch (err) {
     console.log(err);
