@@ -358,6 +358,28 @@ const mappings = [
     value: 'sortingNumber.keyword',
   },
 
+  // Sorting Info Position
+  {
+    display_value: 'sortingInfo.position',
+    showAsFilter: false,
+    showAsResult: false,
+    sortable: true,
+    filter_types: [],
+    key: 'sorting_info_position',
+    value: 'sortingInfo.position',
+  },
+
+  // Sorting Info Year
+  {
+    display_value: 'sortingInfo.year',
+    showAsFilter: false,
+    showAsResult: false,
+    sortable: true,
+    filter_types: [],
+    key: 'sorting_info_year',
+    value: 'sortingInfo.year',
+  },
+
   // Catalog Work Reference
   {
     display_value: 'catalogWorkReferences.description',
@@ -399,7 +421,7 @@ const availableFilterTypes = {
 };
 
 const defaultFilterType = 'eq';
-const defaultSortFieldKey = 'sorting_number';
+const defaultSortFieldKeys = ['sorting_info_year', 'sorting_info_position'];
 const defaultResponseSize = 100;
 
 const availableSortTypes = {
@@ -449,8 +471,8 @@ function getVisibleResults() {
 }
 
 
-function getDefaultSortField() {
-  return mappings.find((mapping) => mapping.key === defaultSortFieldKey);
+function getDefaultSortFields() {
+  return mappings.filter((mapping) => mapping.key === defaultSortFieldKeys);
 }
 
 module.exports = {
@@ -458,7 +480,7 @@ module.exports = {
   availableSortTypes,
   defaultFilterType,
   defaultResponseSize,
-  getDefaultSortField,
+  getDefaultSortFields,
   defautSortDirection,
   mappings,
   specialParams,
