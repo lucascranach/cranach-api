@@ -197,7 +197,27 @@ async function getItems(req, params) {
       case 'lte':
       case 'gt':
       case 'gte':
-        queryBuilder.range(filter);
+        if (filter.key === 'dating_begin' && filter.operator === 'gte') {
+          const filters = [];
+          const secondFilter = { ...filter };
+          secondFilter.valueField = 'dating.end';
+          secondFilter.operator = 'lte';
+          secondFilter.key = 'dating_end';
+          filters.push(filter);
+          filters.push(secondFilter);
+          queryBuilder.range(filters);
+        } else if (filter.key === 'dating_end' && filter.operator === 'lte') {
+          const filters = [];
+          const secondFilter = { ...filter };
+          secondFilter.valueField = 'dating.begin';
+          secondFilter.operator = 'gte';
+          secondFilter.key = 'dating_begin';
+          filters.push(filter);
+          filters.push(secondFilter);
+          queryBuilder.range(filters);
+        } else {
+          queryBuilder.range(filter);
+        }
         break;
       case 'nlt':
       case 'nlte':
