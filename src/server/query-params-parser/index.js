@@ -7,7 +7,7 @@ const {
   specialParams,
   getAllowedFilters,
   getSearchTermFields,
-  getDefaultSortField,
+  getDefaultSortFields,
   getSortableFields,
 } = require('../mappings');
 
@@ -34,8 +34,10 @@ function validateSortParams(req) {
   const resultSortParams = [];
 
   if (!filterParamsQuery.sort_by) {
-    const defaultSortField = getDefaultSortField();
-    resultSortParams.push(new SortParam(defaultSortField.value, defautSortDirection));
+    const defaultSortFields = getDefaultSortFields();
+    defaultSortFields.forEach((defaultSortField) => {
+      resultSortParams.push(new SortParam(defaultSortField.value, defautSortDirection));
+    });
   } else {
     if (Array.isArray(filterParamsQuery.sort_by)) {
       res.status(500).json({ success: false, error: 'Serveral sort params are not allowed' });
