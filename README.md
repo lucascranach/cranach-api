@@ -62,6 +62,7 @@ https://mivs02.gm.fh-koeln.de/?entity_type:eq=PAINTING
 The `filterfield` is used to define the field by which the data is to be filtered.
 
 The `equalparam` is the operator to set equals or not equals
+
 Possible operators:
 * `eq` = equals
 * `neq` = not equals
@@ -79,7 +80,7 @@ https://mivs02.gm.fh-koeln.de/?dating_begin:gte=1900&entity_type:eq=PAINTING
 Several values can be specified for one filter criteria.
 In this case, multiple values can be defined using a comma-separated list.
 
-If searching by wildcard, only one value is possible.
+If searching by wildcard or ranges, only one value is possible.
 
 https://mivs02.gm.fh-koeln.de/?entity_type:neq=PAINTING,GRAPHIC
 
