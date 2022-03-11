@@ -201,7 +201,7 @@ async function getItems(req, params) {
           const filters = [];
           const secondFilter = { ...filter };
           secondFilter.valueField = 'dating.end';
-          secondFilter.operator = 'lte';
+          secondFilter.operator = 'gte';
           secondFilter.key = 'dating_end';
           filters.push(filter);
           filters.push(secondFilter);
@@ -210,7 +210,7 @@ async function getItems(req, params) {
           const filters = [];
           const secondFilter = { ...filter };
           secondFilter.valueField = 'dating.begin';
-          secondFilter.operator = 'gte';
+          secondFilter.operator = 'lte';
           secondFilter.key = 'dating_begin';
           filters.push(filter);
           filters.push(secondFilter);
