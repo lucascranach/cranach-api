@@ -203,7 +203,7 @@ class Querybuilder {
     let currentAggs = {
       terms: {
         field: aggregationObject.displayValue,
-        size: 1000,
+        size: 3000,
       },
       aggs: {
         [aggregationObject.key]: {
