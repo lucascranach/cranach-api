@@ -10,19 +10,15 @@ const translations = require(path.join(__dirname, '..', 'translations'));
 const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
 const {
   isFilterInfosFilter,
-  isNestedFilter,
-  getSearchTermFields,
   getVisibleFilters,
-  getVisibleResults,
 } = require('../mappings');
 
 // TODO: Über fs module lösen
 const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
 const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
+const Aggregator = require(path.join(__dirname, '..', 'es-engine', 'aggregator'));
 
-const searchTermFields = getSearchTermFields();
 const visibleFilters = getVisibleFilters();
-const visibleResults = getVisibleResults();
 
 async function submitESSearch(params) {
   try {
@@ -31,109 +27,6 @@ async function submitESSearch(params) {
   } catch (error) {
     throw new Error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
   }
-}
-
-function aggregateESFilterBuckets(params) {
-  const { setAsAvailable } = params;
-  const { aggregations } = params;
-  const { allFilters } = params;
-
-  // TODO: Create recursive function
-  // aggregate Filter
-  const filters = {};
-  const aggregationKeys = Object.keys(aggregations);
-  aggregationKeys.forEach((aggregationKey) => {
-    let currentAggregation = aggregations[aggregationKey];
-
-    // if nested field then take nested values
-    if (isNestedFilter(aggregationKey)) {
-      currentAggregation = currentAggregation[aggregationKey];
-    }
-    const { buckets } = currentAggregation;
-    const currentFilter = buckets.map((bucket) => {
-      const ret = {};
-      ret.doc_count = (allFilters ? 0 : bucket.doc_count);
-      ret.display_value = bucket.key;
-      ret.value = bucket[aggregationKey].buckets[0].key;
-      ret.is_available = setAsAvailable || false;
-      return ret;
-    });
-    filters[aggregationKey] = currentFilter;
-  });
-  return filters;
-}
-
-function aggregateESResult(params, showDataAll = false) {
-  const response = params;
-  const { hits } = response;
-  const meta = {};
-  const result = {};
-  // aggregate results
-  // TODO: In DTOs bündeln
-  const results = hits.hits.map((hit) => {
-    const item = {};
-    if (showDataAll === 'true') {
-      item.data_all = hit._source;
-    }
-
-    visibleResults.forEach((configItem) => {
-      let currentObject = hit._source;
-
-      // Split the display value
-      const splittedDisplayValues = configItem.display_value.split('.');
-
-      splittedDisplayValues.forEach((currentDisplayValue) => {
-        // create Object of config parts
-        currentObject = (currentObject[currentDisplayValue])
-          ? currentObject[currentDisplayValue]
-          : '';
-      });
-      item[configItem.key] = currentObject;
-    });
-
-    if (hit.highlight) {
-      item._highlight = {};
-      searchTermFields.forEach((configItem) => {
-        if (hit.highlight[configItem.value]) {
-          item._highlight[configItem.key] = hit.highlight[configItem.value];
-        }
-      });
-    }
-    return item;
-  });
-
-  result.meta = meta;
-  result.results = results;
-  return result;
-}
-
-// called with every property and its value
-function enrichDocCounts(value, data) {
-  const { esAggregation, language } = data;
-
-  // eslint-disable-next-line max-len
-  const currentAggregation = esAggregation.filter((aggregation) => aggregation.value === value.id);
-  if (currentAggregation[0]) {
-    value.doc_count = currentAggregation[0].doc_count;
-    value.is_available = true;
-  }
-  else {
-    value.doc_count = 0;
-    value.is_available = false;
-  }
-
-  value.text = value.text[language];
-}
-
-function traverse(obj, func, data) {
-  Object.values(obj).forEach((value) => {
-    func(value, data);
-
-    const { children } = value || {};
-    if (Array.isArray(children)) {
-      traverse(value.children, func, data);
-    }
-  });
 }
 
 async function getSingleItem(params) {
@@ -155,7 +48,7 @@ async function getSingleItem(params) {
     hits: result.body.responses[0].hits.total.value,
   };
 
-  const results = aggregateESResult(result.body.responses[0], showDataAll);
+  const results = Aggregator.aggregateESResult(result.body.responses[0], showDataAll);
 
   return {
     meta,
@@ -250,22 +143,25 @@ async function getItems(req, params) {
 
   const result = await submitESSearch({ body: queryBuilder.query });
 
-  const aggregationsAll = aggregateESFilterBuckets({
+  // Aggregate unfiltered filter buckets
+  const aggregationsAll = Aggregator.aggregateESFilterBuckets({
     aggregations: result.body.responses[0].aggregations,
     setAsAvailable: false,
     allFilters: true,
   });
 
-  const aggregationsFiltered = aggregateESFilterBuckets({
+  // Aggregate filtered filter buckets
+  const aggregationsFiltered = Aggregator.aggregateESFilterBuckets({
     aggregations: result.body.responses[1].aggregations,
     setAsAvailable: true,
   });
 
+  // Aggregate filter buckets of multi filters
   const mustMultiFilters = queryBuilder.getMustMultiFilters();
 
   const agregationsMultiFilter = {};
   Object.keys(mustMultiFilters).forEach((searchParamsMultiFilter, currentIndex) => {
-    const currentAggregation = aggregateESFilterBuckets({
+    const currentAggregation = Aggregator.aggregateESFilterBuckets({
       aggregations: result.body.responses[currentIndex + 2].aggregations,
       setAsAvailable: true,
     });
@@ -281,16 +177,12 @@ async function getItems(req, params) {
   aggregationKeys.forEach((aggregationKey) => {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
-
     const filterInfosClone = JSON.parse(JSON.stringify(filterInfos));
 
     // Aggregate filterInfos filter
     if (isFilterInfosFilter(aggregationKey)) {
       const currentFilterInfos = filterInfosClone[aggregationKey];
-      traverse(currentFilterInfos, enrichDocCounts, {
-        esAggregation: currenAggregationFiltered,
-        language: req.language,
-      });
+      Aggregator.aggregateFilterInfos(currentFilterInfos, currenAggregationFiltered, req.language);
       aggregationsAll[aggregationKey] = currentFilterInfos;
 
       // Aggregate other filters
@@ -314,7 +206,7 @@ async function getItems(req, params) {
     aggregationsAll[aggregationKey] = aggregationData;
   });
 
-  // Enrich filter key with translations
+  // Enrich filter keys with translations
   Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
     const translationKey = translations.getTranslation(aggregationKey, language) || aggregationKey;
     aggregationsAll[aggregationKey] = {
@@ -329,7 +221,7 @@ async function getItems(req, params) {
     hits: result.body.responses[1].hits.total.value,
   };
 
-  const results = aggregateESResult(result.body.responses[1], showDataAll);
+  const results = Aggregator.aggregateESResult(result.body.responses[1], showDataAll);
 
   const ret = {};
   ret.meta = meta;
