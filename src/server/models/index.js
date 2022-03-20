@@ -1,11 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
+const fs = require('fs');
 const AggregationParam = require('../../entities/aggregationparam');
 const FilterParam = require('../../entities/filterparam');
 const SortParam = require('../../entities/sortparam');
 
-// TODO: Über fs module lösen
-const translations = require(path.join(__dirname, '..', 'translations'));
+const assetsDirectoryPath = path.join(__dirname, '..', 'assets');
+const translations = require('../translations');
 
 const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
 const {
@@ -13,8 +14,10 @@ const {
   getVisibleFilters,
 } = require('../mappings');
 
-// TODO: Über fs module lösen
-const filterInfos = require(path.join(__dirname, '..', 'assets', 'json', 'cda-filters.json'));
+const filterInfos = {
+  de: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'json', 'cda-filters.de.json'))),
+  en: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'json', 'cda-filters.en.json'))),
+};
 const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
 const Aggregator = require(path.join(__dirname, '..', 'es-engine', 'aggregator'));
 
@@ -177,13 +180,16 @@ async function getItems(req, params) {
   aggregationKeys.forEach((aggregationKey) => {
     const currentAggregationAll = aggregationsAll[aggregationKey];
     const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
-    const filterInfosClone = JSON.parse(JSON.stringify(filterInfos));
+    const filterInfosClone = JSON.parse(JSON.stringify(filterInfos[req.language]));
 
     // Aggregate filterInfos filter
     if (isFilterInfosFilter(aggregationKey)) {
-      const currentFilterInfos = filterInfosClone[aggregationKey];
-      Aggregator.aggregateFilterInfos(currentFilterInfos, currenAggregationFiltered, req.language);
-      aggregationsAll[aggregationKey] = currentFilterInfos;
+      const currentFilterInfos = filterInfosClone.find(filter => filter.id === aggregationKey);
+      Aggregator.aggregateFilterInfos(currentFilterInfos.children, currenAggregationFiltered);
+      aggregationsAll[aggregationKey] = {
+        display_value: currentFilterInfos.text,
+        values: currentFilterInfos.children,
+      };
 
       // Aggregate other filters
     } else {
@@ -208,10 +214,9 @@ async function getItems(req, params) {
 
   // Enrich filter keys with translations
   Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
-    const translationKey = translations.getTranslation(aggregationKey, language) || aggregationKey;
     aggregationsAll[aggregationKey] = {
-      display_value: translationKey,
-      values: aggregationData,
+      display_value: aggregationsAll[aggregationKey].display_value || translations.getTranslation(aggregationKey, language) || aggregationKey,
+      values: aggregationsAll[aggregationKey].value || aggregationData,
     };
   });
 
