@@ -188,7 +188,7 @@ async function getItems(req, params) {
       Aggregator.aggregateFilterInfos(currentFilterInfos.children, currentAggregationFiltered);
       aggregationsAll[aggregationKey] = {
         display_value: currentFilterInfos.text,
-        values: currentFilterInfos.children,
+        value: currentFilterInfos.children,
       };
 
       // Aggregate other filters
