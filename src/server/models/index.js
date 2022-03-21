@@ -179,13 +179,13 @@ async function getItems(req, params) {
   // Merge all and available filters
   aggregationKeys.forEach((aggregationKey) => {
     const currentAggregationAll = aggregationsAll[aggregationKey];
-    const currenAggregationFiltered = aggregationsFiltered[aggregationKey];
+    const currentAggregationFiltered = aggregationsFiltered[aggregationKey];
     const filterInfosClone = JSON.parse(JSON.stringify(filterInfos[req.language]));
 
     // Aggregate filterInfos filter
     if (isFilterInfosFilter(aggregationKey)) {
       const currentFilterInfos = filterInfosClone.find(filter => filter.id === aggregationKey);
-      Aggregator.aggregateFilterInfos(currentFilterInfos.children, currenAggregationFiltered);
+      Aggregator.aggregateFilterInfos(currentFilterInfos.children, currentAggregationFiltered);
       aggregationsAll[aggregationKey] = {
         display_value: currentFilterInfos.text,
         values: currentFilterInfos.children,
@@ -193,7 +193,7 @@ async function getItems(req, params) {
 
       // Aggregate other filters
     } else {
-      currenAggregationFiltered.forEach((aggregationFiltered) => {
+      currentAggregationFiltered.forEach((aggregationFiltered) => {
         // eslint-disable-next-line arrow-body-style
         const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
           return aggregationAll.display_value === aggregationFiltered.display_value;
