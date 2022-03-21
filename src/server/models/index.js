@@ -214,8 +214,9 @@ async function getItems(req, params) {
 
   // Enrich filter keys with translations
   Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
+    const translationKey = translations.getTranslation(aggregationKey, language) || aggregationKey;
     aggregationsAll[aggregationKey] = {
-      display_value: aggregationsAll[aggregationKey].display_value || translations.getTranslation(aggregationKey, language) || aggregationKey,
+      display_value: aggregationsAll[aggregationKey].display_value || translationKey || aggregationKey,
       values: aggregationsAll[aggregationKey].value || aggregationData,
     };
   });
