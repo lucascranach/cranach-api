@@ -205,13 +205,13 @@
                                 "text": "Innsbruck",
                                 "children": [
                                     {
-                                        "id": "collection_repository.country.austria.innsbruck.innsbruck_1",
-                                        "text": "Parish of the St Jacob's Cathedral",
+                                        "id": "collection_repository.country.austria.innsbruck.innsbruck_2",
+                                        "text": "Capuchin monastery",
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.austria.innsbruck.innsbruck_2",
-                                        "text": "Capuchin monastery",
+                                        "id": "collection_repository.country.austria.innsbruck.innsbruck_1",
+                                        "text": "Parish of the St Jacob's Cathedral",
                                         "children": []
                                     },
                                     {
@@ -237,6 +237,17 @@
                                 "children": []
                             },
                             {
+                                "id": "collection_repository.country.austria.lower_austria",
+                                "text": "Lower Austria",
+                                "children": [
+                                    {
+                                        "id": "collection_repository.country.austria.lower_austria.zwettl",
+                                        "text": "Zisterzienserstift Zwettl, Nieder\u00f6sterreich",
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
                                 "id": "collection_repository.country.austria.melk",
                                 "text": "Melk, Benediktinerstift",
                                 "children": []
@@ -256,11 +267,6 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.austria.vienna.vienna_3",
-                                        "text": "\u00d6sterreichische Galerie Belvedere",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "collection_repository.country.austria.vienna.vienna_4",
                                         "text": "Gem\u00e4ldegalerie der Akademie der K\u00fcnste",
                                         "children": []
@@ -269,16 +275,10 @@
                                         "id": "collection_repository.country.austria.vienna.vienna_5",
                                         "text": "Kunsthistorisches Museum",
                                         "children": []
-                                    }
-                                ]
-                            },
-                            {
-                                "id": "collection_repository.country.austria.lower_austria",
-                                "text": "Lower Austria",
-                                "children": [
+                                    },
                                     {
-                                        "id": "collection_repository.country.austria.lower_austria.zwettl",
-                                        "text": "Zisterzienserstift Zwettl, Nieder\u00f6sterreich",
+                                        "id": "collection_repository.country.austria.vienna.vienna_3",
+                                        "text": "\u00d6sterreichische Galerie Belvedere",
                                         "children": []
                                     }
                                 ]
@@ -443,14 +443,14 @@
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.czech.plzni",
-                                "text": "Z\u00e1padocesk\u00e1 galerie v Plzni",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.czech.prague",
                                 "text": "Prague",
                                 "children": [
+                                    {
+                                        "id": "collection_repository.country.czech.prague.prague_3",
+                                        "text": "Convent of St Agnes",
+                                        "children": []
+                                    },
                                     {
                                         "id": "collection_repository.country.czech.prague.prague_1",
                                         "text": "Lobkowicz Palace, Prague Castle",
@@ -459,11 +459,6 @@
                                     {
                                         "id": "collection_repository.country.czech.prague.prague_2",
                                         "text": "National Gallery",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "collection_repository.country.czech.prague.prague_3",
-                                        "text": "Convent of St Agnes",
                                         "children": []
                                     },
                                     {
@@ -482,6 +477,11 @@
                                 "id": "collection_repository.country.czech.teplice",
                                 "text": "Teplice, Regional Museum",
                                 "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.czech.plzni",
+                                "text": "Z\u00e1padocesk\u00e1 galerie v Plzni",
+                                "children": []
                             }
                         ]
                     },
@@ -495,6 +495,11 @@
                                 "children": []
                             },
                             {
+                                "id": "collection_repository.country.denmark.nationalmuseet",
+                                "text": "Nationalmuseet, Denmark",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.denmark.niva",
                                 "text": "Niv\u00e5, Nivaagaards Malerisamling",
                                 "children": []
@@ -502,11 +507,6 @@
                             {
                                 "id": "collection_repository.country.denmark.sonderborg",
                                 "text": "S\u00f8nderborg, Schloss",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.denmark.nationalmuseet",
-                                "text": "Nationalmuseet, Denmark",
                                 "children": []
                             }
                         ]
@@ -604,13 +604,13 @@
                                 ]
                             },
                             {
-                                "id": "collection_repository.country.france.toulouse",
-                                "text": "Toulouse, Fondation Bemberg",
+                                "id": "collection_repository.country.france.strasbourg",
+                                "text": "Strasbourg, Mus\u00e9e des Beaux-Arts",
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.france.strasbourg",
-                                "text": "Strasbourg, Mus\u00e9e des Beaux-Arts",
+                                "id": "collection_repository.country.france.toulouse",
+                                "text": "Toulouse, Fondation Bemberg",
                                 "children": []
                             }
                         ]
@@ -687,11 +687,6 @@
                                 "text": "Augsburg",
                                 "children": [
                                     {
-                                        "id": "collection_repository.country.germany.augsburg.augsburg_1",
-                                        "text": "St. Anna Kirche",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "collection_repository.country.germany.augsburg.augsburg_2",
                                         "text": "Kunstsammlungen und Museen der Stadt Augsburg",
                                         "children": []
@@ -699,6 +694,11 @@
                                     {
                                         "id": "collection_repository.country.germany.augsburg.augsburg_3",
                                         "text": "Schaezlerpalais",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.germany.augsburg.augsburg_1",
+                                        "text": "St. Anna Kirche",
                                         "children": []
                                     },
                                     {
@@ -775,6 +775,11 @@
                                         "children": []
                                     },
                                     {
+                                        "id": "collection_repository.country.germany.berlin.berlin_6",
+                                        "text": "Jagdschloss Grunewald",
+                                        "children": []
+                                    },
+                                    {
                                         "id": "collection_repository.country.germany.berlin.berlin_4",
                                         "text": "Kupferstichkabinett der Staatlichen Museen, Preu\u00dfischer Kulturbesitz",
                                         "children": []
@@ -782,11 +787,6 @@
                                     {
                                         "id": "collection_repository.country.germany.berlin.berlin_5",
                                         "text": "Staatsbibliothek - Preu\u00dfischer Kulturbesitz, Abt. Historische Drucke",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "collection_repository.country.germany.berlin.berlin_6",
-                                        "text": "Jagdschloss Grunewald",
                                         "children": []
                                     }
                                 ]
@@ -823,22 +823,17 @@
                                 ]
                             },
                             {
-                                "id": "collection_repository.country.germany.bretten",
-                                "text": "Melanchthonhaus, Bretten",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.germany.chemnitz",
                                 "text": "Chemnitz",
                                 "children": [
                                     {
-                                        "id": "collection_repository.country.germany.chemnitz.chemnitz_1",
-                                        "text": "Kunstsammlungen",
+                                        "id": "collection_repository.country.germany.chemnitz.chemnitz_2",
+                                        "text": "Ev.-Luth. St.-Petri-Schlosskirchgemeinde",
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.chemnitz.chemnitz_2",
-                                        "text": "Ev.-Luth. St.-Petri-Schlosskirchgemeinde",
+                                        "id": "collection_repository.country.germany.chemnitz.chemnitz_1",
+                                        "text": "Kunstsammlungen",
                                         "children": []
                                     }
                                 ]
@@ -920,25 +915,25 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.dresden.dresden_2",
-                                        "text": "Stadtmuseum",
+                                        "id": "collection_repository.country.germany.dresden.dresden_3",
+                                        "text": "Milit\u00e4rhistorisches Museum der Bundeswehr, Dresden",
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.dresden.dresden_3",
-                                        "text": "Milit\u00e4rhistorisches Museum der Bundeswehr, Dresden",
+                                        "id": "collection_repository.country.germany.dresden.dresden_2",
+                                        "text": "Stadtmuseum",
                                         "children": []
                                     }
                                 ]
                             },
                             {
-                                "id": "collection_repository.country.germany.duisburg",
-                                "text": "Duisburg, Lehmbruck Museum",
+                                "id": "collection_repository.country.germany.duesseldorf",
+                                "text": "D\u00fcsseldorf, Stiftung Museum Kunstpalast",
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.germany.duesseldorf",
-                                "text": "D\u00fcsseldorf, Stiftung Museum Kunstpalast",
+                                "id": "collection_repository.country.germany.duisburg",
+                                "text": "Duisburg, Lehmbruck Museum",
                                 "children": []
                             },
                             {
@@ -971,6 +966,11 @@
                                         "children": []
                                     }
                                 ]
+                            },
+                            {
+                                "id": "collection_repository.country.germany.pulsnitz",
+                                "text": "Ev.-Luth. Kirchgemeinde St. Nicolai, Pulsnitz",
+                                "children": []
                             },
                             {
                                 "id": "collection_repository.country.germany.frankfurt",
@@ -1053,13 +1053,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.hamburg.hamburg_2",
-                                        "text": "Kunsthalle",
+                                        "id": "collection_repository.country.germany.hamburg.hamburg_3",
+                                        "text": "Hauptkirche St. Nikolai",
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.hamburg.hamburg_3",
-                                        "text": "Hauptkirche St. Nikolai",
+                                        "id": "collection_repository.country.germany.hamburg.hamburg_2",
+                                        "text": "Kunsthalle",
                                         "children": []
                                     },
                                     {
@@ -1143,6 +1143,11 @@
                                 "children": []
                             },
                             {
+                                "id": "collection_repository.country.germany.penig",
+                                "text": "Kirche Unser Lieben Frauen Auf Dem Berge, Penig",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.germany.kleve",
                                 "text": "Kleve, Museum Kurhaus",
                                 "children": []
@@ -1197,6 +1202,11 @@
                                 "text": "Leipzig",
                                 "children": [
                                     {
+                                        "id": "collection_repository.country.germany.leipzig.leipzig_3",
+                                        "text": "Ev.-Luth. Kirche St. Nikolai",
+                                        "children": []
+                                    },
+                                    {
                                         "id": "collection_repository.country.germany.leipzig.leipzig_1",
                                         "text": "Kunstsammlung der Universit\u00e4t",
                                         "children": []
@@ -1204,11 +1214,6 @@
                                     {
                                         "id": "collection_repository.country.germany.leipzig.leipzig_2",
                                         "text": "Museum der bildenden K\u00fcnste",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "collection_repository.country.germany.leipzig.leipzig_3",
-                                        "text": "Ev.-Luth. Kirche St. Nikolai",
                                         "children": []
                                     },
                                     {
@@ -1266,6 +1271,11 @@
                                 ]
                             },
                             {
+                                "id": "collection_repository.country.germany.bretten",
+                                "text": "Melanchthonhaus, Bretten",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.germany.merseburg",
                                 "text": "Merseburg, Domstift",
                                 "children": []
@@ -1273,6 +1283,16 @@
                             {
                                 "id": "collection_repository.country.germany.mittenwalde",
                                 "text": "Mittenwalde, Ev. Kirchgemeinde Mittenwalde",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.germany.muenster",
+                                "text": "M\u00fcnster, LWL-Museum f\u00fcr Kunst und Kultur",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.germany.muenstermaifeld",
+                                "text": "M\u00fcnstermaifeld, Burg Eltz",
                                 "children": []
                             },
                             {
@@ -1295,16 +1315,6 @@
                                         "children": []
                                     }
                                 ]
-                            },
-                            {
-                                "id": "collection_repository.country.germany.muenster",
-                                "text": "M\u00fcnster, LWL-Museum f\u00fcr Kunst und Kultur",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.germany.muenstermaifeld",
-                                "text": "M\u00fcnstermaifeld, Burg Eltz",
-                                "children": []
                             },
                             {
                                 "id": "collection_repository.country.germany.naumburg",
@@ -1333,11 +1343,6 @@
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.germany.nischwitz",
-                                "text": "Thallwitz-Nischwitz, Ev.-Luth. Kirchgemeinde",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.germany.noerdlingen",
                                 "text": "N\u00f6rdlingen, Stadtmuseum",
                                 "children": []
@@ -1355,21 +1360,6 @@
                             {
                                 "id": "collection_repository.country.germany.oldenburg",
                                 "text": "Oldenburg, Landesmuseum f\u00fcr Kunst und Kulturgeschichte",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.germany.oschatz",
-                                "text": "Stadt- und Waagenmuseum Oschatz",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.germany.penig",
-                                "text": "Kirche Unser Lieben Frauen Auf Dem Berge, Penig",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.germany.pulsnitz",
-                                "text": "Ev.-Luth. Kirchgemeinde St. Nicolai, Pulsnitz",
                                 "children": []
                             },
                             {
@@ -1418,8 +1408,23 @@
                                 "children": []
                             },
                             {
+                                "id": "collection_repository.country.germany.oschatz",
+                                "text": "Stadt- und Waagenmuseum Oschatz",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.germany.bad_windsheim",
+                                "text": "Stadtarchiv und historische Stadtbibliothek Bad Windsheim",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.germany.stuttgart",
                                 "text": "Stuttgart, Staatsgalerie",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.germany.nischwitz",
+                                "text": "Thallwitz-Nischwitz, Ev.-Luth. Kirchgemeinde",
                                 "children": []
                             },
                             {
@@ -1470,11 +1475,6 @@
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.germany.bad_windsheim",
-                                "text": "Stadtarchiv und historische Stadtbibliothek Bad Windsheim",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.germany.wittenberg",
                                 "text": "Wittenberg",
                                 "children": [
@@ -1496,11 +1496,6 @@
                                 ]
                             },
                             {
-                                "id": "collection_repository.country.germany.wolfenbuettel",
-                                "text": "Wolfenb\u00fcttel, Herzog August Bibliothek",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.germany.woerlitz",
                                 "text": "W\u00f6rlitz",
                                 "children": [
@@ -1517,17 +1512,22 @@
                                 ]
                             },
                             {
+                                "id": "collection_repository.country.germany.wolfenbuettel",
+                                "text": "Wolfenb\u00fcttel, Herzog August Bibliothek",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.germany.wuerzburg",
                                 "text": "W\u00fcrzburg",
                                 "children": [
                                     {
-                                        "id": "collection_repository.country.germany.wuerzburg.wuerzburg_1",
-                                        "text": "Museum f\u00fcr Franken - Staatliches Museum f\u00fcr Kunst- und Kulturgeschichte",
+                                        "id": "collection_repository.country.germany.wuerzburg.wuerzburg_2",
+                                        "text": "Martin von Wagner Museum der Universit\u00e4t",
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.wuerzburg.wuerzburg_2",
-                                        "text": "Martin von Wagner Museum der Universit\u00e4t",
+                                        "id": "collection_repository.country.germany.wuerzburg.wuerzburg_1",
+                                        "text": "Museum f\u00fcr Franken - Staatliches Museum f\u00fcr Kunst- und Kulturgeschichte",
                                         "children": []
                                     }
                                 ]
@@ -1552,103 +1552,16 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.germany.zwickau.zwickau_2",
-                                        "text": "St. Katharinen-Kirche",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "collection_repository.country.germany.zwickau.zwickau_3",
                                         "text": "Kunstsammlungen",
                                         "children": []
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "id": "collection_repository.country.britain",
-                        "text": "United Kingdom",
-                        "children": [
-                            {
-                                "id": "collection_repository.country.britain.brighton",
-                                "text": "Brighton, Museum and Art Gallery",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.bristol",
-                                "text": "Bristol, City Museum and Art Gallery",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.edinburgh",
-                                "text": "Edinburgh, National Gallery of Scotland",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.glasgow",
-                                "text": "Glasgow, Burrell Collection, Pollok Country Park",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.london",
-                                "text": "London",
-                                "children": [
-                                    {
-                                        "id": "collection_repository.country.britain.london.london_1",
-                                        "text": "British Museum",
-                                        "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.britain.london.london_2",
-                                        "text": "The Courtauld Institute of Art",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "collection_repository.country.britain.london.london_3",
-                                        "text": "The National Gallery",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "collection_repository.country.britain.london.london_4",
-                                        "text": "The Royal Collection",
+                                        "id": "collection_repository.country.germany.zwickau.zwickau_2",
+                                        "text": "St. Katharinen-Kirche",
                                         "children": []
                                     }
                                 ]
-                            },
-                            {
-                                "id": "collection_repository.country.britain.longleat",
-                                "text": "Collection of the Marquess of Bath, Longleat, Wiltshire",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.liverpool",
-                                "text": "Liverpool, Walker Art Gallery",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.thornhill",
-                                "text": "Thornhill, Drumlandig Castle",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.tiverton",
-                                "text": "Tiverton, Knightshayes Court",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.truro",
-                                "text": "Truro, Royal Cornwall Museum",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.waddeston",
-                                "text": "Waddesdon, Waddesdon Manor",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.britain.warwickshire",
-                                "text": "Warwickshire, Compton Verney",
-                                "children": []
                             }
                         ]
                     },
@@ -1661,13 +1574,13 @@
                                 "text": "Budapest",
                                 "children": [
                                     {
-                                        "id": "collection_repository.country.hungary.budapest.budapest_1",
-                                        "text": "R\u00e1day Library of the Reformed Church",
+                                        "id": "collection_repository.country.hungary.budapest.budapest_2",
+                                        "text": "Museum of Fine Arts",
                                         "children": []
                                     },
                                     {
-                                        "id": "collection_repository.country.hungary.budapest.budapest_2",
-                                        "text": "Museum of Fine Arts",
+                                        "id": "collection_repository.country.hungary.budapest.budapest_1",
+                                        "text": "R\u00e1day Library of the Reformed Church",
                                         "children": []
                                     }
                                 ]
@@ -1823,23 +1736,18 @@
                         "text": "Netherlands",
                         "children": [
                             {
+                                "id": "collection_repository.country.netherlands.heerenberg",
+                                "text": "'s-Heerenberg, Collection Huis Bergh Castle",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.netherlands.amsterdam",
                                 "text": "Amsterdam, Rijksmuseum",
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.netherlands.den_haag",
-                                "text": "The Hague, Mauritshuis",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.netherlands.enschede",
                                 "text": "Enschede, Rijksmuseum Twenthe",
-                                "children": []
-                            },
-                            {
-                                "id": "collection_repository.country.netherlands.heerenberg",
-                                "text": "'s-Heerenberg, Collection Huis Bergh Castle",
                                 "children": []
                             },
                             {
@@ -1855,6 +1763,11 @@
                             {
                                 "id": "collection_repository.country.netherlands.rotterdam",
                                 "text": "Rotterdam, Museum Boijmans Van Beuningen",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.netherlands.den_haag",
+                                "text": "The Hague, Mauritshuis",
                                 "children": []
                             },
                             {
@@ -2075,6 +1988,11 @@
                         "text": "Sweden",
                         "children": [
                             {
+                                "id": "collection_repository.country.sweden.sverige",
+                                "text": "B\u00e4rbo kyrka, Sverige",
+                                "children": []
+                            },
+                            {
                                 "id": "collection_repository.country.sweden.goeteborg",
                                 "text": "Gothenburg, Konstmuseum",
                                 "children": []
@@ -2109,11 +2027,6 @@
                                         "children": []
                                     }
                                 ]
-                            },
-                            {
-                                "id": "collection_repository.country.sweden.sverige",
-                                "text": "B\u00e4rbo kyrka, Sverige",
-                                "children": []
                             }
                         ]
                     },
@@ -2165,6 +2078,93 @@
                         ]
                     },
                     {
+                        "id": "collection_repository.country.britain",
+                        "text": "United Kingdom",
+                        "children": [
+                            {
+                                "id": "collection_repository.country.britain.brighton",
+                                "text": "Brighton, Museum and Art Gallery",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.bristol",
+                                "text": "Bristol, City Museum and Art Gallery",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.longleat",
+                                "text": "Collection of the Marquess of Bath, Longleat, Wiltshire",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.edinburgh",
+                                "text": "Edinburgh, National Gallery of Scotland",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.glasgow",
+                                "text": "Glasgow, Burrell Collection, Pollok Country Park",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.liverpool",
+                                "text": "Liverpool, Walker Art Gallery",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.london",
+                                "text": "London",
+                                "children": [
+                                    {
+                                        "id": "collection_repository.country.britain.london.london_1",
+                                        "text": "British Museum",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.britain.london.london_2",
+                                        "text": "The Courtauld Institute of Art",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.britain.london.london_3",
+                                        "text": "The National Gallery",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.britain.london.london_4",
+                                        "text": "The Royal Collection",
+                                        "children": []
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "collection_repository.country.britain.thornhill",
+                                "text": "Thornhill, Drumlandig Castle",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.tiverton",
+                                "text": "Tiverton, Knightshayes Court",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.truro",
+                                "text": "Truro, Royal Cornwall Museum",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.waddeston",
+                                "text": "Waddesdon, Waddesdon Manor",
+                                "children": []
+                            },
+                            {
+                                "id": "collection_repository.country.britain.warwickshire",
+                                "text": "Warwickshire, Compton Verney",
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
                         "id": "collection_repository.country.america",
                         "text": "United States of America",
                         "children": [
@@ -2184,13 +2184,13 @@
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.america.boston",
-                                "text": "Boston, Museum of Fine Arts",
+                                "id": "collection_repository.country.america.beloit",
+                                "text": "Beloit, Wright Museum of Art, Beloit College",
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.america.beloit",
-                                "text": "Beloit, Wright Museum of Art, Beloit College",
+                                "id": "collection_repository.country.america.boston",
+                                "text": "Boston, Museum of Fine Arts",
                                 "children": []
                             },
                             {
@@ -2305,17 +2305,17 @@
                                 "children": []
                             },
                             {
-                                "id": "collection_repository.country.america.norfolk",
-                                "text": "Norfolk, Chrysler Museum of Art",
-                                "children": []
-                            },
-                            {
                                 "id": "collection_repository.country.america.ny",
                                 "text": "New York",
                                 "children": [
                                     {
                                         "id": "collection_repository.country.america.ny.ny_1",
                                         "text": "Brooklyn Museum",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.america.ny.ny_4",
+                                        "text": "Syracuse University Art Galleries",
                                         "children": []
                                     },
                                     {
@@ -2327,13 +2327,13 @@
                                         "id": "collection_repository.country.america.ny.ny_3",
                                         "text": "The Morgan Library and Museum",
                                         "children": []
-                                    },
-                                    {
-                                        "id": "collection_repository.country.america.ny.ny_4",
-                                        "text": "Syracuse University Art Galleries",
-                                        "children": []
                                     }
                                 ]
+                            },
+                            {
+                                "id": "collection_repository.country.america.norfolk",
+                                "text": "Norfolk, Chrysler Museum of Art",
+                                "children": []
                             },
                             {
                                 "id": "collection_repository.country.america.pasadena",
