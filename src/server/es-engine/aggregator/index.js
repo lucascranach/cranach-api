@@ -82,16 +82,15 @@ class Aggregator {
     return result;
   }
 
-  static aggregateFilterInfos(filterInfos, aggregation, language) {
+  static aggregateFilterInfos(filterInfos, aggregation) {
     Aggregator.traverse(filterInfos, Aggregator.enrichDocCounts, {
       esAggregation: aggregation,
-      language,
     });
   }
 
   // called with every property and its value
   static enrichDocCounts(value, data) {
-    const { esAggregation, language } = data;
+    const { esAggregation } = data;
 
     const currentAggregation = esAggregation.find(
       (aggregation) => aggregation.value === value.id,
@@ -105,8 +104,6 @@ class Aggregator {
       value.doc_count = 0;
       value.is_available = false;
     }
-
-    value.text = value.text[language];
   }
 
   static traverse(obj, func, data) {
