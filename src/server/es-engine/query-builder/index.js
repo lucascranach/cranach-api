@@ -269,10 +269,8 @@ class Querybuilder {
       sort: this.sortQueryParams,
       query: {
         bool: {
-          must: this.mustQueryParams,
+          must: this.mustQueryParams.concat(this.mustWildcardQueryParams),
           must_not: this.mustNotQueryParams,
-          // TODO: Überprüfen, ob diese Paramter auch als 'must' Parameter übergeben werden können
-          should: this.mustWildcardQueryParams,
         },
       },
       aggs: this.termsAggregationParams,
@@ -289,9 +287,9 @@ class Querybuilder {
         size: 0,
         query: {
           bool: {
-            must: this.getFilteredMustParams(multiFilter.valueField),
+            must: this.getFilteredMustParams(multiFilter.valueField)
+              .concat(this.mustWildcardQueryParams),
             must_not: this.mustNotQueryParams,
-            should: this.mustWildcardQueryParams,
           },
         },
         aggs: this.termsAggregationParams,
