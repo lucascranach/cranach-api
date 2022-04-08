@@ -49,6 +49,7 @@ const mappings = [
     nestedPath: 'filterInfos.attribution',
     sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
+    searchTermField: true,
   },
 
   // Zuschreibung (Array)
@@ -60,6 +61,16 @@ const mappings = [
     showAsResult: true,
   },
 
+  // Standort
+  {
+    display_value: 'location',
+    filter_types: ['equals', 'notequals', 'similar'],
+    key: 'repository',
+    value: 'repository',
+    showAsResult: false,
+    searchTermField: true,
+  },
+
   // Medium
   {
     display_value: 'medium',
@@ -67,6 +78,7 @@ const mappings = [
     key: 'medium',
     value: 'medium',
     showAsResult: true,
+    searchTermField: true,
   },
 
   // Sammlung / Standort
@@ -271,6 +283,7 @@ const mappings = [
     filter_types: [],
     key: 'owner',
     value: 'owner',
+    searchTermField: true,
   },
 
   // Klassifizierung
