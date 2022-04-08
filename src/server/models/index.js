@@ -86,7 +86,7 @@ async function getItems(req, params) {
       case 'neq':
         queryBuilder.mustNot(filter);
         break;
-      case 'diff':
+      case 'sim':
         queryBuilder.mustWildcard(filter);
         break;
       case 'lt':
