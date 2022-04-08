@@ -472,7 +472,9 @@ function getVisibleResults() {
 
 
 function getDefaultSortFields() {
-  return mappings.filter((mapping) => mapping.key === defaultSortFieldKeys);
+  return defaultSortFieldKeys.map(
+    (defaultSortFieldKey) => mappings.find(mapping => mapping.key === defaultSortFieldKey),
+  );
 }
 
 module.exports = {
