@@ -64,7 +64,7 @@ const mappings = [
   // Standort
   {
     display_value: 'location',
-    filter_types: ['equals', 'notequals', 'Similar'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'repository',
     value: 'repository',
     showAsResult: false,
