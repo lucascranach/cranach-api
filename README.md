@@ -66,7 +66,7 @@ The `equalparam` is the operator to set equals or not equals
 Possible operators:
 * `eq` = equals
 * `neq` = not equals
-* `diff` = differ - for wildcard search
+* `sim` = similar - for wildcard search
 
 The `filtervalue` is used to define the value by which the data is to be filtered.
 
