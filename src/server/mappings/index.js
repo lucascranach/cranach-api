@@ -61,12 +61,12 @@ const mappings = [
     showAsResult: true,
   },
 
-  // Standort
+  // Standort - Stadt
   {
-    display_value: 'location',
+    display_value: 'location.term',
     filter_types: ['equals', 'notequals', 'similar'],
-    key: 'repository',
-    value: 'repository',
+    key: 'locations',
+    value: 'locations.term',
     showAsResult: false,
     searchTermField: true,
   },
