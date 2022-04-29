@@ -49,6 +49,7 @@ const mappings = [
     nestedPath: 'filterInfos.attribution',
     sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
+    searchTermField: true,
   },
 
   // Zuschreibung (Array)
@@ -60,6 +61,16 @@ const mappings = [
     showAsResult: true,
   },
 
+  // Standort
+  {
+    display_value: 'location',
+    filter_types: ['equals', 'notequals', 'similar'],
+    key: 'repository',
+    value: 'repository',
+    showAsResult: false,
+    searchTermField: true,
+  },
+
   // Medium
   {
     display_value: 'medium',
@@ -67,6 +78,7 @@ const mappings = [
     key: 'medium',
     value: 'medium',
     showAsResult: true,
+    searchTermField: true,
   },
 
   // Sammlung / Standort
@@ -77,7 +89,7 @@ const mappings = [
     showAsResult: false,
     value: 'filterInfos.collection_repository.id',
     nestedPath: 'filterInfos.collection_repository',
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'similar'],
     filterInfos: true,
   },
 
@@ -248,7 +260,7 @@ const mappings = [
     display_value: 'inventoryNumber.keyword',
     showAsFilter: false,
     showAsResult: true,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'inventory_number',
     value: 'inventoryNumber.keyword',
   },
@@ -258,7 +270,7 @@ const mappings = [
     display_value: 'objectName.keyword',
     showAsFilter: true,
     showAsResult: true,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'object_name',
     value: 'objectName.keyword',
   },
@@ -271,6 +283,7 @@ const mappings = [
     filter_types: [],
     key: 'owner',
     value: 'owner',
+    searchTermField: true,
   },
 
   // Klassifizierung
@@ -310,7 +323,7 @@ const mappings = [
     display_value: 'metadata.title.keyword',
     showAsFilter: true,
     showAsResult: true,
-    filter_types: ['equals', 'notequals', 'differ'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'title',
     value: 'metadata.title.keyword',
     searchTermField: true,
@@ -385,7 +398,7 @@ const mappings = [
     display_value: 'catalogWorkReferences.description',
     showAsFilter: true,
     showAsResult: false,
-    filter_types: ['equals', 'notequals', 'differ'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_name',
     value: 'catalogWorkReferences.description',
     nestedPath: 'catalogWorkReferences',
@@ -396,7 +409,7 @@ const mappings = [
     display_value: 'catalogWorkReferences.referenceNumber',
     showAsFilter: true,
     showAsResult: false,
-    filter_types: ['equals', 'notequals', 'differ'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_work_reference_number',
     value: 'catalogWorkReferences.referenceNumber',
     nestedPath: 'catalogWorkReferences',
@@ -417,7 +430,7 @@ const availableFilterTypes = {
   ngte: 'notrange',
   nlt: 'notrange',
   nlte: 'notrange',
-  diff: 'differ',
+  sim: 'similar',
 };
 
 const defaultFilterType = 'eq';
@@ -472,7 +485,9 @@ function getVisibleResults() {
 
 
 function getDefaultSortFields() {
-  return mappings.filter((mapping) => mapping.key === defaultSortFieldKeys);
+  return defaultSortFieldKeys.map(
+    (defaultSortFieldKey) => mappings.find(mapping => mapping.key === defaultSortFieldKey),
+  );
 }
 
 module.exports = {
