@@ -35,6 +35,7 @@ function validateSortParams(req) {
 
   if (!filterParamsQuery.sort_by) {
     const defaultSortFields = getDefaultSortFields();
+
     defaultSortFields.forEach((defaultSortField) => {
       resultSortParams.push(new SortParam(defaultSortField.value, defautSortDirection));
     });

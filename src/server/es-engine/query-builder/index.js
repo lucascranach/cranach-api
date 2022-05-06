@@ -7,6 +7,9 @@ class Querybuilder {
     this.mustMultiFilters = [];
     this.mustNotQueryParams = [];
     this.mustWildcardQueryParams = [];
+    this.softRangeParams = [];
+    this.softRangeParam_a = [];
+    this.softRangeParam_b = [];
     this.termsAggregationParams = {};
     this.highlightParams = {};
     this.from = '';
@@ -112,6 +115,92 @@ class Querybuilder {
     }
 
     this.mustWildcardQueryParams.push(param);
+  }
+
+  // TODO ausfüllen
+  softRange(filterObjectLowerRange, filterObjectUpperRange) {
+    // pattern
+    // *******
+    // {
+    //   range: {
+    //     'dating.begin': {
+    //       gte: '1520',
+    //     },
+    //   },
+    // },
+    this.softRangeParam_a.push(
+      {
+        range: {
+          [filterObjectLowerRange.valueField]: {
+            [filterObjectLowerRange.operator]: filterObjectLowerRange.values,
+          },
+        },
+      },
+    );
+
+    // pattern:
+    // ********
+    // bool: {
+    //   should: [
+    //     {
+    //       range: {
+    //         'dating.begin': {
+    //           gte: '1520',
+    //         },
+    //       },
+    //     },
+    //     {
+    //       range: {
+    //         'dating.end': {
+    //           gte: '1520',
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+
+
+    this.softRangeParam_b.push(
+      {
+        bool: {
+          should: [
+            {
+              range: {
+                [filterObjectLowerRange.valueField]: {
+                  [filterObjectLowerRange.operator]: filterObjectLowerRange.values,
+                },
+              },
+            },
+            {
+              range: {
+                [filterObjectUpperRange.valueField]: {
+                  [filterObjectUpperRange.operator]: filterObjectUpperRange.values,
+                },
+              },
+            },
+          ],
+        },
+      },
+    );
+
+    const param = {
+      bool: {
+        should: [
+          {
+            bool: {
+              must: this.softRangeParam_a,
+              boost: 1.0,
+            },
+          },
+          {
+            bool: {
+              must: this.softRangeParam_b,
+            },
+          },
+        ],
+      },
+    };
+    this.softRangeParams = param;
   }
 
   notRange(filterObject) {
@@ -269,7 +358,9 @@ class Querybuilder {
       sort: this.sortQueryParams,
       query: {
         bool: {
-          must: this.mustQueryParams.concat(this.mustWildcardQueryParams),
+          must: this.mustQueryParams
+            .concat(this.mustWildcardQueryParams)
+            .concat(this.softRangeParams),
           must_not: this.mustNotQueryParams,
         },
       },
@@ -288,7 +379,8 @@ class Querybuilder {
         query: {
           bool: {
             must: this.getFilteredMustParams(multiFilter.valueField)
-              .concat(this.mustWildcardQueryParams),
+              .concat(this.mustWildcardQueryParams)
+              .concat(this.softRangeParams),
             must_not: this.mustNotQueryParams,
           },
         },
