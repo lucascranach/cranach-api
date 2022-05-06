@@ -12,6 +12,7 @@ const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '
 const {
   isFilterInfosFilter,
   getVisibleFilters,
+  getMappingByKey,
 } = require('../mappings');
 
 const filterInfos = {
@@ -42,7 +43,6 @@ async function getSingleItem(params) {
   queryBuilder.must(new FilterParam('id', [params.id], 'eq', 'equals', '_id'));
   queryBuilder.size = 1;
   queryBuilder.from = 0;
-
 
   const result = await submitESSearch({ body: queryBuilder.query });
   const { body: { took } } = result;
@@ -94,23 +94,19 @@ async function getItems(req, params) {
       case 'gt':
       case 'gte':
         if (filter.key === 'dating_begin' && filter.operator === 'gte') {
-          const filters = [];
           const secondFilter = { ...filter };
           secondFilter.valueField = 'dating.end';
           secondFilter.operator = 'gte';
           secondFilter.key = 'dating_end';
-          filters.push(filter);
-          filters.push(secondFilter);
-          queryBuilder.range(filters);
+          queryBuilder.softRange(filter, secondFilter);
+          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value), 'desc');
         } else if (filter.key === 'dating_end' && filter.operator === 'lte') {
-          const filters = [];
           const secondFilter = { ...filter };
           secondFilter.valueField = 'dating.begin';
           secondFilter.operator = 'lte';
           secondFilter.key = 'dating_begin';
-          filters.push(filter);
-          filters.push(secondFilter);
-          queryBuilder.range(filters);
+          queryBuilder.softRange(filter, secondFilter);
+          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value), 'desc');
         } else {
           queryBuilder.range(filter);
         }

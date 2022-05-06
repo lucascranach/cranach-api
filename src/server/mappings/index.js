@@ -152,7 +152,7 @@ const mappings = [
   {
     display_value: 'dating.begin',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_begin',
     value: 'dating.begin',
@@ -162,7 +162,7 @@ const mappings = [
   {
     display_value: 'dating.end',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_end',
@@ -393,6 +393,18 @@ const mappings = [
     value: 'sortingInfo.year',
   },
 
+  // Score
+  {
+    display_value: '_score',
+    showAsFilter: false,
+    showAsResult: false,
+    sortable: true,
+    filter_types: [],
+    key: 'score',
+    value: '_score',
+  },
+
+
   // Catalog Work Reference
   {
     display_value: 'catalogWorkReferences.description',
@@ -457,6 +469,10 @@ function isNestedFilter(filterkey) {
   return index > -1;
 }
 
+function getMappingByKey(key) {
+  return mappings.find((mapping) => mapping.key === key);
+}
+
 function getAllowedFilters() {
   return mappings.filter((mapping) => mapping.filter_types.length > 0);
 }
@@ -483,7 +499,6 @@ function getVisibleResults() {
   return ret;
 }
 
-
 function getDefaultSortFields() {
   return defaultSortFieldKeys.map(
     (defaultSortFieldKey) => mappings.find(mapping => mapping.key === defaultSortFieldKey),
@@ -502,6 +517,7 @@ module.exports = {
   isFilterInfosFilter,
   isNestedFilter,
   getAllowedFilters,
+  getMappingByKey,
   getSearchTermFields,
   getSortableFields,
   getVisibleFilters,
