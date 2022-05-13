@@ -8,7 +8,12 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY ./src/package*.json ./
 
-RUN npm install
+# Install bcrypt
+# from https://www.richardkotze.com/top-tips/install-bcrypt-docker-image-exclude-host-node-modules
+RUN apk add --no-cache make gcc g++ python && \
+  npm install && \
+  npm rebuild bcrypt --build-from-source && \
+  apk del make gcc g++ python
 
 RUN npm install nodemon -g
 # If you are building your code for production
