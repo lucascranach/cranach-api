@@ -69,7 +69,7 @@ async function getItems(req, params) {
 
   if (params.searchterm) {
     params.searchterm.fields.forEach((field) => {
-      queryBuilder.mustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+      queryBuilder.shouldInnerMustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
       queryBuilder.highlight(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
     });
   }
