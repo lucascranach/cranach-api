@@ -120,10 +120,6 @@ async function getItems(req, params) {
       default:
         queryBuilder.must(filter);
     }
-
-    if (filter.nestedPath && filter.sortBy) {
-      queryBuilder.sortBy(new SortParam(filter.valueField, 'asc', filter.nestedPath));
-    }
   });
 
   params.sort.forEach((sortParamObject) => {

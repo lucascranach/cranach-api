@@ -48,7 +48,7 @@ class Querybuilder {
       param = {
         nested: {
           path: filterObject.nestedPath,
-          query: {
+          filter: {
             bool: {
               must: {
                 ...param,
@@ -58,7 +58,44 @@ class Querybuilder {
         },
       };
     }
-    this.mustQueryParams.push(param);
+
+    // pattern
+    // *******
+    // {
+    //   "sort": [
+    //     {
+    //       "filterInfos.attribution.order": {
+    //         "order": "asc",
+    //         "nested": {
+    //           "path": "filterInfos.attribution",
+    //           "filter": {
+    //             "bool": {
+    //               "must": {
+    //                 "terms": {
+    //                     "filterInfos.attribution.id": [
+    //                         "attribution.circle_of_lucas_cranach_the_elder"
+    //                     ]
+    //                 }
+    //               }
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   ]
+    // }
+
+    if (filterObject.sortBy) {
+      param = {
+        [filterObject.sortBy]: {
+          order: 'asc',
+          ...param,
+        },
+      };
+      this.sortQueryParams.push(param);
+    } else {
+      this.mustQueryParams.push(param);
+    }
   }
 
   mustMulti(filterObject) {
