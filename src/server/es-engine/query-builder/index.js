@@ -6,6 +6,7 @@ class Querybuilder {
     this.mustQueryParams = [];
     this.mustMultiFilters = [];
     this.mustNotQueryParams = [];
+    this.shouldInnerMustWildcardQueryParams = [];
     this.mustWildcardQueryParams = [];
     this.softRangeParams = [];
     this.softRangeParam_a = [];
@@ -89,7 +90,17 @@ class Querybuilder {
     this.mustNotQueryParams.push(param);
   }
 
+  shouldInnerMustWildcard(filterObject) {
+    const param = Querybuilder.wildcard(filterObject);
+    this.shouldInnerMustWildcardQueryParams.push(param);
+  }
+
   mustWildcard(filterObject) {
+    const param = Querybuilder.wildcard(filterObject);
+    this.mustWildcardQueryParams.push(param);
+  }
+
+  static wildcard(filterObject) {
     let param = {
       wildcard: {
         [filterObject.valueField]: {
@@ -113,8 +124,7 @@ class Querybuilder {
         },
       };
     }
-
-    this.mustWildcardQueryParams.push(param);
+    return param;
   }
 
   // TODO ausfüllen
@@ -360,7 +370,12 @@ class Querybuilder {
         bool: {
           must: this.mustQueryParams
             .concat(this.mustWildcardQueryParams)
-            .concat(this.softRangeParams),
+            .concat(this.softRangeParams)
+            .concat({
+              bool: {
+                should: this.shouldInnerMustWildcardQueryParams,
+              },
+            }),
           must_not: this.mustNotQueryParams,
         },
       },
@@ -380,8 +395,15 @@ class Querybuilder {
           bool: {
             must: this.getFilteredMustParams(multiFilter.valueField)
               .concat(this.mustWildcardQueryParams)
-              .concat(this.softRangeParams),
+              .concat(this.softRangeParams)
+              .concat({
+                bool: {
+                  should: this.shouldInnerMustWildcardQueryParams,
+                },
+              }),
+
             must_not: this.mustNotQueryParams,
+            // should: this.shouldInnerMustWildcardQueryParams,
           },
         },
         aggs: this.termsAggregationParams,
