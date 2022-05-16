@@ -7,6 +7,11 @@ API to retrieve data from the Lucas Cranach Archive
 
 # API 
 
+## Single Item
+Returns the data of the item with the passed inventory number
+
+https://mivs02.gm.fh-koeln.de/{{inventory_number}}
+
 ## All Items
 Returns a list of all items
 
@@ -48,6 +53,7 @@ Possible values:
 * `gte` = greater then or equals
 * `lt` = lower then
 * `lte` = lower then or equals
+* `sim` = similar - is used for wildcard filter
 
 The `filtervalue` is used to define the value for the upper or lower limit.
 
