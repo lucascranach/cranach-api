@@ -97,9 +97,6 @@ class Querybuilder {
       };
     }
     this.mustQueryParams.push(param);
-
-    // TODO: Muss noch optimert werden. Das ist eigentlich eine Query zum Sortieren.
-    // Somit gehört diese nicht in die must Funktion
     if (filterObject.sortBy) {
       const sortObject = new SortParam(filterObject.sortBy, 'asc', filterObject.nestedPath);
       this.sortBy(sortObject, filterObject);
