@@ -99,14 +99,14 @@ async function getItems(req, params) {
           secondFilter.operator = 'gte';
           secondFilter.key = 'dating_end';
           queryBuilder.softRange(filter, secondFilter);
-          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value), 'desc');
+          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value, 'desc'));
         } else if (filter.key === 'dating_end' && filter.operator === 'lte') {
           const secondFilter = { ...filter };
           secondFilter.valueField = 'dating.begin';
           secondFilter.operator = 'lte';
           secondFilter.key = 'dating_begin';
           queryBuilder.softRange(filter, secondFilter);
-          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value), 'desc');
+          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value, 'desc'));
         } else {
           queryBuilder.range(filter);
         }

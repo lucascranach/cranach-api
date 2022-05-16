@@ -1,3 +1,5 @@
+const SortParam = require('../../../entities/sortparam');
+
 class Querybuilder {
   constructor() {
     this.currentIndex = '';
@@ -21,7 +23,7 @@ class Querybuilder {
     this.currentIndex = index;
   }
 
-  sortBy(sortParamObject) {
+  sortBy(sortParamObject, filterObject = null) {
     const param = {
       [sortParamObject.field]: {
         order: sortParamObject.direction,
@@ -34,6 +36,42 @@ class Querybuilder {
       };
     }
 
+    if (filterObject) {
+      // pattern
+      // *******
+      // {
+      //   "sort": [
+      //     {
+      //       "filterInfos.attribution.order": {
+      //         "order": "asc",
+      //         "nested": {
+      //           "path": "filterInfos.attribution",
+      //           "filter": {
+      //             "bool": {
+      //               "must": {
+      //                 "terms": {
+      //                     "filterInfos.attribution.id": [
+      //                         "attribution.circle_of_lucas_cranach_the_elder"
+      //                     ]
+      //                 }
+      //               }
+      //             }
+      //           }
+      //         }
+      //       }
+      //     }
+      //   ]
+      // }
+      param[sortParamObject.field].nested.filter = {
+        bool: {
+          must: {
+            terms: {
+              [filterObject.valueField]: filterObject.values,
+            },
+          },
+        },
+      };
+    }
     this.sortQueryParams.push(param);
   }
 
@@ -48,7 +86,7 @@ class Querybuilder {
       param = {
         nested: {
           path: filterObject.nestedPath,
-          filter: {
+          query: {
             bool: {
               must: {
                 ...param,
@@ -58,43 +96,10 @@ class Querybuilder {
         },
       };
     }
-
-    // pattern
-    // *******
-    // {
-    //   "sort": [
-    //     {
-    //       "filterInfos.attribution.order": {
-    //         "order": "asc",
-    //         "nested": {
-    //           "path": "filterInfos.attribution",
-    //           "filter": {
-    //             "bool": {
-    //               "must": {
-    //                 "terms": {
-    //                     "filterInfos.attribution.id": [
-    //                         "attribution.circle_of_lucas_cranach_the_elder"
-    //                     ]
-    //                 }
-    //               }
-    //             }
-    //           }
-    //         }
-    //       }
-    //     }
-    //   ]
-    // }
-
+    this.mustQueryParams.push(param);
     if (filterObject.sortBy) {
-      param = {
-        [filterObject.sortBy]: {
-          order: 'asc',
-          ...param,
-        },
-      };
-      this.sortQueryParams.push(param);
-    } else {
-      this.mustQueryParams.push(param);
+      const sortObject = new SortParam(filterObject.sortBy, 'asc', filterObject.nestedPath);
+      this.sortBy(sortObject, filterObject);
     }
   }
 
