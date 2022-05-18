@@ -106,6 +106,11 @@ The parameter `sortdirection` must be set accordingly.
 * `asc` = ascending order  
 * `des` = descending order
 
+## Search across multiple fields
+The `searchterm` parameter can be used to filter the items across multiple fields.
+The following fields are included in the search:
+
+## Items filtered over multiple fields
 ## Show Development Data
 
 To add all available fields to the result set use the `show_data_all=true` parameter within the query string.
