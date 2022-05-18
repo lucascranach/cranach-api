@@ -67,10 +67,10 @@ async function getItems(req, params) {
   queryBuilder.index(getIndexByLanguageKey(language));
   queryBuilder.paginate(params.from, params.size);
 
-  if (params.searchterm) {
-    params.searchterm.fields.forEach((field) => {
-      queryBuilder.shouldInnerMustWildcard(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
-      queryBuilder.highlight(new FilterParam('searchterm', params.searchterm.value, null, null, field, null, null));
+  if (params.searchterms) {
+    params.searchterms.forEach((searchtermFilterParam) => {
+      queryBuilder.shouldInnerMustWildcard(searchtermFilterParam);
+      queryBuilder.highlight(searchtermFilterParam);
     });
   }
 
@@ -133,8 +133,10 @@ async function getItems(req, params) {
       filter.display_value,
       filter.nestedPath || null,
     );
-    queryBuilder.termsAggregation(aggregationParam);
+    //queryBuilder.termsAggregation(aggregationParam);
   });
+
+  console.log(JSON.stringify(queryBuilder.query, null, 4));
 
   const result = await submitESSearch({ body: queryBuilder.query });
 

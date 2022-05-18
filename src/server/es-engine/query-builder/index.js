@@ -443,9 +443,7 @@ class Querybuilder {
                   should: this.shouldInnerMustWildcardQueryParams,
                 },
               }),
-
             must_not: this.mustNotQueryParams,
-            // should: this.shouldInnerMustWildcardQueryParams,
           },
         },
         aggs: this.termsAggregationParams,

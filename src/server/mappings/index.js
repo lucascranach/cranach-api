@@ -49,16 +49,18 @@ const mappings = [
     nestedPath: 'filterInfos.attribution',
     sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
-    searchTermField: true,
   },
 
   // Zuschreibung (Array)
   {
-    display_value: 'involvedPersons',
-    filter_types: ['equals', 'notequals'],
+    display_value: 'involvedPersons.name',
+    filter_types: [],
     key: 'involved_persons',
-    value: 'involvedPersons',
+    value: 'involvedPersons.id',
+    nestedPath: 'involvedPersons',
     showAsResult: true,
+    searchTermField: true,
+
   },
 
   // Standort - Stadt
@@ -67,7 +69,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'locations',
     value: 'locations.term',
-    showAsResult: false,
+    showAsResult: true,
     searchTermField: true,
   },
 
@@ -263,6 +265,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'inventory_number',
     value: 'inventoryNumber.keyword',
+    searchTermField: true,
   },
 
   // Object name
@@ -277,12 +280,12 @@ const mappings = [
 
   // Eigentümer
   {
-    display_value: 'owner',
+    display_value: 'owner.keyword',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
     key: 'owner',
-    value: 'owner',
+    value: 'owner.keyword',
     searchTermField: true,
   },
 
@@ -304,6 +307,28 @@ const mappings = [
     filter_types: [],
     key: 'print_process',
     value: 'classification.printProcess',
+  },
+
+  // Provenance
+  {
+    display_value: 'provenance.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'provenance',
+    value: 'provenance.keyword',
+    searchTermField: true,
+  },
+
+  // Signature
+  {
+    display_value: 'signature.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'signature',
+    value: 'signature.keyword',
+    searchTermField: true,
   },
 
   // Inhalt
