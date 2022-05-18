@@ -181,13 +181,13 @@ const mappings = [
 
   // Description
   {
-    display_value: 'description.keyword',
+    display_value: 'description',
     showAsFilter: false,
     showAsResult: false,
     sortable: false,
     filter_types: [],
     key: 'description',
-    value: 'description.keyword',
+    value: 'description',
     searchTermField: true,
   },
 
