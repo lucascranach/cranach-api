@@ -235,8 +235,19 @@
                         "children": [
                             {
                                 "id": "collection_repository.country.denmark.copenhagen",
-                                "text": "Kopenhagen, Statens Museum for Kunst",
-                                "children": []
+                                "text": "Kopenhagen",
+                                "children": [
+                                    {
+                                        "id": "collection_repository.country.denmark.copenhagen_2",
+                                        "text": "K\u00f6nigliche Bibliothek",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.denmark.copenhagen_1",
+                                        "text": "Statens Museum for Kunst",
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "id": "collection_repository.country.denmark.nationalmuseet",
@@ -679,12 +690,12 @@
                                 "children": [
                                     {
                                         "id": "collection_repository.country.germany.goerlitz_1",
-                                        "text": "G\u00f6rlitz, Kulturhistorisches Museum G\u00f6rlitzer, Kunstsammlung",
+                                        "text": "Kulturhistorisches Museum G\u00f6rlitzer, Kunstsammlung",
                                         "children": []
                                     },
                                     {
                                         "id": "collection_repository.country.germany.goerlitz_2",
-                                        "text": "G\u00f6rlitz, Kulturhistorisches Museum G\u00f6rlitzer, Kunstsammlung",
+                                        "text": "Oberlausitzische Bibliothek der Wissenschaften bei den St\u00e4dtischen Sammlungen f\u00fcr Geschichte und Kultur",
                                         "children": []
                                     }
                                 ]
