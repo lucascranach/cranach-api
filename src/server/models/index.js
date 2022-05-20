@@ -133,10 +133,9 @@ async function getItems(req, params) {
       filter.display_value,
       filter.nestedPath || null,
     );
-    //queryBuilder.termsAggregation(aggregationParam);
+    queryBuilder.termsAggregation(aggregationParam);
   });
 
-  console.log(JSON.stringify(queryBuilder.query, null, 4));
 
   const result = await submitESSearch({ body: queryBuilder.query });
 
