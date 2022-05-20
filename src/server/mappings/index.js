@@ -51,17 +51,26 @@ const mappings = [
     filterInfos: true,
   },
 
-  // Zuschreibung (Array)
+  // Involvierte Personen (Array)
+  {
+    display_value: 'involvedPersons',
+    filter_types: [],
+    key: 'involved_persons',
+    value: 'involvedPersons',
+    showAsResult: true,
+  },
+
+  // Involvierte Personen (Namen-Ebene)
   {
     display_value: 'involvedPersons.name',
     filter_types: [],
-    key: 'involved_persons',
+    key: 'involved_persons_name',
     value: 'involvedPersons.id',
     nestedPath: 'involvedPersons',
     showAsResult: true,
     searchTermField: true,
-
   },
+
 
   // Standort - Stadt
   {
