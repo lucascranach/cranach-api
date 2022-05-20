@@ -67,7 +67,7 @@ const mappings = [
     key: 'involved_persons_name',
     value: 'involvedPersons.id',
     nestedPath: 'involvedPersons',
-    showAsResult: true,
+    showAsResult: false,
     searchTermField: true,
   },
 
