@@ -405,26 +405,15 @@ const mappings = [
     value: 'sortingNumber.keyword',
   },
 
-  // Sorting Info Position
+  // Search sortingnumber
   {
-    display_value: 'sortingInfo.position',
+    display_value: 'searchSortingNumber.keyword',
     showAsFilter: false,
     showAsResult: false,
     sortable: true,
     filter_types: [],
-    key: 'sorting_info_position',
-    value: 'sortingInfo.position',
-  },
-
-  // Sorting Info Year
-  {
-    display_value: 'sortingInfo.year',
-    showAsFilter: false,
-    showAsResult: false,
-    sortable: true,
-    filter_types: [],
-    key: 'sorting_info_year',
-    value: 'sortingInfo.year',
+    key: 'search_sorting_number',
+    value: 'searchSortingNumber.keyword',
   },
 
   // Score
@@ -480,7 +469,7 @@ const availableFilterTypes = {
 };
 
 const defaultFilterType = 'eq';
-const defaultSortFieldKeys = ['sorting_info_year', 'sorting_info_position'];
+const defaultSortFieldKeys = ['search_sorting_number'];
 const defaultResponseSize = 100;
 
 const availableSortTypes = {
