@@ -409,7 +409,7 @@ const mappings = [
   {
     display_value: 'searchSortingNumber.keyword',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     sortable: true,
     filter_types: [],
     key: 'search_sorting_number',
