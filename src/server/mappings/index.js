@@ -287,6 +287,17 @@ const mappings = [
     value: 'objectName.keyword',
   },
 
+  // Besitzer
+  {
+    display_value: 'repository.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'repository',
+    value: 'repository.keyword',
+    searchTermField: true,
+  },
+
   // Eigentümer
   {
     display_value: 'owner.keyword',
