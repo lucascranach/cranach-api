@@ -287,6 +287,17 @@ const mappings = [
     value: 'objectName.keyword',
   },
 
+  // Besitzer
+  {
+    display_value: 'repository.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'repository',
+    value: 'repository.keyword',
+    searchTermField: true,
+  },
+
   // Eigentümer
   {
     display_value: 'owner.keyword',
@@ -409,7 +420,7 @@ const mappings = [
   {
     display_value: 'searchSortingNumber.keyword',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     sortable: true,
     filter_types: [],
     key: 'search_sorting_number',

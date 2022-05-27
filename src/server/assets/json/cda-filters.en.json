@@ -2251,8 +2251,19 @@
                             },
                             {
                                 "id": "collection_repository.country.switzerland.geneva",
-                                "text": "Geneva, Mus\u00e9e d'Art et d'Histoire",
-                                "children": []
+                                "text": "Geneva",
+                                "children": [
+                                    {
+                                        "id": "collection_repository.country.switzerland.geneva_1",
+                                        "text": "Mus\u00e9e d'Art et d'Histoire",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "collection_repository.country.switzerland.geneva_2",
+                                        "text": "Mus\u00e9e international de la R\u00e9forme",
+                                        "children": []
+                                    }
+                                ]
                             },
                             {
                                 "id": "collection_repository.country.switzerland.schaffhausen",
