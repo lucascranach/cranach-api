@@ -460,6 +460,18 @@ const mappings = [
     value: 'catalogWorkReferences.referenceNumber',
     nestedPath: 'catalogWorkReferences',
   },
+
+  // Additional text information
+  {
+    display_value: 'additionalTextInformation.text',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'additional_text_information_text',
+    value: 'additionalTextInformation.text',
+    nestedPath: 'additionalTextInformation',
+    searchTermField: true,
+  },
 ];
 
 const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all'];
