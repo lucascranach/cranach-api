@@ -472,6 +472,18 @@ const mappings = [
     nestedPath: 'additionalTextInformation',
     searchTermField: true,
   },
+
+  // Restoration survey tests text
+  {
+    display_value: 'restorationSurveys.tests.text',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'restoration_surveys_tests_text',
+    value: 'restorationSurveys.tests.text',
+    nestedPath: 'restorationSurveys.tests',
+    searchTermField: true,
+  },
 ];
 
 const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all'];
