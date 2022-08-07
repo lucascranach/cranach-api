@@ -331,12 +331,12 @@ const mappings = [
 
   // Provenance
   {
-    display_value: 'provenance.keyword',
+    display_value: 'provenance',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
     key: 'provenance',
-    value: 'provenance.keyword',
+    value: 'provenance',
     searchTermField: true,
   },
 
