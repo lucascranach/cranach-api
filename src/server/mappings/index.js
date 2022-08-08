@@ -331,12 +331,12 @@ const mappings = [
 
   // Provenance
   {
-    display_value: 'provenance.keyword',
+    display_value: 'provenance',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
     key: 'provenance',
-    value: 'provenance.keyword',
+    value: 'provenance',
     searchTermField: true,
   },
 
@@ -459,6 +459,30 @@ const mappings = [
     key: 'catalog_work_reference_number',
     value: 'catalogWorkReferences.referenceNumber',
     nestedPath: 'catalogWorkReferences',
+  },
+
+  // Additional text information
+  {
+    display_value: 'additionalTextInformation.text',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'additional_text_information_text',
+    value: 'additionalTextInformation.text',
+    nestedPath: 'additionalTextInformation',
+    searchTermField: true,
+  },
+
+  // Restoration survey tests text
+  {
+    display_value: 'restorationSurveys.tests.text',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'restoration_surveys_tests_text',
+    value: 'restorationSurveys.tests.text',
+    nestedPath: 'restorationSurveys.tests',
+    searchTermField: true,
   },
 ];
 
