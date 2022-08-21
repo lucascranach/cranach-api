@@ -74,10 +74,11 @@ const mappings = [
 
   // Standort - Stadt
   {
-    display_value: 'location.term',
+    display_value: 'locations.term',
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'locations',
     value: 'locations.term',
+    nestedPath: 'locations',
     showAsResult: true,
     searchTermField: true,
   },
