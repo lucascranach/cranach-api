@@ -4280,177 +4280,182 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010402010108",
-                                        "text": "Georg of Weidebach",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010402010107",
-                                        "text": "Georg Spalatin",
+                                        "text": "Georg Cracow",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010109",
-                                        "text": "Gerhart Volk",
+                                        "text": "Georg of Weidebach",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010108",
+                                        "text": "Georg Spalatin",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010110",
-                                        "text": "Gregor Br\u00fcck",
+                                        "text": "Gerhart Volk",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010111",
-                                        "text": "Guilleaume de Croy",
+                                        "text": "Gregor Br\u00fcck",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010112",
-                                        "text": "H. Melber",
+                                        "text": "Guilleaume de Croy",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010113",
-                                        "text": "Hans Luther",
+                                        "text": "H. Melber",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010114",
-                                        "text": "Hans von Lindenau",
+                                        "text": "Hans Luther",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010115",
-                                        "text": "Heinrich Stromer, Dr., called Auerbach",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010119",
-                                        "text": "Jeronimus Tedenhamer",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010120",
-                                        "text": "Joachim Morlinus",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010121",
-                                        "text": "Johann Scheiring",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010123",
-                                        "text": "Johannes Bugenhagen",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010124",
-                                        "text": "Johannes Carion",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010125",
-                                        "text": "Johannes Cuspinian",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010126",
-                                        "text": "Johannes III von Sch\u00f6nberg, Bishop",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010128",
-                                        "text": "Leon Braunsberg",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010129",
-                                        "text": "Leonhard Badehorn",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010117",
-                                        "text": "Lord Rava",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010118",
-                                        "text": "Lord Schleinitz",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010130",
-                                        "text": "Lucas Cranach the Elder",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010131",
-                                        "text": "Martin Luther",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010132",
-                                        "text": "Michael Meyenburg",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010402010133",
-                                        "text": "Moritz Buchner",
+                                        "text": "Hans von Lindenau",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010116",
-                                        "text": "Mr K\u00f6keritz",
+                                        "text": "Heinrich Stromer, Dr., called Auerbach",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010120",
+                                        "text": "Jeronimus Tedenhamer",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010121",
+                                        "text": "Joachim Morlinus",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010122",
+                                        "text": "Johann Scheiring",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010124",
+                                        "text": "Johannes Bugenhagen",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010125",
+                                        "text": "Johannes Carion",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010126",
+                                        "text": "Johannes Cuspinian",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010127",
+                                        "text": "Johannes III von Sch\u00f6nberg, Bishop",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010129",
+                                        "text": "Leon Braunsberg",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010130",
+                                        "text": "Leonhard Badehorn",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010118",
+                                        "text": "Lord Rava",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010119",
+                                        "text": "Lord Schleinitz",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010131",
+                                        "text": "Lucas Cranach the Elder",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010132",
+                                        "text": "Martin Luther",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010133",
+                                        "text": "Michael Meyenburg",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010134",
-                                        "text": "Nicholas de Backer",
+                                        "text": "Moritz Buchner",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010117",
+                                        "text": "Mr K\u00f6keritz",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010135",
-                                        "text": "Nikolaus Seidel",
+                                        "text": "Nicholas de Backer",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010136",
-                                        "text": "Otto Brunfels",
+                                        "text": "Nikolaus Seidel",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010137",
-                                        "text": "Paulus of Berge",
+                                        "text": "Otto Brunfels",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010138",
-                                        "text": "Philipp Melanchthon",
+                                        "text": "Paulus of Berge",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010139",
-                                        "text": "Philipp von Wittelsbach, Bishop",
+                                        "text": "Philipp Melanchthon",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010140",
-                                        "text": "Pietro Bembo",
+                                        "text": "Philipp von Wittelsbach, Bishop",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010141",
-                                        "text": "Rudolph Agricola",
+                                        "text": "Pietro Bembo",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010142",
-                                        "text": "Sigmunt Kingsfeld, Knight",
+                                        "text": "Rudolph Agricola",
                                         "children": []
                                     },
                                     {
                                         "id": "010402010143",
+                                        "text": "Sigmunt Kingsfeld, Knight",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010402010144",
                                         "text": "Veit Dietrich",
                                         "children": []
                                     }
