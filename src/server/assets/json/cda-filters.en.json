@@ -3084,6 +3084,16 @@
                                 "text": "Before the Birth of Christ",
                                 "children": [
                                     {
+                                        "id": "010403020101",
+                                        "text": "Meeting at the Golden Gate",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020102",
+                                        "text": "The Annunciation of the Birth of Mary to Joachim",
+                                        "children": []
+                                    },
+                                    {
                                         "id": "010403020103",
                                         "text": "The Birth of the Virgin",
                                         "children": []
@@ -3094,18 +3104,8 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020102",
-                                        "text": "The Annunciation of the Birth of Mary to Joachim",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020105",
                                         "text": "The Annunciation",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020101",
-                                        "text": "Meeting at the Golden Gate",
                                         "children": []
                                     },
                                     {
@@ -3125,8 +3125,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020206",
-                                        "text": "The Holy Family",
+                                        "id": "010403020202",
+                                        "text": "The Adoration of the Magi",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020203",
+                                        "text": "The Adoration of the Shepherds",
                                         "children": []
                                     },
                                     {
@@ -3135,8 +3140,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020202",
-                                        "text": "The Adoration of the Magi",
+                                        "id": "010403020205",
+                                        "text": "Rest on the Flight into Egypt",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020206",
+                                        "text": "The Holy Family",
                                         "children": []
                                     },
                                     {
@@ -3145,18 +3155,8 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020205",
-                                        "text": "Rest on the Flight into Egypt",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020208",
                                         "text": "Christ in the Temple",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020203",
-                                        "text": "The Adoration of the Shepherds",
                                         "children": []
                                     }
                                 ]
@@ -3165,6 +3165,11 @@
                                 "id": "0104030203",
                                 "text": "Public Ministry\/Life",
                                 "children": [
+                                    {
+                                        "id": "010403020301",
+                                        "text": "The Baptism of Christ",
+                                        "children": []
+                                    },
                                     {
                                         "id": "010403020302",
                                         "text": "Teaching",
@@ -3190,13 +3195,13 @@
                                                 "children": []
                                             },
                                             {
-                                                "id": "01040302030206",
-                                                "text": "Christ driving the Money-changers from the Temple",
+                                                "id": "01040302030205",
+                                                "text": "The Pharisee and the Publican",
                                                 "children": []
                                             },
                                             {
-                                                "id": "01040302030205",
-                                                "text": "The Pharisee and the Publican",
+                                                "id": "01040302030206",
+                                                "text": "Christ driving the Money-changers from the Temple",
                                                 "children": []
                                             },
                                             {
@@ -3226,11 +3231,6 @@
                                                 "children": []
                                             }
                                         ]
-                                    },
-                                    {
-                                        "id": "010403020301",
-                                        "text": "The Baptism of Christ",
-                                        "children": []
                                     }
                                 ]
                             },
@@ -3239,13 +3239,28 @@
                                 "text": "The Passion",
                                 "children": [
                                     {
-                                        "id": "010403020405",
-                                        "text": "Agony in the Garden",
+                                        "id": "010403020401",
+                                        "text": "Christ Taking Leave from the Virgin",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020402",
+                                        "text": "The Last Supper",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020403",
+                                        "text": "The Washing of the Feet",
                                         "children": []
                                     },
                                     {
                                         "id": "010403020404",
                                         "text": "Christ Taking Leave from the Apostels",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020405",
+                                        "text": "Agony in the Garden",
                                         "children": []
                                     },
                                     {
@@ -3259,43 +3274,8 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020403",
-                                        "text": "The Washing of the Feet",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020408",
                                         "text": "The Flagellation",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020412",
-                                        "text": "Christ on the Way to Calvary",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020414",
-                                        "text": "The Crucifixion",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020417",
-                                        "text": "The Entombment",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020415",
-                                        "text": "The Deposition",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020416",
-                                        "text": "The Lamentation",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020401",
-                                        "text": "Christ Taking Leave from the Virgin",
                                         "children": []
                                     },
                                     {
@@ -3309,18 +3289,38 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020402",
-                                        "text": "The Last Supper",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020411",
                                         "text": "Ecce Homo",
                                         "children": []
                                     },
                                     {
+                                        "id": "010403020412",
+                                        "text": "Christ on the Way to Calvary",
+                                        "children": []
+                                    },
+                                    {
                                         "id": "010403020413",
                                         "text": "Christ is Nailed to the Cross",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020414",
+                                        "text": "The Crucifixion",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020415",
+                                        "text": "The Deposition",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020416",
+                                        "text": "The Lamentation",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020417",
+                                        "text": "The Entombment",
                                         "children": []
                                     }
                                 ]
@@ -3330,8 +3330,8 @@
                                 "text": "Events from the Resurrection to Pentecost",
                                 "children": [
                                     {
-                                        "id": "010403020604",
-                                        "text": "The Resurrection",
+                                        "id": "010403020601",
+                                        "text": "Christ in Purgatory\/Limbo",
                                         "children": []
                                     },
                                     {
@@ -3340,13 +3340,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020601",
-                                        "text": "Christ in Purgatory\/Limbo",
+                                        "id": "010403020603",
+                                        "text": "The Holy Women at Christ's Tomb",
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020603",
-                                        "text": "The Holy Women at Christ's Tomb",
+                                        "id": "010403020604",
+                                        "text": "The Resurrection",
                                         "children": []
                                     }
                                 ]
