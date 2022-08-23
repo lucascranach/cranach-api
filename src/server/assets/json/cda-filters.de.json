@@ -3671,6 +3671,16 @@
                                 "text": "Vor der Geburt Christi",
                                 "children": [
                                     {
+                                        "id": "010403020101",
+                                        "text": "Begegnung an der Goldenen Pforte",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020102",
+                                        "text": "Die Verk\u00fcndigung an Joachim",
+                                        "children": []
+                                    },
+                                    {
                                         "id": "010403020103",
                                         "text": "Die Geburt Mariae",
                                         "children": []
@@ -3681,18 +3691,8 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020102",
-                                        "text": "Die Verk\u00fcndigung an Joachim",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020105",
                                         "text": "Die Verk\u00fcndigung",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020101",
-                                        "text": "Begegnung an der Goldenen Pforte",
                                         "children": []
                                     },
                                     {
@@ -3712,8 +3712,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020206",
-                                        "text": "Die Heilige Familie",
+                                        "id": "010403020202",
+                                        "text": "Die Anbetung der K\u00f6nige",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020203",
+                                        "text": "Die Anbetung der Hirten",
                                         "children": []
                                     },
                                     {
@@ -3722,8 +3727,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020202",
-                                        "text": "Die Anbetung der K\u00f6nige",
+                                        "id": "010403020205",
+                                        "text": "Die Ruhe auf der Flucht nach \u00c4gypten",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020206",
+                                        "text": "Die Heilige Familie",
                                         "children": []
                                     },
                                     {
@@ -3732,18 +3742,8 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020205",
-                                        "text": "Die Ruhe auf der Flucht nach \u00c4gypten",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020208",
                                         "text": "Christus als Zw\u00f6lfj\u00e4hriger im Tempel",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020203",
-                                        "text": "Die Anbetung der Hirten",
                                         "children": []
                                     }
                                 ]
@@ -3752,6 +3752,11 @@
                                 "id": "0104030203",
                                 "text": "Wirken und Leben Christi",
                                 "children": [
+                                    {
+                                        "id": "010403020301",
+                                        "text": "Taufe Christi",
+                                        "children": []
+                                    },
                                     {
                                         "id": "010403020302",
                                         "text": "Lehre",
@@ -3777,13 +3782,13 @@
                                                 "children": []
                                             },
                                             {
-                                                "id": "01040302030206",
-                                                "text": "Die Vertreibung der Wechsler aus dem Tempel",
+                                                "id": "01040302030205",
+                                                "text": "Der Z\u00f6llner und der Pharis\u00e4er",
                                                 "children": []
                                             },
                                             {
-                                                "id": "01040302030205",
-                                                "text": "Der Z\u00f6llner und der Pharis\u00e4er",
+                                                "id": "01040302030206",
+                                                "text": "Die Vertreibung der Wechsler aus dem Tempel",
                                                 "children": []
                                             },
                                             {
@@ -3813,11 +3818,6 @@
                                                 "children": []
                                             }
                                         ]
-                                    },
-                                    {
-                                        "id": "010403020301",
-                                        "text": "Taufe Christi",
-                                        "children": []
                                     }
                                 ]
                             },
@@ -3826,13 +3826,28 @@
                                 "text": "Die Passion",
                                 "children": [
                                     {
-                                        "id": "010403020405",
-                                        "text": "Christus am \u00d6lberg",
+                                        "id": "010403020401",
+                                        "text": "Christi Abschied von Maria",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020402",
+                                        "text": "Das Abendmahl",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020403",
+                                        "text": "Die Fu\u00dfwaschung",
                                         "children": []
                                     },
                                     {
                                         "id": "010403020404",
                                         "text": "Der Abschied der Apostel",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020405",
+                                        "text": "Christus am \u00d6lberg",
                                         "children": []
                                     },
                                     {
@@ -3846,43 +3861,8 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020403",
-                                        "text": "Die Fu\u00dfwaschung",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020408",
                                         "text": "Die Gei\u00dfelung Christi",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020412",
-                                        "text": "Die Kreuztragung",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020414",
-                                        "text": "Die Kreuzigung",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020417",
-                                        "text": "Die Grablegung",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020415",
-                                        "text": "Die Kreuzabnahme",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020416",
-                                        "text": "Die Beweinung",
-                                        "children": []
-                                    },
-                                    {
-                                        "id": "010403020401",
-                                        "text": "Christi Abschied von Maria",
                                         "children": []
                                     },
                                     {
@@ -3896,18 +3876,38 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020402",
-                                        "text": "Das Abendmahl",
-                                        "children": []
-                                    },
-                                    {
                                         "id": "010403020411",
                                         "text": "Ecce Homo",
                                         "children": []
                                     },
                                     {
+                                        "id": "010403020412",
+                                        "text": "Die Kreuztragung",
+                                        "children": []
+                                    },
+                                    {
                                         "id": "010403020413",
                                         "text": "Die Kreuzannagelung",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020414",
+                                        "text": "Die Kreuzigung",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020415",
+                                        "text": "Die Kreuzabnahme",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020416",
+                                        "text": "Die Beweinung",
+                                        "children": []
+                                    },
+                                    {
+                                        "id": "010403020417",
+                                        "text": "Die Grablegung",
                                         "children": []
                                     }
                                 ]
@@ -3917,8 +3917,8 @@
                                 "text": "Von der Auferstehung bis Pfingsten",
                                 "children": [
                                     {
-                                        "id": "010403020604",
-                                        "text": "Die Auferstehung",
+                                        "id": "010403020601",
+                                        "text": "Christus in der Vorh\u00f6lle",
                                         "children": []
                                     },
                                     {
@@ -3927,13 +3927,13 @@
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020601",
-                                        "text": "Christus in der Vorh\u00f6lle",
+                                        "id": "010403020603",
+                                        "text": "Die Frauen am Grabe Christi",
                                         "children": []
                                     },
                                     {
-                                        "id": "010403020603",
-                                        "text": "Die Frauen am Grabe Christi",
+                                        "id": "010403020604",
+                                        "text": "Die Auferstehung",
                                         "children": []
                                     }
                                 ]
