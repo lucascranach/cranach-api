@@ -18,7 +18,7 @@ jobs:
       with:
         local: ./
         remote: ${{ secrets.REMOTE_DIR }}cranach-api
-        host: ${{ secrets.REMOTE_HOST }}
+        host: ${{ secrets.REMOTE_DEV_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
         rm: true
@@ -28,7 +28,7 @@ jobs:
         script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose stop api
-        host: ${{ secrets.REMOTE_HOST }}
+        host: ${{ secrets.REMOTE_DEV_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}  
     - name: docker-compose up -d api via OPEN SSH Private Key
@@ -37,6 +37,6 @@ jobs:
         script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
           docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d api
-        host: ${{ secrets.REMOTE_HOST }}
+        host: ${{ secrets.REMOTE_DEV_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
