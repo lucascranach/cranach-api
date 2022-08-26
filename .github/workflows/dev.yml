@@ -1,4 +1,4 @@
-name: Deploy on remote dev server
+name: Deploy on remote server
 on:
   push:
     branches: [integration]
@@ -17,7 +17,7 @@ jobs:
       uses: garygrossgarten/github-action-scp@release
       with:
         local: ./
-        remote: ${{ secrets.REMOTE_DIR }}cranach-api-dev
+        remote: ${{ secrets.REMOTE_DIR }}cranach-api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
@@ -27,7 +27,7 @@ jobs:
       with:
         script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
-          docker-compose -f docker-compose.yml -f docker-compose.prod.yml stop api-dev
+          docker-compose stop api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}  
@@ -36,7 +36,7 @@ jobs:
       with:
         script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-docker
-          docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d api-dev
+          docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d api
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
