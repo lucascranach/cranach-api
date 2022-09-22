@@ -1,3 +1,5 @@
+const SortParam = require('../../../entities/sortparam');
+
 class Querybuilder {
   constructor() {
     this.currentIndex = '';
@@ -6,7 +8,11 @@ class Querybuilder {
     this.mustQueryParams = [];
     this.mustMultiFilters = [];
     this.mustNotQueryParams = [];
+    this.shouldInnerMustWildcardQueryParams = [];
     this.mustWildcardQueryParams = [];
+    this.softRangeParams = [];
+    this.softRangeParam_a = [];
+    this.softRangeParam_b = [];
     this.termsAggregationParams = {};
     this.highlightParams = {};
     this.from = '';
@@ -17,7 +23,7 @@ class Querybuilder {
     this.currentIndex = index;
   }
 
-  sortBy(sortParamObject) {
+  sortBy(sortParamObject, filterObject = null) {
     const param = {
       [sortParamObject.field]: {
         order: sortParamObject.direction,
@@ -30,6 +36,42 @@ class Querybuilder {
       };
     }
 
+    if (filterObject) {
+      // pattern
+      // *******
+      // {
+      //   "sort": [
+      //     {
+      //       "filterInfos.attribution.order": {
+      //         "order": "asc",
+      //         "nested": {
+      //           "path": "filterInfos.attribution",
+      //           "filter": {
+      //             "bool": {
+      //               "must": {
+      //                 "terms": {
+      //                     "filterInfos.attribution.id": [
+      //                         "attribution.circle_of_lucas_cranach_the_elder"
+      //                     ]
+      //                 }
+      //               }
+      //             }
+      //           }
+      //         }
+      //       }
+      //     }
+      //   ]
+      // }
+      param[sortParamObject.field].nested.filter = {
+        bool: {
+          must: {
+            terms: {
+              [filterObject.valueField]: filterObject.values,
+            },
+          },
+        },
+      };
+    }
     this.sortQueryParams.push(param);
   }
 
@@ -55,6 +97,10 @@ class Querybuilder {
       };
     }
     this.mustQueryParams.push(param);
+    if (filterObject.sortBy) {
+      const sortObject = new SortParam(filterObject.sortBy, 'asc', filterObject.nestedPath);
+      this.sortBy(sortObject, filterObject);
+    }
   }
 
   mustMulti(filterObject) {
@@ -86,7 +132,17 @@ class Querybuilder {
     this.mustNotQueryParams.push(param);
   }
 
+  shouldInnerMustWildcard(filterObject) {
+    const param = Querybuilder.wildcard(filterObject);
+    this.shouldInnerMustWildcardQueryParams.push(param);
+  }
+
   mustWildcard(filterObject) {
+    const param = Querybuilder.wildcard(filterObject);
+    this.mustWildcardQueryParams.push(param);
+  }
+
+  static wildcard(filterObject) {
     let param = {
       wildcard: {
         [filterObject.valueField]: {
@@ -110,8 +166,93 @@ class Querybuilder {
         },
       };
     }
+    return param;
+  }
 
-    this.mustWildcardQueryParams.push(param);
+  // TODO ausfüllen
+  softRange(filterObjectLowerRange, filterObjectUpperRange) {
+    // pattern
+    // *******
+    // {
+    //   range: {
+    //     'dating.begin': {
+    //       gte: '1520',
+    //     },
+    //   },
+    // },
+    this.softRangeParam_a.push(
+      {
+        range: {
+          [filterObjectLowerRange.valueField]: {
+            [filterObjectLowerRange.operator]: filterObjectLowerRange.values,
+          },
+        },
+      },
+    );
+
+    // pattern:
+    // ********
+    // bool: {
+    //   should: [
+    //     {
+    //       range: {
+    //         'dating.begin': {
+    //           gte: '1520',
+    //         },
+    //       },
+    //     },
+    //     {
+    //       range: {
+    //         'dating.end': {
+    //           gte: '1520',
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
+
+
+    this.softRangeParam_b.push(
+      {
+        bool: {
+          should: [
+            {
+              range: {
+                [filterObjectLowerRange.valueField]: {
+                  [filterObjectLowerRange.operator]: filterObjectLowerRange.values,
+                },
+              },
+            },
+            {
+              range: {
+                [filterObjectUpperRange.valueField]: {
+                  [filterObjectUpperRange.operator]: filterObjectUpperRange.values,
+                },
+              },
+            },
+          ],
+        },
+      },
+    );
+
+    const param = {
+      bool: {
+        should: [
+          {
+            bool: {
+              must: this.softRangeParam_a,
+              boost: 1.0,
+            },
+          },
+          {
+            bool: {
+              must: this.softRangeParam_b,
+            },
+          },
+        ],
+      },
+    };
+    this.softRangeParams = param;
   }
 
   notRange(filterObject) {
@@ -269,7 +410,14 @@ class Querybuilder {
       sort: this.sortQueryParams,
       query: {
         bool: {
-          must: this.mustQueryParams.concat(this.mustWildcardQueryParams),
+          must: this.mustQueryParams
+            .concat(this.mustWildcardQueryParams)
+            .concat(this.softRangeParams)
+            .concat({
+              bool: {
+                should: this.shouldInnerMustWildcardQueryParams,
+              },
+            }),
           must_not: this.mustNotQueryParams,
         },
       },
@@ -288,7 +436,13 @@ class Querybuilder {
         query: {
           bool: {
             must: this.getFilteredMustParams(multiFilter.valueField)
-              .concat(this.mustWildcardQueryParams),
+              .concat(this.mustWildcardQueryParams)
+              .concat(this.softRangeParams)
+              .concat({
+                bool: {
+                  should: this.shouldInnerMustWildcardQueryParams,
+                },
+              }),
             must_not: this.mustNotQueryParams,
           },
         },

@@ -7,6 +7,11 @@ API to retrieve data from the Lucas Cranach Archive
 
 # API 
 
+## Single Item
+Returns the data of the item with the passed inventory number
+
+https://mivs02.gm.fh-koeln.de/{{inventory_number}}
+
 ## All Items
 Returns a list of all items
 
@@ -48,6 +53,7 @@ Possible values:
 * `gte` = greater then or equals
 * `lt` = lower then
 * `lte` = lower then or equals
+* `sim` = similar - is used for wildcard filter
 
 The `filtervalue` is used to define the value for the upper or lower limit.
 
@@ -66,7 +72,7 @@ The `equalparam` is the operator to set equals or not equals
 Possible operators:
 * `eq` = equals
 * `neq` = not equals
-* `diff` = differ - for wildcard search
+* `sim` = similar - for wildcard search
 
 The `filtervalue` is used to define the value by which the data is to be filtered.
 
@@ -100,6 +106,11 @@ The parameter `sortdirection` must be set accordingly.
 * `asc` = ascending order  
 * `des` = descending order
 
+## Search across multiple fields
+The `searchterm` parameter can be used to filter the items across multiple fields.
+The following fields are included in the search:
+
+## Items filtered over multiple fields
 ## Show Development Data
 
 To add all available fields to the result set use the `show_data_all=true` parameter within the query string.

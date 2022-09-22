@@ -28,7 +28,7 @@ async function getItems(req, res) {
     from: req.api.from,
     language: req.query.language,
     size: req.api.size,
-    searchterm: req.api.searchtermParam,
+    searchterms: req.api.searchtermParams,
     showDataAll: req.query.show_data_all || false,
     sort: req.api.sortParams,
   };

@@ -49,25 +49,37 @@ const mappings = [
     nestedPath: 'filterInfos.attribution',
     sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
-    searchTermField: true,
   },
 
-  // Zuschreibung (Array)
+  // Involvierte Personen (Array)
   {
     display_value: 'involvedPersons',
-    filter_types: ['equals', 'notequals'],
+    filter_types: [],
     key: 'involved_persons',
     value: 'involvedPersons',
     showAsResult: true,
   },
 
-  // Standort
+  // Involvierte Personen (Namen-Ebene)
   {
-    display_value: 'location',
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'repository',
-    value: 'repository',
+    display_value: 'involvedPersons.name',
+    filter_types: [],
+    key: 'involved_persons_name',
+    value: 'involvedPersons.id',
+    nestedPath: 'involvedPersons',
     showAsResult: false,
+    searchTermField: true,
+  },
+
+
+  // Standort - Stadt
+  {
+    display_value: 'locations.term',
+    filter_types: ['equals', 'notequals', 'similar'],
+    key: 'locations',
+    value: 'locations.term',
+    nestedPath: 'locations',
+    showAsResult: true,
     searchTermField: true,
   },
 
@@ -152,7 +164,7 @@ const mappings = [
   {
     display_value: 'dating.begin',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_begin',
     value: 'dating.begin',
@@ -162,7 +174,7 @@ const mappings = [
   {
     display_value: 'dating.end',
     showAsFilter: true,
-    showAsResult: false,
+    showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_end',
@@ -181,13 +193,13 @@ const mappings = [
 
   // Description
   {
-    display_value: 'description.keyword',
+    display_value: 'description',
     showAsFilter: false,
     showAsResult: false,
     sortable: false,
     filter_types: [],
     key: 'description',
-    value: 'description.keyword',
+    value: 'description',
     searchTermField: true,
   },
 
@@ -263,6 +275,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'inventory_number',
     value: 'inventoryNumber.keyword',
+    searchTermField: true,
   },
 
   // Object name
@@ -275,14 +288,25 @@ const mappings = [
     value: 'objectName.keyword',
   },
 
+  // Besitzer
+  {
+    display_value: 'repository.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'repository',
+    value: 'repository.keyword',
+    searchTermField: true,
+  },
+
   // Eigentümer
   {
-    display_value: 'owner',
+    display_value: 'owner.keyword',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
     key: 'owner',
-    value: 'owner',
+    value: 'owner.keyword',
     searchTermField: true,
   },
 
@@ -304,6 +328,28 @@ const mappings = [
     filter_types: [],
     key: 'print_process',
     value: 'classification.printProcess',
+  },
+
+  // Provenance
+  {
+    display_value: 'provenance',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'provenance',
+    value: 'provenance',
+    searchTermField: true,
+  },
+
+  // Signature
+  {
+    display_value: 'signature.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'signature',
+    value: 'signature.keyword',
+    searchTermField: true,
   },
 
   // Inhalt
@@ -371,27 +417,28 @@ const mappings = [
     value: 'sortingNumber.keyword',
   },
 
-  // Sorting Info Position
+  // Search sortingnumber
   {
-    display_value: 'sortingInfo.position',
+    display_value: 'searchSortingNumber.keyword',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     sortable: true,
     filter_types: [],
-    key: 'sorting_info_position',
-    value: 'sortingInfo.position',
+    key: 'search_sorting_number',
+    value: 'searchSortingNumber.keyword',
   },
 
-  // Sorting Info Year
+  // Score
   {
-    display_value: 'sortingInfo.year',
+    display_value: '_score',
     showAsFilter: false,
     showAsResult: false,
     sortable: true,
     filter_types: [],
-    key: 'sorting_info_year',
-    value: 'sortingInfo.year',
+    key: 'score',
+    value: '_score',
   },
+
 
   // Catalog Work Reference
   {
@@ -413,6 +460,30 @@ const mappings = [
     key: 'catalog_work_reference_number',
     value: 'catalogWorkReferences.referenceNumber',
     nestedPath: 'catalogWorkReferences',
+  },
+
+  // Additional text information
+  {
+    display_value: 'additionalTextInformation.text',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'additional_text_information_text',
+    value: 'additionalTextInformation.text',
+    nestedPath: 'additionalTextInformation',
+    searchTermField: true,
+  },
+
+  // Restoration survey tests text
+  {
+    display_value: 'restorationSurveys.tests.text',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'restoration_surveys_tests_text',
+    value: 'restorationSurveys.tests.text',
+    nestedPath: 'restorationSurveys.tests',
+    searchTermField: true,
   },
 ];
 
@@ -441,7 +512,7 @@ const availableFilterTypes = {
 };
 
 const defaultFilterType = 'eq';
-const defaultSortFieldKeys = ['sorting_info_year', 'sorting_info_position'];
+const defaultSortFieldKeys = ['search_sorting_number'];
 const defaultResponseSize = 100;
 
 const availableSortTypes = {
@@ -462,6 +533,10 @@ function isNestedFilter(filterkey) {
   const index = mappings.findIndex((mapping) => mapping.key === filterkey
     && mapping.nestedPath);
   return index > -1;
+}
+
+function getMappingByKey(key) {
+  return mappings.find((mapping) => mapping.key === key);
 }
 
 function getAllowedFilters() {
@@ -508,6 +583,7 @@ module.exports = {
   isFilterInfosFilter,
   isNestedFilter,
   getAllowedFilters,
+  getMappingByKey,
   getSearchTermFields,
   getSortableFields,
   getVisibleFilters,

@@ -13,19 +13,30 @@ const {
 
 const SortParam = require('../../entities/sortparam');
 const FilterParam = require('../../entities/filterparam');
-const SearchtermParam = require('../../entities/searchtermparam');
 
 // TODO: Aufrufe in einer Middleware zusammen
 function validateSearchTermParams(req) {
   const searchtermParam = req.query.searchterm;
+  const resultSearchtermParams = [];
 
   if (!searchtermParam) {
     return;
   }
 
-  const searchtermFields = getSearchTermFields().map(mapping => mapping.value);
-
-  req.api.searchtermParam = new SearchtermParam(searchtermFields, searchtermParam);
+  const searchtermFieldss = getSearchTermFields();
+  searchtermFieldss.forEach((searchtermField) => {
+    const filter = new FilterParam(
+      'searchterm',
+      searchtermParam,
+      'sim',
+      null,
+      searchtermField.display_value,
+      searchtermField.nestedPath || null,
+      null,
+    );
+    resultSearchtermParams.push(filter);
+  });
+  req.api.searchtermParams = resultSearchtermParams;
 }
 
 function validateSortParams(req) {
@@ -35,6 +46,7 @@ function validateSortParams(req) {
 
   if (!filterParamsQuery.sort_by) {
     const defaultSortFields = getDefaultSortFields();
+
     defaultSortFields.forEach((defaultSortField) => {
       resultSortParams.push(new SortParam(defaultSortField.value, defautSortDirection));
     });
