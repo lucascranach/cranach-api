@@ -50,7 +50,14 @@ router.post(
                 { expiresIn: process.env.SESSION_EXPIRY },
               );
 
-              return res.json({ token });
+              return res
+              .cookie('jwt',
+                token, {
+                  httpOnly: true,
+                  secure: process.env.HTTPS || false
+                }
+              )
+              .end();
             },
           );
         } catch (error) {

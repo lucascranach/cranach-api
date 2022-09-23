@@ -1,9 +1,16 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JWTstrategy = require('passport-jwt').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 const UserModel = require('../models');
+
+const cookieExtractor = req => {
+  let jwt = null 
+  if (req && req.cookies) {
+      jwt = req.cookies['jwt']
+  }
+  return jwt
+}
 
 passport.use(
   'signup',
@@ -57,7 +64,7 @@ passport.use(
   new JWTstrategy(
     {
       secretOrKey: process.env.JWT_SECRET,
-      jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token'),
+      jwtFromRequest: cookieExtractor,
     },
     async (token, done) => {
       try {

@@ -3,6 +3,7 @@ const http = require('http');
 const https = require('https');
 
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const express = require('express');
 
@@ -49,6 +50,7 @@ function start() {
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
+    .use(cookieParser())  
     .use('/auth/', jwtRoutes)
     .use(queryParamsParser.validateParams)
     .use(language)
