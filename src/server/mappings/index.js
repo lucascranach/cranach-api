@@ -487,7 +487,14 @@ const mappings = [
   },
 ];
 
-const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all'];
+const specialParams = [
+  'size',
+  'from',
+  'sort_by',
+  'language',
+  'searchterm',
+  'show_data_all',
+  'secret_token'];
 
 const availableFilterTypes = {
   eq: 'equals',
@@ -560,7 +567,7 @@ function getVisibleResults() {
 
 function getDefaultSortFields() {
   return defaultSortFieldKeys.map(
-    (defaultSortFieldKey) => mappings.find(mapping => mapping.key === defaultSortFieldKey),
+    (defaultSortFieldKey) => mappings.find((mapping) => mapping.key === defaultSortFieldKey),
   );
 }
 

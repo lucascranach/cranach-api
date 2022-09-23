@@ -3,10 +3,14 @@ const http = require('http');
 const https = require('https');
 
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const express = require('express');
 
 const routes = require('./routes');
+const jwtRoutes = require('./jwt/routes');
+require('./jwt/auth');
+
 require('dotenv').config();
 const language = require('./language');
 const queryParamsParser = require('./query-params-parser');
@@ -46,6 +50,8 @@ function start() {
   return app.use(cors())
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
+    .use(cookieParser())  
+    .use('/auth/', jwtRoutes)
     .use(queryParamsParser.validateParams)
     .use(language)
     .use('/', routes)
