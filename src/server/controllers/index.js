@@ -1,4 +1,5 @@
 const model = require('../models');
+const { entityTypes } = require('../mappings');
 
 async function getSingleItem(req, res) {
   const { id } = req.params;
@@ -23,7 +24,21 @@ async function getSingleItem(req, res) {
 }
 
 async function getItems(req, res) {
+  let entityType = null;
+  const entityTypePath = req.path.slice(1);
+  if(entityTypePath.length > 0) {
+    if (entityTypes[entityTypePath]) {
+      entityType = entityTypePath;
+    } else {
+      res.status(404).json({
+        error: true,
+        data: 'Resource not found',
+      });
+    }  
+  }
+
   const params = {
+    entityType: entityType || null,
     filters: req.api.filterParams,
     from: req.api.from,
     language: req.query.language,

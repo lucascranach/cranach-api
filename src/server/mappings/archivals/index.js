@@ -1,4 +1,4 @@
-let mappings = [
+const mappings = [
 
   /*
   Documentation of the fields from the mappings
@@ -487,110 +487,6 @@ let mappings = [
   },
 ];
 
-const specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all'];
-
-const availableFilterTypes = {
-  eq: 'equals',
-  neq: 'notequals',
-  meq: 'multiequals',
-  gt: 'range',
-  gte: 'range',
-  lt: 'range',
-  lte: 'range',
-  ngt: 'notrange',
-  ngte: 'notrange',
-  nlt: 'notrange',
-  nlte: 'notrange',
-  sim: 'similar',
-};
-
-const defaultFilterType = 'eq';
-const defaultSortFieldKeys = ['search_sorting_number'];
-const defaultResponseSize = 100;
-
-const availableSortTypes = {
-  asc: 'ascending',
-  desc: 'descending',
-};
-
-const entityTypes = {
-  graphics: 'GRAPHIC',
-  paintings: 'PAINTING',
-  archivals: 'ARCHIVAL',
-}
-
-const defautSortDirection = 'asc';
-
-function isFilterInfosFilter(filterKey) {
-  const index = mappings.findIndex((mapping) => mapping.key === filterKey
-    && mapping.filterInfos
-    && mapping.filterInfos === true);
-  return index > -1;
-}
-
-function isNestedFilter(filterkey) {
-  const index = mappings.findIndex((mapping) => mapping.key === filterkey
-    && mapping.nestedPath);
-  return index > -1;
-}
-
-function getMappingByKey(key) {
-  return mappings.find((mapping) => mapping.key === key);
-}
-
-function getAllowedFilters() {
-  return mappings.filter((mapping) => mapping.filter_types.length > 0);
-}
-
-function getSortableFields() {
-  return mappings.filter((mapping) => mapping.sortable === true);
-}
-
-function getVisibleFilters() {
-  return mappings.filter((mapping) => mapping.showAsFilter === true);
-}
-
-function getSearchTermFields() {
-  return mappings.filter((mapping) => mapping.searchTermField === true);
-}
-
-function getVisibleResults() {
-  const filteredMappings = mappings.filter((mapping) => mapping.showAsResult === true);
-  const ret = filteredMappings.map((mapping) => {
-    const currentMapping = { ...mapping };
-    currentMapping.display_value = mapping.display_value.replace(/\.keyword$/, '');
-    return currentMapping;
-  });
-  return ret;
-}
-
-function getDefaultSortFields() {
-  return defaultSortFieldKeys.map(
-    (defaultSortFieldKey) => mappings.find(mapping => mapping.key === defaultSortFieldKey),
-  );
-}
-
-function setMappings(newMappings) {
-  mappings = newMappings;
-}
-
 module.exports = {
-  availableFilterTypes,
-  availableSortTypes,
-  defaultFilterType,
-  defaultResponseSize,
-  entityTypes,
-  getDefaultSortFields,
-  defautSortDirection,
   mappings,
-  specialParams,
-  isFilterInfosFilter,
-  isNestedFilter,
-  getAllowedFilters,
-  getMappingByKey,
-  getSearchTermFields,
-  getSortableFields,
-  getVisibleFilters,
-  getVisibleResults,
-  setMappings
 };
