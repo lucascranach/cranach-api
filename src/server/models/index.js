@@ -18,8 +18,8 @@ const {
 } = require('../mappings');
 
 const filterInfos = {
-  de: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'json', 'cda-filters.de.json'))),
-  en: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'json', 'cda-filters.en.json'))),
+  de: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'filters', 'cda-filters.de.json'))),
+  en: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'filters', 'cda-filters.en.json'))),
 };
 const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
 const Aggregator = require(path.join(__dirname, '..', 'es-engine', 'aggregator'));
