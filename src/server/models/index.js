@@ -10,14 +10,16 @@ const translations = require('../translations');
 
 const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
 const {
+  entityTypes,
   isFilterInfosFilter,
   getVisibleFilters,
   getMappingByKey,
+  setMappings,
 } = require('../mappings');
 
 const filterInfos = {
-  de: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'json', 'cda-filters.de.json'))),
-  en: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'json', 'cda-filters.en.json'))),
+  de: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'filters', 'cda-filters.de.json'))),
+  en: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'filters', 'cda-filters.en.json'))),
 };
 const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
 const Aggregator = require(path.join(__dirname, '..', 'es-engine', 'aggregator'));
@@ -60,7 +62,26 @@ async function getSingleItem(params) {
 }
 
 async function getItems(req, params) {
+
   const queryBuilder = new Querybuilder();
+
+  // Subresource was setted
+  if (params.entityType) {
+    const mapping = getMappingByKey('entity_type');
+    const entityFilter = {
+      key: 'entity_type',
+      values: [entityTypes[params.entityType]],
+      valueField: mapping.value,
+      operator: 'eq',
+    }
+
+    queryBuilder.must(entityFilter);
+
+    // Overwrite mappings
+    const { mappings } = require(`../mappings/${params.entityType}`)
+    console.log(mappings);
+    setMappings( mappings );
+  }
 
   const { language, showDataAll } = params;
 

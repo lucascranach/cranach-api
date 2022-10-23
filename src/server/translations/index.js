@@ -1,7 +1,7 @@
 const path = require('path');
 
 // TODO: Über fs module lösen
-const translations = require(path.join(__dirname, '..', 'assets', 'json', 'translations.json'));
+const translations = require(path.join(__dirname, '..', 'assets', 'translations', 'translations.json'));
 
 function getTranslation(key, language) {
   if (!key && !language) {
