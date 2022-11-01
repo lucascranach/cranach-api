@@ -79,7 +79,6 @@ async function getItems(req, params) {
 
     // Overwrite mappings
     const { mappings } = require(`../mappings/${params.entityType}`)
-    console.log(mappings);
     setMappings( mappings );
   }
 
