@@ -39,7 +39,7 @@ function validateSearchTermParams(req) {
   req.api.searchtermParams = resultSearchtermParams;
 }
 
-function validateSortParams(req) {
+function validateSortParams(req, res) {
   const filterParamsQuery = req.query;
   const sortableFields = getSortableFields();
   const resultSortParams = [];
@@ -83,7 +83,7 @@ function validateSortParams(req) {
   req.api.sortParams = resultSortParams;
 }
 
-function validateFilterParams(req) {
+function validateFilterParams(req, res) {
   const filterParamsQuery = req.query;
   const filterParamsKeys = Object.keys(filterParamsQuery);
   const resultFilterParams = [];
@@ -161,8 +161,8 @@ function validatePaginationParams(req) {
 function validateParams(req, res, next) {
   req.api = {};
   validateSearchTermParams(req);
-  validateSortParams(req);
-  validateFilterParams(req);
+  validateSortParams(req, res);
+  validateFilterParams(req, res);
   validatePaginationParams(req);
   next();
 }
