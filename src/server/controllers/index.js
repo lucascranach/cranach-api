@@ -27,21 +27,8 @@ function getSingleItem(mappings) {
 
 function getItems(mappings) {
   return async (req, res) => {
-    let entityType = null;
-    const entityTypePath = req.path.slice(1);
-    if(entityTypePath.length > 0) {
-      if (Mappings.entityTypes[entityTypePath]) {
-        entityType = entityTypePath;
-      } else {
-        res.status(404).json({
-          error: true,
-          data: 'Resource not found',
-        });
-      }  
-    }
-
     const params = {
-      entityType: entityType || null,
+      entityTypes: mappings.getEntityTypes(),
       filters: req.api.filterParams,
       from: req.api.from,
       language: req.query.language,

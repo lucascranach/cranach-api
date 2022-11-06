@@ -31,12 +31,6 @@ class Mappings {
     desc: 'descending',
   };
 
-  static entityTypes = {
-    graphics: 'GRAPHIC',
-    paintings: 'PAINTING',
-    archivals: 'ARCHIVAL',
-  }
-
   static defautSortDirection = 'asc';
 
   constructor(type) {
@@ -44,8 +38,9 @@ class Mappings {
       throw new Error(`Unsupported mapping type: ${type}`);
     }
 
-    const { mappings } = require(`./${type}/index.js`);
+    const { mappings, entityTypes } = require(`./${type}/index.js`);
     this.mappings = mappings;
+    this.entityTypes = entityTypes;
   }
 
   isFilterInfosFilter(filterKey) {
@@ -95,6 +90,10 @@ class Mappings {
     return Mappings.defaultSortFieldKeys.map(
       (defaultSortFieldKey) => this.mappings.find(mapping => mapping.key === defaultSortFieldKey),
     );
+  }
+
+  getEntityTypes() {
+    return this.entityTypes;
   }
 }
 

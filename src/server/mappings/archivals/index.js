@@ -200,6 +200,9 @@ const mappings = [
   },
 ];
 
+const entityTypes = ['ARCHIVAL'];
+
 module.exports = {
   mappings,
+  entityTypes,
 };

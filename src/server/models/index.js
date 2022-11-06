@@ -57,12 +57,12 @@ async function getItems(mappings, req, params) {
 
   const queryBuilder = new Querybuilder();
 
-  // Subresource was setted
-  if (params.entityType) {
+  // Restrict items to certain entity types
+  if (params.entityTypes) {
     const entityTypeMapping = mappings.getMappingByKey('entity_type');
     const entityFilter = {
       key: 'entity_type',
-      values: [Mappings.entityTypes[params.entityType]],
+      values: params.entityTypes,
       valueField: entityTypeMapping.value,
       operator: 'eq',
     }

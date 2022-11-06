@@ -487,6 +487,9 @@ const mappings = [
   },
 ];
 
+const entityTypes = ['PAINTING', 'GRAPHIC'];
+
 module.exports = {
   mappings,
+  entityTypes,
 };

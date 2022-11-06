@@ -12,6 +12,13 @@ const archivalsMappings = new Mappings(MappingType.ARCHIVALS);
 
 routes.route('/').get(
   passport.authenticate('basic', { session: false }),
+  // INFO: mappings for works are also used for archivals;
+  // it would be possible to introduce and use default mappings containing overlapping fields
+  queryParamsParser.validateParams(worksMappings),
+  controller.getItems(worksMappings),
+);
+routes.route('/works').get(
+  passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(worksMappings),
   controller.getItems(worksMappings),
 );
