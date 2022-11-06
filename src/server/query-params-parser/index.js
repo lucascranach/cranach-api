@@ -28,7 +28,7 @@ function validateSearchTermParams(req, mappings) {
   req.api.searchtermParams = resultSearchtermParams;
 }
 
-function validateSortParams(req, mappings) {
+function validateSortParams(req, res, mappings) {
   const filterParamsQuery = req.query;
   const sortableFields = mappings.getSortableFields();
   const resultSortParams = [];
@@ -72,7 +72,7 @@ function validateSortParams(req, mappings) {
   req.api.sortParams = resultSortParams;
 }
 
-function validateFilterParams(req, mappings) {
+function validateFilterParams(req, res, mappings) {
   const filterParamsQuery = req.query;
   const filterParamsKeys = Object.keys(filterParamsQuery);
   const resultFilterParams = [];
@@ -90,6 +90,7 @@ function validateFilterParams(req, mappings) {
     const filterTypeGroup = Mappings.availableFilterTypes[filterType];
     if (filterTypeGroup === undefined) {
       res.status(500).json({ success: false, error: `Not allowed filter type <${filterType}>` });
+      res.end();
     }
 
     const filteredFilter = allowedFilters.filter(
@@ -99,14 +100,17 @@ function validateFilterParams(req, mappings) {
     // TODO: Operation überprüfen. => macht semantisch nicht das Richtige
     if (filteredFilter.length > 1) {
       res.status(500).json({ success: false, error: `filter key <${filterKey}> assigned serveral times` });
+      res.end();
     }
 
     if (filteredFilter.length === 0) {
       res.status(500).json({ success: false, error: `Not allowed filter key <${filterKey}>` });
+      res.end();
     }
 
     if (!filteredFilter[0].filter_types.includes(filterTypeGroup)) {
       res.status(500).json({ success: false, error: `Not allowed filter type <${filterType}> for filter key <${filterKey}>` });
+      res.end();
     }
 
     let filterValues = [];
@@ -152,8 +156,8 @@ function validateParams(mappings) {
     req.api = {};
 
     validateSearchTermParams(req, mappings);
-    validateSortParams(req, mappings);
-    validateFilterParams(req, mappings);
+    validateSortParams(req, res, mappings);
+    validateFilterParams(req, res, mappings);
     validatePaginationParams(req);
     next();
   };
