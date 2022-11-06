@@ -57,18 +57,19 @@ async function getItems(mappings, req, params) {
 
   const queryBuilder = new Querybuilder();
 
-  // Restrict items to certain entity types
-  if (params.entityTypes) {
-    const entityTypeMapping = mappings.getMappingByKey('entity_type');
-    const entityFilter = {
-      key: 'entity_type',
-      values: params.entityTypes,
-      valueField: entityTypeMapping.value,
-      operator: 'eq',
-    }
-
-    queryBuilder.must(entityFilter);
+  const entityTypeMapping = mappings.getMappingByKey('entity_type');
+  const entityFilter = {
+    key: 'entity_type',
+    values: params.entityTypes,
+    valueField: entityTypeMapping.value,
+    operator: 'eq',
   }
+
+  // Restrict filter aggregation to certain entity types
+  queryBuilder.filterAggregation(entityFilter);
+
+  // Restrict items to certain entity types
+  queryBuilder.must(entityFilter);
 
   const { language, showDataAll } = params;
 
