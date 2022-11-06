@@ -1,21 +1,10 @@
-const {
-  availableFilterTypes,
-  availableSortTypes,
-  defaultFilterType,
-  defaultResponseSize,
-  defautSortDirection,
-  specialParams,
-  getAllowedFilters,
-  getSearchTermFields,
-  getDefaultSortFields,
-  getSortableFields,
-} = require('../mappings');
+const { Mappings } = require('../mappings');
 
 const SortParam = require('../../entities/sortparam');
 const FilterParam = require('../../entities/filterparam');
 
 // TODO: Aufrufe in einer Middleware zusammen
-function validateSearchTermParams(req) {
+function validateSearchTermParams(req, mappings) {
   const searchtermParam = req.query.searchterm;
   const resultSearchtermParams = [];
 
@@ -23,7 +12,7 @@ function validateSearchTermParams(req) {
     return;
   }
 
-  const searchtermFieldss = getSearchTermFields();
+  const searchtermFieldss = mappings.getSearchTermFields();
   searchtermFieldss.forEach((searchtermField) => {
     const filter = new FilterParam(
       'searchterm',
@@ -39,16 +28,16 @@ function validateSearchTermParams(req) {
   req.api.searchtermParams = resultSearchtermParams;
 }
 
-function validateSortParams(req) {
+function validateSortParams(req, mappings) {
   const filterParamsQuery = req.query;
-  const sortableFields = getSortableFields();
+  const sortableFields = mappings.getSortableFields();
   const resultSortParams = [];
 
   if (!filterParamsQuery.sort_by) {
-    const defaultSortFields = getDefaultSortFields();
+    const defaultSortFields = mappings.getDefaultSortFields();
 
     defaultSortFields.forEach((defaultSortField) => {
-      resultSortParams.push(new SortParam(defaultSortField.value, defautSortDirection));
+      resultSortParams.push(new SortParam(defaultSortField.value, Mappings.defautSortDirection));
     });
   } else {
     if (Array.isArray(filterParamsQuery.sort_by)) {
@@ -59,7 +48,7 @@ function validateSortParams(req) {
     const [sortFieldParam, sortDirectionParam] = filterParamsQuery.sort_by.split('.');
 
     if (sortDirectionParam) {
-      if (!availableSortTypes[sortDirectionParam]) {
+      if (!Mappings.availableSortTypes[sortDirectionParam]) {
         // TODO: Error Objekt erzeugen, in in welches die Error Nachricht
         //       reingereicht wird und welches dann die Ausgabe erzeugt
         res.status(500).json({ success: false, error: `Not allowed sort direction <${sortDirectionParam}>` });
@@ -83,22 +72,22 @@ function validateSortParams(req) {
   req.api.sortParams = resultSortParams;
 }
 
-function validateFilterParams(req) {
+function validateFilterParams(req, mappings) {
   const filterParamsQuery = req.query;
   const filterParamsKeys = Object.keys(filterParamsQuery);
   const resultFilterParams = [];
-  const allowedFilters = getAllowedFilters();
+  const allowedFilters = mappings.getAllowedFilters();
 
   filterParamsKeys.forEach((filterParamKey) => {
     // Split filter param from query
     // eslint-disable-next-line prefer-const
-    let [filterKey, filterType = defaultFilterType] = filterParamKey.split(':');
+    let [filterKey, filterType = Mappings.defaultFilterType] = filterParamKey.split(':');
 
-    if (specialParams.includes(filterKey)) {
+    if (Mappings.specialParams.includes(filterKey)) {
       return;
     }
 
-    const filterTypeGroup = availableFilterTypes[filterType];
+    const filterTypeGroup = Mappings.availableFilterTypes[filterType];
     if (filterTypeGroup === undefined) {
       res.status(500).json({ success: false, error: `Not allowed filter type <${filterType}>` });
     }
@@ -154,17 +143,20 @@ function validatePaginationParams(req) {
   const size = parseInt(filterParamsQuery.size, 10);
   const from = parseInt(filterParamsQuery.from, 10);
 
-  req.api.size = (Number.isNaN(size)) ? defaultResponseSize : size;
+  req.api.size = (Number.isNaN(size)) ? Mappings.defaultResponseSize : size;
   req.api.from = (Number.isNaN(from)) ? 0 : from;
 }
 
-function validateParams(req, res, next) {
-  req.api = {};
-  validateSearchTermParams(req);
-  validateSortParams(req);
-  validateFilterParams(req);
-  validatePaginationParams(req);
-  next();
+function validateParams(mappings) {
+  return function (req, res, next) {
+    req.api = {};
+
+    validateSearchTermParams(req, mappings);
+    validateSortParams(req, mappings);
+    validateFilterParams(req, mappings);
+    validatePaginationParams(req);
+    next();
+  };
 }
 
 module.exports = {
