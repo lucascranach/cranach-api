@@ -100,15 +100,26 @@ const mappings = [
     searchTermField: true,
   },
 
-  // Besitzer
+  // Institutionen (rein für die Suche)
+  {
+    display_value: 'repository.keyword',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: [],
+    key: 'repository',
+    value: 'repository.keyword',
+    searchTermField: true,
+  },
+
+  // Institutionen (mit sauberer ID für klare Filterung)
   {
     display_value: 'repository.keyword',
     showAsFilter: true,
     showAsResult: true,
     filter_types: ['equals'],
-    key: 'repository',
-    value: 'repository.keyword',
-    searchTermField: true,
+    key: 'institution',
+    value: 'repositoryId.keyword',
+    searchTermField: false,
   },
 
   // Signature
