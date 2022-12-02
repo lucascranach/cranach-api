@@ -26,7 +26,7 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         script: |
-          cd ${{ secrets.REMOTE_DIR }}cranach-api-dev
+          cd ${{ secrets.REMOTE_DIR }}cranach-api
           git checkout integration
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.SSH_USER }}
