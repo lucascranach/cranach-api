@@ -7,15 +7,14 @@ const queryParamsParser = require('../query-params-parser');
 
 const routes = express.Router();
 
+const genericMappings = new Mappings(MappingType.GENERIC);
 const worksMappings = new Mappings(MappingType.WORKS);
 const archivalsMappings = new Mappings(MappingType.ARCHIVALS);
 
 routes.route('/').get(
   passport.authenticate('basic', { session: false }),
-  // INFO: mappings for works are also used for archivals;
-  // it would be possible to introduce and use default mappings containing overlapping fields
-  queryParamsParser.validateParams(worksMappings),
-  controller.getItems(worksMappings),
+  queryParamsParser.validateParams(genericMappings),
+  controller.getItems(genericMappings),
 );
 routes.route('/works').get(
   passport.authenticate('basic', { session: false }),
