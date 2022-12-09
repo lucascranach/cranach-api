@@ -26,119 +26,7 @@ const mappings = [
     Possible values: 'equals', 'notequals', 'range', 'notrange'
 
   }
-  // */
-  // // Zuschreibung
-  // {
-  //   display_value: 'involvedPersons.name.keyword',
-  //   key: 'attribution',
-  //   showAsFilter: true,
-  //   showAsResult: false,
-  //   value: 'involvedPersons.id.keyword',
-  //   filter_types: ['equals', 'notequals'],
-  //   filterInfos: true,
-  // },
-
-  // Zuschreibung
-  {
-    display_value: 'filterInfos.attribution.id',
-    showAsFilter: true,
-    showAsResult: true,
-    filter_types: ['equals', 'notequals'],
-    key: 'attribution',
-    value: 'filterInfos.attribution.id',
-    nestedPath: 'filterInfos.attribution',
-    sortBy: 'filterInfos.attribution.order',
-    filterInfos: true,
-  },
-
-  // Involvierte Personen (Array)
-  {
-    display_value: 'involvedPersons',
-    filter_types: [],
-    key: 'involved_persons',
-    value: 'involvedPersons',
-    showAsResult: true,
-  },
-
-  // Involvierte Personen (Namen-Ebene)
-  {
-    display_value: 'involvedPersons.name',
-    filter_types: [],
-    key: 'involved_persons_name',
-    value: 'involvedPersons.id',
-    nestedPath: 'involvedPersons',
-    showAsResult: false,
-    searchTermField: true,
-  },
-
-
-  // Standort - Stadt
-  {
-    display_value: 'locations.term',
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'locations',
-    value: 'locations.term',
-    nestedPath: 'locations',
-    showAsResult: true,
-    searchTermField: true,
-  },
-
-  // Medium
-  {
-    display_value: 'medium',
-    filter_types: [],
-    key: 'medium',
-    value: 'medium',
-    showAsResult: true,
-    searchTermField: true,
-  },
-
-  // Sammlung / Standort
-  {
-    display_value: 'filterInfos.collection_repository.id',
-    key: 'collection_repository',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.collection_repository.id',
-    nestedPath: 'filterInfos.collection_repository',
-    filter_types: ['equals', 'notequals', 'similar'],
-    filterInfos: true,
-  },
-
-  // Untersuchungstechniken
-  {
-    display_value: 'filterInfos.examination_analysis.id',
-    key: 'examination_analysis',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.examination_analysis.id',
-    nestedPath: 'filterInfos.examination_analysis',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
-  },
-
-  // Katalog
-  {
-    display_value: 'filterInfos.catalog.id',
-    key: 'catalog',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.catalog.id',
-    nestedPath: 'filterInfos.catalog',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
-  },
-
-  // Die 100 besten Werke
-  {
-    display_value: 'isBestOf',
-    filter_types: ['equals', 'notequals'],
-    key: 'is_best_of',
-    showAsFilter: true,
-    value: 'isBestOf',
-    showAsResult: true,
-
-  },
+  */
 
   // Image
   {
@@ -191,72 +79,6 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
   },
 
-  // Description
-  {
-    display_value: 'description',
-    showAsFilter: false,
-    showAsResult: false,
-    sortable: false,
-    filter_types: [],
-    key: 'description',
-    value: 'description',
-    searchTermField: true,
-  },
-
-  // Dimensionen
-  {
-    display_value: 'dimensions',
-    showAsFilter: false,
-    showAsResult: true,
-    filter_types: [],
-    key: 'dimensions',
-    value: 'dimensions',
-  },
-
-  // Form
-  {
-    display_value: 'filterInfos.form.id.keyword',
-    key: 'form',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.form.id.keyword',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
-  },
-
-  // Funktion
-  {
-    display_value: 'filterInfos.function.id.keyword',
-    key: 'function',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.function.id.keyword',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
-  },
-
-  // Bestandteile
-  {
-    display_value: 'filterInfos.component_parts.id.keyword',
-    key: 'component_parts',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.component_parts.id.keyword',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
-  },
-
-  // Technik
-  {
-    display_value: 'filterInfos.technique.id.keyword',
-    key: 'technique',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.technique.id.keyword',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
-  },
-
   // Abbildungen
   {
     display_value: 'images',
@@ -278,67 +100,26 @@ const mappings = [
     searchTermField: true,
   },
 
-  // Object name
-  {
-    display_value: 'objectName.keyword',
-    showAsFilter: true,
-    showAsResult: true,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'object_name',
-    value: 'objectName.keyword',
-  },
-
-  // Besitzer
+  // Institutionen (rein für die Suche)
   {
     display_value: 'repository.keyword',
     showAsFilter: false,
-    showAsResult: true,
+    showAsResult: false,
     filter_types: [],
     key: 'repository',
     value: 'repository.keyword',
     searchTermField: true,
   },
 
-  // Eigentümer
+  // Institutionen (mit sauberer ID für klare Filterung)
   {
-    display_value: 'owner.keyword',
-    showAsFilter: false,
+    display_value: 'repository.keyword',
+    showAsFilter: true,
     showAsResult: true,
-    filter_types: [],
-    key: 'owner',
-    value: 'owner.keyword',
-    searchTermField: true,
-  },
-
-  // Klassifizierung
-  {
-    display_value: 'classification.classification',
-    showAsFilter: false,
-    showAsResult: true,
-    filter_types: [],
-    key: 'classification',
-    value: 'classification.classification',
-  },
-
-  // Print Process
-  {
-    display_value: 'classification.printProcess',
-    showAsFilter: false,
-    showAsResult: true,
-    filter_types: [],
-    key: 'print_process',
-    value: 'classification.printProcess',
-  },
-
-  // Provenance
-  {
-    display_value: 'provenance',
-    showAsFilter: false,
-    showAsResult: true,
-    filter_types: [],
-    key: 'provenance',
-    value: 'provenance',
-    searchTermField: true,
+    filter_types: ['equals'],
+    key: 'institution',
+    value: 'repositoryId.keyword',
+    searchTermField: false,
   },
 
   // Signature
@@ -350,18 +131,6 @@ const mappings = [
     key: 'signature',
     value: 'signature.keyword',
     searchTermField: true,
-  },
-
-  // Inhalt
-  {
-    display_value: 'filterInfos.subject.id',
-    key: 'subject',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'filterInfos.subject.id',
-    nestedPath: 'filterInfos.subject',
-    filter_types: ['equals', 'notequals'],
-    filterInfos: true,
   },
 
   // Titel
@@ -407,17 +176,19 @@ const mappings = [
   },
 
   // Sorting Number
-  {
-    display_value: 'sortingNumber.keyword',
-    showAsFilter: false,
-    showAsResult: true,
-    sortable: true,
-    filter_types: ['equals', 'notequals'],
-    key: 'sorting_number',
-    value: 'sortingNumber.keyword',
-  },
+  // To be reactivated on existing 'sortingNumber' field
+  // {
+  //   display_value: 'sortingNumber.keyword',
+  //   showAsFilter: false,
+  //   showAsResult: true,
+  //   sortable: true,
+  //   filter_types: ['equals', 'notequals'],
+  //   key: 'sorting_number',
+  //   value: 'sortingNumber.keyword',
+  // },
 
   // Search sortingnumber
+  // TODO: 'searchSortingNumber' field does not exist yet, but mapping is currently needed because of it beeing used as default sorting field
   {
     display_value: 'searchSortingNumber.keyword',
     showAsFilter: false,
@@ -438,55 +209,11 @@ const mappings = [
     key: 'score',
     value: '_score',
   },
-
-
-  // Catalog Work Reference
-  {
-    display_value: 'catalogWorkReferences.description',
-    showAsFilter: true,
-    showAsResult: false,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'catalog_name',
-    value: 'catalogWorkReferences.description',
-    nestedPath: 'catalogWorkReferences',
-  },
-
-  // Catalog Work Reference Number
-  {
-    display_value: 'catalogWorkReferences.referenceNumber',
-    showAsFilter: true,
-    showAsResult: false,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'catalog_work_reference_number',
-    value: 'catalogWorkReferences.referenceNumber',
-    nestedPath: 'catalogWorkReferences',
-  },
-
-  // Additional text information
-  {
-    display_value: 'additionalTextInformation.text',
-    showAsFilter: false,
-    showAsResult: false,
-    filter_types: [],
-    key: 'additional_text_information_text',
-    value: 'additionalTextInformation.text',
-    nestedPath: 'additionalTextInformation',
-    searchTermField: true,
-  },
-
-  // Restoration survey tests text
-  {
-    display_value: 'restorationSurveys.tests.text',
-    showAsFilter: false,
-    showAsResult: false,
-    filter_types: [],
-    key: 'restoration_surveys_tests_text',
-    value: 'restorationSurveys.tests.text',
-    nestedPath: 'restorationSurveys.tests',
-    searchTermField: true,
-  },
 ];
+
+const entityTypes = ['ARCHIVAL'];
 
 module.exports = {
   mappings,
+  entityTypes,
 };

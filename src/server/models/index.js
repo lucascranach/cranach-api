@@ -1,30 +1,22 @@
 /* eslint-disable no-underscore-dangle */
 const path = require('path');
 const fs = require('fs');
+
 const AggregationParam = require('../../entities/aggregationparam');
 const FilterParam = require('../../entities/filterparam');
 const SortParam = require('../../entities/sortparam');
+const { esclient, getIndexByLanguageKey } = require('../../elastic');
+const { Mappings } = require('../mappings');
+const Querybuilder = require('../es-engine/query-builder');
+const Aggregator = require('../es-engine/aggregator');
 
 const assetsDirectoryPath = path.join(__dirname, '..', 'assets');
 const translations = require('../translations');
-
-const { esclient, getIndexByLanguageKey } = require(path.join(__dirname, '..', '..', 'elastic'));
-const {
-  entityTypes,
-  isFilterInfosFilter,
-  getVisibleFilters,
-  getMappingByKey,
-  setMappings,
-} = require('../mappings');
 
 const filterInfos = {
   de: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'filters', 'cda-filters.de.json'))),
   en: JSON.parse(fs.readFileSync(path.join(assetsDirectoryPath, 'filters', 'cda-filters.en.json'))),
 };
-const Querybuilder = require(path.join(__dirname, '..', 'es-engine', 'query-builder'));
-const Aggregator = require(path.join(__dirname, '..', 'es-engine', 'aggregator'));
-
-const visibleFilters = getVisibleFilters();
 
 async function submitESSearch(params) {
   try {
@@ -35,7 +27,7 @@ async function submitESSearch(params) {
   }
 }
 
-async function getSingleItem(params) {
+async function getSingleItem(mappings, params) {
   const queryBuilder = new Querybuilder();
 
   const { language, showDataAll } = params;
@@ -53,7 +45,7 @@ async function getSingleItem(params) {
     hits: result.body.responses[0].hits.total.value,
   };
 
-  const results = Aggregator.aggregateESResult(result.body.responses[0], showDataAll);
+  const results = Aggregator.aggregateESResult(result.body.responses[0], mappings, showDataAll);
 
   return {
     meta,
@@ -61,27 +53,23 @@ async function getSingleItem(params) {
   };
 }
 
-async function getItems(req, params) {
+async function getItems(mappings, req, params) {
 
   const queryBuilder = new Querybuilder();
 
-  // Subresource was setted
-  if (params.entityType) {
-    const mapping = getMappingByKey('entity_type');
-    const entityFilter = {
-      key: 'entity_type',
-      values: [entityTypes[params.entityType]],
-      valueField: mapping.value,
-      operator: 'eq',
-    }
-
-    queryBuilder.must(entityFilter);
-
-    // Overwrite mappings
-    const { mappings } = require(`../mappings/${params.entityType}`)
-    console.log(mappings);
-    setMappings( mappings );
+  const entityTypeMapping = mappings.getMappingByKey('entity_type');
+  const entityFilter = {
+    key: 'entity_type',
+    values: params.entityTypes,
+    valueField: entityTypeMapping.value,
+    operator: 'eq',
   }
+
+  // Restrict filter aggregation to certain entity types
+  queryBuilder.filterAggregation(entityFilter);
+
+  // Restrict items to certain entity types
+  queryBuilder.must(entityFilter);
 
   const { language, showDataAll } = params;
 
@@ -120,14 +108,14 @@ async function getItems(req, params) {
           secondFilter.operator = 'gte';
           secondFilter.key = 'dating_end';
           queryBuilder.softRange(filter, secondFilter);
-          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value, 'desc'));
+          queryBuilder.sortBy(new SortParam(mappings.getMappingByKey('score').value, 'desc'));
         } else if (filter.key === 'dating_end' && filter.operator === 'lte') {
           const secondFilter = { ...filter };
           secondFilter.valueField = 'dating.begin';
           secondFilter.operator = 'lte';
           secondFilter.key = 'dating_begin';
           queryBuilder.softRange(filter, secondFilter);
-          queryBuilder.sortBy(new SortParam(getMappingByKey('score').value, 'desc'));
+          queryBuilder.sortBy(new SortParam(mappings.getMappingByKey('score').value, 'desc'));
         } else {
           queryBuilder.range(filter);
         }
@@ -147,7 +135,7 @@ async function getItems(req, params) {
     queryBuilder.sortBy(sortParamObject);
   });
 
-  visibleFilters.forEach((filter) => {
+  mappings.getVisibleFilters().forEach((filter) => {
     const aggregationParam = new AggregationParam(
       filter.key,
       filter.value,
@@ -165,12 +153,14 @@ async function getItems(req, params) {
     aggregations: result.body.responses[0].aggregations,
     setAsAvailable: false,
     allFilters: true,
+    mappings,
   });
 
   // Aggregate filtered filter buckets
   const aggregationsFiltered = Aggregator.aggregateESFilterBuckets({
     aggregations: result.body.responses[1].aggregations,
     setAsAvailable: true,
+    mappings,
   });
 
   // Aggregate filter buckets of multi filters
@@ -181,6 +171,7 @@ async function getItems(req, params) {
     const currentAggregation = Aggregator.aggregateESFilterBuckets({
       aggregations: result.body.responses[currentIndex + 2].aggregations,
       setAsAvailable: true,
+      mappings,
     });
 
     const filterKey = searchParamsMultiFilter.key;
@@ -197,7 +188,7 @@ async function getItems(req, params) {
     const filterInfosClone = JSON.parse(JSON.stringify(filterInfos[req.language]));
 
     // Aggregate filterInfos filter
-    if (isFilterInfosFilter(aggregationKey)) {
+    if (mappings.isFilterInfosFilter(aggregationKey)) {
       const currentFilterInfos = filterInfosClone.find(filter => filter.id === aggregationKey);
       Aggregator.aggregateFilterInfos(currentFilterInfos.children, currentAggregationFiltered);
       aggregationsAll[aggregationKey] = {
@@ -241,7 +232,7 @@ async function getItems(req, params) {
     hits: result.body.responses[1].hits.total.value,
   };
 
-  const results = Aggregator.aggregateESResult(result.body.responses[1], showDataAll);
+  const results = Aggregator.aggregateESResult(result.body.responses[1], mappings, showDataAll);
 
   const ret = {};
   ret.meta = meta;
