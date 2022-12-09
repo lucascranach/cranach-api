@@ -291,7 +291,7 @@ const mappings = [
     value: 'objectName.keyword',
   },
 
-  // Besitzer
+    // Besitzer
   {
     display_value: 'repository.keyword',
     showAsFilter: false,
@@ -300,17 +300,6 @@ const mappings = [
     key: 'repository',
     value: 'repository.keyword',
     searchTermField: true,
-  },
-
-  // Institutionen (mit sauberer ID für klare Filterung)
-  {
-    display_value: 'repository.keyword',
-    showAsFilter: true,
-    showAsResult: true,
-    filter_types: ['equals'],
-    key: 'institution',
-    value: 'repositoryId.keyword',
-    searchTermField: false,
   },
 
   // Eigentümer
@@ -451,29 +440,6 @@ const mappings = [
     filter_types: [],
     key: 'score',
     value: '_score',
-  },
-
-
-  // Catalog Work Reference
-  {
-    display_value: 'catalogWorkReferences.description',
-    showAsFilter: true,
-    showAsResult: false,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'catalog_name',
-    value: 'catalogWorkReferences.description',
-    nestedPath: 'catalogWorkReferences',
-  },
-
-  // Catalog Work Reference Number
-  {
-    display_value: 'catalogWorkReferences.referenceNumber',
-    showAsFilter: true,
-    showAsResult: false,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'catalog_work_reference_number',
-    value: 'catalogWorkReferences.referenceNumber',
-    nestedPath: 'catalogWorkReferences',
   },
 
   // Additional text information
