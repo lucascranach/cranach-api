@@ -18,13 +18,24 @@ class Aggregator {
         currentAggregation = currentAggregation[aggregationKey];
       }
       const { buckets } = currentAggregation;
-      const currentFilter = buckets.map((bucket) => {
+
+      // Filter out empty buckets  
+      let currentFilter = buckets.filter((bucket) => {
+        if (bucket[aggregationKey].buckets.length > 0) {
+          return true;
+        } else {
+          console.error(`Key in aggregation of '${aggregationKey}' does not exist`);  
+          return false;
+        }
+      });
+
+      currentFilter = currentFilter.map((bucket) => {
         const ret = {};
         ret.doc_count = (allFilters ? 0 : bucket.doc_count);
         ret.display_value = bucket.key;
         ret.value = bucket[aggregationKey].buckets[0].key;
         ret.is_available = setAsAvailable || false;
-        return ret;
+        return ret;  
       });
       filters[aggregationKey] = currentFilter;
     });
