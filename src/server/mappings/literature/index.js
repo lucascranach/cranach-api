@@ -28,13 +28,162 @@ const mappings = [
   }
   */
 
-  // Image
+  // Entitäts typ
   {
-    display_value: 'metadata.imgSrc.keyword',
+    display_value: 'metadata.entityType.keyword',
+    key: 'entity_type',
+    showAsFilter: true,
+    showAsResult: true,
+    value: 'metadata.entityType.keyword',
+    filter_types: ['equals', 'notequals'],
+  },
+
+  // Reference-ID
+  {
+    display_value: 'referenceId',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'referenceId',
+    value: 'referenceId',
+  },
+
+  // Reference number
+  {
+    display_value: 'referenceNumber.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'referenceNumber',
+    value: 'referenceNumber.keyword',
+  },
+
+  // Primary-Source
+  {
+    display_value: 'isPrimarySource',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'isPrimarySource',
+    value: 'isPrimarySource',
+  },
+
+  // Titel
+  {
+    display_value: 'metadata.title.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals', 'similar'],
+    key: 'title',
+    value: 'metadata.title.keyword',
+    searchTermField: true,
+  },
+
+  // Untertitel
+  {
+    display_value: 'metadata.subtitle',
+    showAsFilter: false,
     showAsResult: true,
     filter_types: [],
-    key: 'img_src',
-    value: 'metadata.imgSrc.keyword',
+    key: 'subtitle',
+    value: 'metadata.subtitle',
+    searchTermField: true,
+  },
+
+  // Short title
+  {
+    display_value: 'shortTitle',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'shortTitle',
+    value: 'shortTitle',
+    searchTermField: true,
+  },
+
+  // Longt title
+  {
+    display_value: 'longTitle',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'longTitle',
+    value: 'longTitle',
+    searchTermField: true,
+  },
+
+  // Journal
+  {
+    display_value: 'journal',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'journal',
+    value: 'journal',
+    searchTermField: true,
+  },
+
+  // Series
+  {
+    display_value: 'series',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'series',
+    value: 'series',
+  },
+
+  // Volume
+  {
+    display_value: 'volume',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'volume',
+    value: 'volume',
+  },
+
+  // Edition
+  {
+    display_value: 'edition',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'edition',
+    value: 'edition',
+  },
+
+  // Publish location
+  {
+    display_value: 'publishLocation',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'publishLocation',
+    value: 'publishLocation',
+  },
+
+  // Publish date
+  {
+    display_value: 'publishDate',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'publishDate',
+    value: 'publishDate',
+  },
+
+  // Page numbers
+  {
+    display_value: 'pageNumbers',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'pageNumbers',
+    value: 'pageNumbers',
   },
 
   // Datierung
@@ -48,131 +197,84 @@ const mappings = [
     value: 'metadata.date.keyword',
   },
 
-  // Datierung Beginn
+  // Events?
   {
-    display_value: 'dating.begin',
-    showAsFilter: true,
+    display_value: 'events',
+    showAsFilter: false,
     showAsResult: true,
-    filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
-    key: 'dating_begin',
-    value: 'dating.begin',
+    filter_types: [],
+    key: 'events',
+    value: 'events',
   },
 
-  // Datierung Ende
+  // Copyright
   {
-    display_value: 'dating.end',
-    showAsFilter: true,
+    display_value: 'copyright',
+    showAsFilter: false,
     showAsResult: true,
-    sortable: true,
-    filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
-    key: 'dating_end',
-    value: 'dating.end',
-  },
-
-  // Entitäts typ
-  {
-    display_value: 'metadata.entityType.keyword',
-    key: 'entity_type',
-    showAsFilter: true,
-    showAsResult: true,
-    value: 'metadata.entityType.keyword',
     filter_types: ['equals', 'notequals'],
+    key: 'copyright',
+    value: 'copyright',
   },
 
-  // Abbildungen
+  // Persons
   {
-    display_value: 'images',
-    showAsFilter: false,
-    showAsResult: false,
-    filter_types: [],
-    key: 'images',
-    value: 'images',
-  },
-
-  // Inventarnummer
-  {
-    display_value: 'inventoryNumber.keyword',
-    showAsFilter: false,
-    showAsResult: true,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'inventory_number',
-    value: 'inventoryNumber.keyword',
-    searchTermField: true,
-  },
-
-  // Institutionen (rein für die Suche)
-  {
-    display_value: 'repository.keyword',
-    showAsFilter: false,
-    showAsResult: false,
-    filter_types: [],
-    key: 'repository',
-    value: 'repository.keyword',
-    searchTermField: true,
-  },
-
-  // Institutionen (mit sauberer ID für klare Filterung)
-  {
-    display_value: 'repository.keyword',
-    showAsFilter: true,
-    showAsResult: true,
-    filter_types: ['equals'],
-    key: 'institution',
-    value: 'repositoryId.keyword',
-    searchTermField: false,
-  },
-
-  // Signature
-  {
-    display_value: 'signature.keyword',
+    display_value: 'persons',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
-    key: 'signature',
-    value: 'signature.keyword',
-    searchTermField: true,
+    key: 'persons',
+    value: 'persons',
   },
 
-  // Titel
+  // Publications
   {
-    display_value: 'metadata.title.keyword',
-    showAsFilter: true,
-    showAsResult: true,
-    filter_types: ['equals', 'notequals', 'similar'],
-    key: 'title',
-    value: 'metadata.title.keyword',
-    searchTermField: true,
-  },
-
-  // Dimension - Breite
-  {
-    display_value: 'images.overall.infos.maxDimensions.width',
-    key: 'size_width',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'images.overall.infos.maxDimensions.width',
-    filter_types: ['equals', 'notequals', 'range', 'notrange'],
-  },
-
-  // Dimension - Höhe
-  {
-    display_value: 'images.overall.infos.maxDimensions.height',
-    key: 'size_height',
-    showAsFilter: true,
-    showAsResult: false,
-    value: 'images.overall.infos.maxDimensions.height',
-    filter_types: ['equals', 'notequals', 'range', 'notrange'],
-  },
-
-  // Untertitel
-  {
-    display_value: 'metadata.subtitle',
+    display_value: 'publications',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
-    key: 'subtitle',
-    value: 'metadata.subtitle',
-    searchTermField: true,
+    key: 'publications',
+    value: 'publications',
+  },
+
+  // Alternate numbers
+  {
+    display_value: 'alternateNumbers',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'alternateNumbers',
+    value: 'alternateNumbers',
+  },
+
+  // Physical description
+  {
+    display_value: 'physicalDescription',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'physicalDescription',
+    value: 'physicalDescription',
+  },
+
+  // Mention
+  {
+    display_value: 'mention',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'mention',
+    value: 'mention',
+  },
+
+  // Connected objects
+  {
+    display_value: 'connectedObjects',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'connectedObjects',
+    value: 'connectedObjects',
   },
 
   // Sorting Number
@@ -211,7 +313,7 @@ const mappings = [
   },
 ];
 
-const entityTypes = ['ARCHIVAL'];
+const entityTypes = ['LITERATURE_REFERENCE'];
 
 module.exports = {
   mappings,
