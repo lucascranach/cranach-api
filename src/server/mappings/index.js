@@ -3,6 +3,7 @@ const MappingType = {
   GENERIC: 'generic',
   WORKS: 'works',
   ARCHIVALS: 'archivals',
+  LITERATURE: 'literature',
 };
 
 class Mappings {
