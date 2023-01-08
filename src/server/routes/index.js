@@ -27,14 +27,15 @@ routes.route('/archivals').get(
   queryParamsParser.validateParams(archivalsMappings),
   controller.getItems(archivalsMappings),
 );
-routes.route('/literature').get(
+routes.route('/literature_references').get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(literatureMappings),
   controller.getItems(literatureMappings),
 );
 routes.route('/:id').get(
   passport.authenticate('basic', { session: false }),
-  controller.getSingleItem(worksMappings), // INFO: using works-mapping for all kinds of resources for now
+  // INFO: using works-mapping for all kinds of resources for now
+  controller.getSingleItem(worksMappings),
 );
 
 module.exports = routes;
