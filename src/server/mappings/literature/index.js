@@ -45,7 +45,7 @@ const mappings = [
     showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals'],
-    key: 'referenceId',
+    key: 'reference_id',
     value: 'referenceId',
   },
 
@@ -56,7 +56,7 @@ const mappings = [
     showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals'],
-    key: 'referenceNumber',
+    key: 'reference_number',
     value: 'referenceNumber.keyword',
   },
 
@@ -67,7 +67,7 @@ const mappings = [
     showAsResult: true,
     sortable: true,
     filter_types: ['equals', 'notequals'],
-    key: 'isPrimarySource',
+    key: 'is_primary_source',
     value: 'isPrimarySource',
   },
 
@@ -99,7 +99,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
-    key: 'shortTitle',
+    key: 'short_title',
     value: 'shortTitle',
     searchTermField: true,
   },
@@ -110,7 +110,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
-    key: 'longTitle',
+    key: 'long_title',
     value: 'longTitle',
     searchTermField: true,
   },
@@ -162,7 +162,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
-    key: 'publishLocation',
+    key: 'publish_location',
     value: 'publishLocation',
   },
 
@@ -172,7 +172,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
-    key: 'publishDate',
+    key: 'publish_date',
     value: 'publishDate',
   },
 
@@ -182,7 +182,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
-    key: 'pageNumbers',
+    key: 'page_numbers',
     value: 'pageNumbers',
   },
 
@@ -243,7 +243,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
-    key: 'alternateNumbers',
+    key: 'alternate_numbers',
     value: 'alternateNumbers',
   },
 
@@ -253,7 +253,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
-    key: 'physicalDescription',
+    key: 'physical_description',
     value: 'physicalDescription',
   },
 
@@ -273,7 +273,7 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
-    key: 'connectedObjects',
+    key: 'connected_objects',
     value: 'connectedObjects',
   },
 
