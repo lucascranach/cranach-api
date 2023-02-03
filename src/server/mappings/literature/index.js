@@ -47,6 +47,7 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
     key: 'reference_id',
     value: 'referenceId',
+    searchTermField: true,
   },
 
   // Reference number
@@ -55,9 +56,10 @@ const mappings = [
     showAsFilter: false,
     showAsResult: true,
     sortable: true,
-    filter_types: ['equals', 'notequals'],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'reference_number',
     value: 'referenceNumber.keyword',
+    searchTermField: true,
   },
 
   // Primary-Source
@@ -76,6 +78,7 @@ const mappings = [
     display_value: 'metadata.title.keyword',
     showAsFilter: false,
     showAsResult: true,
+    sortable: true,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'title',
     value: 'metadata.title.keyword',
@@ -156,24 +159,39 @@ const mappings = [
     value: 'edition',
   },
 
-  // Publish location
+  // Text category
   {
-    display_value: 'publishLocation',
+    display_value: 'textCategory.keyword',
     showAsFilter: false,
     showAsResult: true,
+    sortable: true,
+    filter_types: ['equals', 'notequals'],
+    key: 'text_category',
+    value: 'textCategory.keyword',
+  },
+
+  // Publish location
+  {
+    display_value: 'publishLocation.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
     filter_types: ['equals', 'notequals'],
     key: 'publish_location',
-    value: 'publishLocation',
+    value: 'publishLocation.keyword',
+    searchTermField: true,
   },
 
   // Publish date
   {
-    display_value: 'publishDate',
+    display_value: 'publishDate.keyword',
     showAsFilter: false,
     showAsResult: true,
-    filter_types: ['equals', 'notequals'],
+    sortable: true,
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'publish_date',
-    value: 'publishDate',
+    value: 'publishDate.keyword',
+    searchTermField: true,
   },
 
   // Page numbers
@@ -225,6 +243,18 @@ const mappings = [
     filter_types: [],
     key: 'persons',
     value: 'persons',
+  },
+
+  // Authors
+  {
+    display_value: 'authors.keyword',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
+    filter_types: ['similar'],
+    key: 'authors',
+    value: 'authors.keyword',
+    searchTermField: true,
   },
 
   // Publications
@@ -290,7 +320,8 @@ const mappings = [
   // },
 
   // Search sortingnumber
-  // TODO: 'searchSortingNumber' field does not exist yet, but mapping is currently needed because of it beeing used as default sorting field
+  // TODO: 'searchSortingNumber' field does not exist yet,
+  //   but mapping is currently needed because of it beeing used as default sorting field
   {
     display_value: 'searchSortingNumber.keyword',
     showAsFilter: false,
