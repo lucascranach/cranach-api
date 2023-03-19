@@ -267,6 +267,16 @@ const mappings = [
     value: 'publications',
   },
 
+  // Publications type
+  {
+    display_value: 'publications.text.keyword',
+    showAsFilter: true,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals'],
+    key: 'publication_type',
+    value: 'publications.type.keyword',
+  },
+
   // Alternate numbers
   {
     display_value: 'alternateNumbers',
