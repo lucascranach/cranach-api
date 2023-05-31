@@ -159,17 +159,6 @@ const mappings = [
     value: 'edition',
   },
 
-  // Text category
-  {
-    display_value: 'textCategory.keyword',
-    showAsFilter: false,
-    showAsResult: true,
-    sortable: true,
-    filter_types: ['equals', 'notequals'],
-    key: 'text_category',
-    value: 'textCategory.keyword',
-  },
-
   // Publish location
   {
     display_value: 'publishLocation.keyword',
@@ -267,6 +256,17 @@ const mappings = [
     value: 'publications',
   },
 
+  // Publications line
+  {
+    display_value: 'publicationsLine',
+    showAsFilter: false,
+    showAsResult: true,
+    sortable: true,
+    filter_types: [],
+    key: 'publications_line',
+    value: 'publicationsLine.keyword',
+  },
+
   // Publications type
   {
     display_value: 'publications.text.keyword',
@@ -275,6 +275,17 @@ const mappings = [
     filter_types: ['equals', 'notequals'],
     key: 'publication_type',
     value: 'publications.type.keyword',
+  },
+
+  // Publication text
+  {
+    display_value: 'publications.text.keyword',
+    showAsFilter: true,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals', 'similar'],
+    key: 'publication_text',
+    value: 'publications.text.keyword',
+    searchTermField: true,
   },
 
   // Alternate numbers
