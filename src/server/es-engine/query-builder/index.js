@@ -14,6 +14,7 @@ class Querybuilder {
     this.softRangeParam_a = [];
     this.softRangeParam_b = [];
     this.termsAggregationParams = {};
+    this.filterAggregationParams = [];
     this.highlightParams = {};
     this.from = '';
     this.size = '';
@@ -371,6 +372,30 @@ class Querybuilder {
     this.termsAggregationParams[aggregationObject.key] = currentAggs;
   }
 
+  filterAggregation(filterObject) {
+    let param = {
+      terms: {
+        [filterObject.valueField]: filterObject.values,
+      },
+    };
+
+    if (filterObject.nestedPath) {
+      param = {
+        nested: {
+          path: filterObject.nestedPath,
+          query: {
+            bool: {
+              must: {
+                ...param,
+              },
+            },
+          },
+        },
+      };
+    }
+    this.filterAggregationParams.push(param);
+  }
+
   getFilteredMustParams(exludeField) {
     return [...this.mustQueryParams].filter((param) => Object.keys(param.terms)[0] !== exludeField);
   }
@@ -394,6 +419,15 @@ class Querybuilder {
         size: 0,
         aggs: this.termsAggregationParams,
       };
+
+      if (this.filterAggregationParams.length > 0) {
+        result.query = {
+          bool: {
+            must: this.filterAggregationParams,
+          },
+        };
+      }
+
       results.push(result);
     }
 

@@ -1,14 +1,10 @@
-const {
-  getVisibleResults,
-  isNestedFilter,
-  getSearchTermFields,
-} = require('../../mappings');
 
 class Aggregator {
   static aggregateESFilterBuckets(params) {
     const { setAsAvailable } = params;
     const { aggregations } = params;
     const { allFilters } = params;
+    const { mappings } = params;
 
     // TODO: Create recursive function
     // aggregate Filter
@@ -18,26 +14,37 @@ class Aggregator {
       let currentAggregation = aggregations[aggregationKey];
 
       // if nested field then take nested values
-      if (isNestedFilter(aggregationKey)) {
+      if (mappings.isNestedFilter(aggregationKey)) {
         currentAggregation = currentAggregation[aggregationKey];
       }
       const { buckets } = currentAggregation;
-      const currentFilter = buckets.map((bucket) => {
+
+      // Filter out empty buckets  
+      let currentFilter = buckets.filter((bucket) => {
+        if (bucket[aggregationKey].buckets.length > 0) {
+          return true;
+        } else {
+          console.error(`Key in aggregation of '${aggregationKey}' does not exist`);  
+          return false;
+        }
+      });
+
+      currentFilter = currentFilter.map((bucket) => {
         const ret = {};
         ret.doc_count = (allFilters ? 0 : bucket.doc_count);
         ret.display_value = bucket.key;
         ret.value = bucket[aggregationKey].buckets[0].key;
         ret.is_available = setAsAvailable || false;
-        return ret;
+        return ret;  
       });
       filters[aggregationKey] = currentFilter;
     });
     return filters;
   }
 
-  static aggregateESResult(params, showDataAll = false) {
-    const visibleResults = getVisibleResults();
-    const searchTermFields = getSearchTermFields();
+  static aggregateESResult(params, mappings, showDataAll = false) {
+    const visibleResults = mappings.getVisibleResults();
+    const searchTermFields = mappings.getSearchTermFields();
 
     const response = params;
     const { hits } = response;
