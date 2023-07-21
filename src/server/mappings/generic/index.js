@@ -499,6 +499,15 @@ const mappings = [
     nestedPath: 'restorationSurveys.tests',
     searchTermField: true,
   },
+
+  // Published
+  {
+    display_value: 'isPublished',
+    filter_types: ['equals', 'notequals'],
+    key: 'is_published',
+    showAsFilter: true,
+    value: 'isPublished',
+  },
 ];
 
 const entityTypes = [
