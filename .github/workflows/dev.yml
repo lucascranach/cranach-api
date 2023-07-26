@@ -11,8 +11,6 @@ jobs:
     name: build image and deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
     - name: Copy folder content recursively to remote
       uses: garygrossgarten/github-action-scp@release
       with:
