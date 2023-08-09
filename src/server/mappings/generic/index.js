@@ -502,11 +502,11 @@ const mappings = [
 
   // Published
   {
-    display_value: 'isPublished',
+    display_value: 'metadata.isPublished',
     filter_types: ['equals', 'notequals'],
     key: 'is_published',
     showAsFilter: true,
-    value: 'isPublished',
+    value: 'metadata.isPublished',
   },
 ];
 
