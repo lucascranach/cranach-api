@@ -355,6 +355,15 @@ const mappings = [
     key: 'score',
     value: '_score',
   },
+
+  // Published
+  {
+    display_value: 'metadata.isPublished',
+    filter_types: ['equals', 'notequals'],
+    key: 'is_published',
+    showAsFilter: true,
+    value: 'metadata.isPublished',
+  },
 ];
 
 const entityTypes = ['LITERATURE_REFERENCE'];
