@@ -38,7 +38,7 @@ The `size` parameter allows you to configure the maximum amount of hits to be re
 Returns a list of items filtered by the specified range.  
 For criteria that contain numeric values, an upper and lower limit can be specified for filtering.
 
-https://mivs02.gm.fh-koeln.de/?{{filterfield}}:{{rangeparam}}=
+https://mivs02.gm.fh-koeln.de/?{{filterfield}}:{{rangeparam}}={{value}}
 
 ### Example
 https://mivs02.gm.fh-koeln.de/?dating_begin:gte=1920&dating_end:gte=1950
