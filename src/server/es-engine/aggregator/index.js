@@ -24,7 +24,7 @@ class Aggregator {
         if (bucket[aggregationKey].buckets.length > 0) {
           return true;
         } else {
-          console.error(`Key in aggregation of '${aggregationKey}' does not exist`);  
+          console.error(`Key in aggregation of '${aggregationKey}' does not exist`);
           return false;
         }
       });
@@ -35,7 +35,7 @@ class Aggregator {
         ret.display_value = bucket.key;
         ret.value = bucket[aggregationKey].buckets[0].key;
         ret.is_available = setAsAvailable || false;
-        return ret;  
+        return ret;
       });
       filters[aggregationKey] = currentFilter;
     });

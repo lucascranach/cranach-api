@@ -161,6 +161,7 @@ const mappings = [
     filter_types: [],
     key: 'dating',
     value: 'metadata.date.keyword',
+    searchTermField: true,
   },
 
   // Datierung Beginn
@@ -171,6 +172,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_begin',
     value: 'dating.begin',
+    searchTermField: true,
   },
 
   // Datierung Ende
@@ -182,6 +184,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_end',
     value: 'dating.end',
+    searchTermField: true,
   },
 
   // Entitäts typ
@@ -502,11 +505,11 @@ const mappings = [
 
   // Published
   {
-    display_value: 'isPublished',
+    display_value: 'metadata.isPublished',
     filter_types: ['equals', 'notequals'],
     key: 'is_published',
     showAsFilter: true,
-    value: 'isPublished',
+    value: 'metadata.isPublished',
   },
 ];
 
