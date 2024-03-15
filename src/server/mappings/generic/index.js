@@ -161,6 +161,7 @@ const mappings = [
     filter_types: [],
     key: 'dating',
     value: 'metadata.date.keyword',
+    searchTermField: true,
   },
 
   // Datierung Beginn
@@ -171,6 +172,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_begin',
     value: 'dating.begin',
+    searchTermField: true,
   },
 
   // Datierung Ende
@@ -182,6 +184,7 @@ const mappings = [
     filter_types: ['equals', 'notequals', 'range', 'notrange', 'multiequals'],
     key: 'dating_end',
     value: 'dating.end',
+    searchTermField: true,
   },
 
   // Entitäts typ
