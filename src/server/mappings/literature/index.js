@@ -202,6 +202,8 @@ const mappings = [
     filter_types: [],
     key: 'dating',
     value: 'metadata.date.keyword',
+    searchTermField: true,
+
   },
 
   // Events?
