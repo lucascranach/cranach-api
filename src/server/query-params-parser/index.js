@@ -98,6 +98,7 @@ function validateFilterParams(req, res, mappings) {
     );
 
     // TODO: Operation überprüfen. => macht semantisch nicht das Richtige
+    /*
     if (filteredFilter.length > 1) {
       res.status(500).json({ success: false, error: `filter key <${filterKey}> assigned serveral times` });
       res.end();
@@ -112,7 +113,8 @@ function validateFilterParams(req, res, mappings) {
       res.status(500).json({ success: false, error: `Not allowed filter type <${filterType}> for filter key <${filterKey}>` });
       res.end();
     }
-
+    */
+    
     let filterValues = [];
 
     // Ranges and Wildcard search allows only one filter value
