@@ -26,7 +26,7 @@ jobs:
         script: |
           cd ${{ secrets.REMOTE_DIR }}cranach-api
           git checkout integration -f
-        host: ${{ secrets.REMOTE_HOST }}
+        host: ${{ secrets.REMOTE_DEV_HOST }}
         username: ${{ secrets.SSH_USER }}
         password: ${{ secrets.SSH_PASSWORD }}
     - name: docker-compose stop via SSH

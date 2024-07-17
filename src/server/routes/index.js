@@ -11,8 +11,8 @@ const genericMappings = new Mappings(MappingType.GENERIC);
 const worksMappings = new Mappings(MappingType.WORKS);
 const archivalsMappings = new Mappings(MappingType.ARCHIVALS);
 const literatureMappings = new Mappings(MappingType.LITERATURE);
+const drawingsMappings = new Mappings(MappingType.DRAWINGS);
 
-// routes: / or /geodata
 routes.route(['/', '/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(genericMappings),
@@ -33,6 +33,13 @@ routes.route(['/literature_references', 'literature_references/geodata']).get(
   queryParamsParser.validateParams(literatureMappings),
   controller.getItems(literatureMappings),
 );
+
+routes.route(['/drawings', 'literature_references/geodata']).get(
+  passport.authenticate('basic', { session: false }),
+  queryParamsParser.validateParams(drawingsMappings),
+  controller.getItems(drawingsMappings),
+);
+
 routes.route('/:id').get(
   passport.authenticate('basic', { session: false }),
   // INFO: using works-mapping for all kinds of resources for now
