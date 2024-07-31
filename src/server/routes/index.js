@@ -34,7 +34,7 @@ routes.route(['/literature_references', 'literature_references/geodata']).get(
   controller.getItems(literatureMappings),
 );
 
-routes.route(['/drawings', 'literature_references/geodata']).get(
+routes.route(['/drawings', 'drawings/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(drawingsMappings),
   controller.getItems(drawingsMappings),
