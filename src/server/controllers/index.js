@@ -26,7 +26,6 @@ function getSingleItem(mappings) {
 
 function getItems(mappings) {
   return async (req, res) => {
-    // check if last element ends with /geodata or /geodata/
     const params = {
       entityTypes: mappings.getEntityTypes(),
       filters: req.api.filterParams,
@@ -37,7 +36,6 @@ function getItems(mappings) {
       showDataAll: req.query.show_data_all || false,
       sort: req.api.sortParams,
 
-      // check if path ends with /geodata or /geodata/
       geoData: req.path.match(/\/geodata\/?$/)
     };
 
