@@ -118,3 +118,5 @@ To add all available fields to the result set use the `show_data_all=true` param
 ### Example
 https://mivs02.gm.fh-koeln.de/?size=20&show_data_all=true
 
+
+

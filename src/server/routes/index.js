@@ -13,31 +13,28 @@ const archivalsMappings = new Mappings(MappingType.ARCHIVALS);
 const literatureMappings = new Mappings(MappingType.LITERATURE);
 const drawingsMappings = new Mappings(MappingType.DRAWINGS);
 
-routes.route('/').get(
+routes.route(['/', '/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(genericMappings),
   controller.getItems(genericMappings),
 );
-
-routes.route('/works').get(
+routes.route(['/works', '/works/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(worksMappings),
   controller.getItems(worksMappings),
 );
-
-routes.route('/archivals').get(
+routes.route(['/archivals', 'archivals/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(archivalsMappings),
   controller.getItems(archivalsMappings),
 );
-
-routes.route('/literature_references').get(
+routes.route(['/literature_references', 'literature_references/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(literatureMappings),
   controller.getItems(literatureMappings),
 );
 
-routes.route('/drawings').get(
+routes.route(['/drawings', 'drawings/geodata']).get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(drawingsMappings),
   controller.getItems(drawingsMappings),
