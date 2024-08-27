@@ -9,7 +9,6 @@ const routes = express.Router();
 
 const genericMappings = new Mappings(MappingType.GENERIC);
 const worksMappings = new Mappings(MappingType.WORKS);
-const drawingsMappings = new Mappings(MappingType.DRAWINGS);
 const archivalsMappings = new Mappings(MappingType.ARCHIVALS);
 const literatureMappings = new Mappings(MappingType.LITERATURE);
 
@@ -23,11 +22,7 @@ routes.route('/works').get(
   queryParamsParser.validateParams(worksMappings),
   controller.getItems(worksMappings),
 );
-routes.route('/drawings').get(
-  passport.authenticate('basic', { session: false }),
-  queryParamsParser.validateParams(drawingsMappings),
-  controller.getItems(drawingsMappings),
-);
+
 routes.route('/archivals').get(
   passport.authenticate('basic', { session: false }),
   queryParamsParser.validateParams(archivalsMappings),
