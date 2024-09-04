@@ -1,5 +1,33 @@
-
 class Aggregator {
+  static aggregateGeoData(dataHits) {
+    const results = dataHits.map((hit) => {
+      const data = hit._source;
+      const coordinates = {};
+      if (data.locations && data.locations.length > 0 && data.locations[0].geoPosition) {
+        coordinates.lat = data.locations[0].geoPosition.lat;
+        coordinates.lng = data.locations[0].geoPosition.lng;
+      } else {
+        coordinates.lat = null;
+        coordinates.lng = null;
+      }
+      const item = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates,
+        },
+        properties: {
+          description: data.description || null,
+          imgSrc: data.metadata.imgSrc,
+          title: data.metadata.title,
+        },
+      };
+      return item;
+    });
+
+    return results;
+  }
+
   static aggregateESFilterBuckets(params) {
     const { setAsAvailable } = params;
     const { aggregations } = params;
@@ -19,14 +47,13 @@ class Aggregator {
       }
       const { buckets } = currentAggregation;
 
-      // Filter out empty buckets  
+      // Filter out empty buckets
       let currentFilter = buckets.filter((bucket) => {
         if (bucket[aggregationKey].buckets.length > 0) {
           return true;
-        } else {
-          console.error(`Key in aggregation of '${aggregationKey}' does not exist`);
-          return false;
         }
+        console.error(`Key in aggregation of '${aggregationKey}' does not exist`);
+        return false;
       });
 
       currentFilter = currentFilter.map((bucket) => {
@@ -48,8 +75,7 @@ class Aggregator {
 
     const response = params;
     const { hits } = response;
-    const meta = {};
-    const result = {};
+
     // aggregate results
     // TODO: In DTOs bündeln
     const results = hits.hits.map((hit) => {
@@ -84,9 +110,7 @@ class Aggregator {
       return item;
     });
 
-    result.meta = meta;
-    result.results = results;
-    return result;
+    return results;
   }
 
   static aggregateFilterInfos(filterInfos, aggregation) {
