@@ -238,9 +238,10 @@ async function getItems(mappings, req, params) {
   } else {
     results = Aggregator.aggregateESResult(result.body.responses[1], mappings, showDataAll);
   }
+
   const ret = {};
   ret.meta = meta;
-  ret.results = results.results;
+  ret.results = results;
   ret.filters = aggregationsAll;
   ret.highlights = result.body.responses[1].highlight;
   return ret;
