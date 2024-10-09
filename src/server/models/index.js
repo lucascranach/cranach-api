@@ -232,16 +232,14 @@ async function getItems(mappings, req, params) {
     hits: result.body.responses[1].hits.total.value,
   };
 
-  let results = null;
+  const ret = {};
   if (params.geoData) {
-    results = Aggregator.aggregateGeoData(result.body.responses[1].hits.hits);
+    ret.features = Aggregator.aggregateGeoData(result.body.responses[1].hits.hits);
   } else {
-    results = Aggregator.aggregateESResult(result.body.responses[1], mappings, showDataAll);
+    ret.results = Aggregator.aggregateESResult(result.body.responses[1], mappings, showDataAll);
   }
 
-  const ret = {};
   ret.meta = meta;
-  ret.results = results;
   ret.filters = aggregationsAll;
   ret.highlights = result.body.responses[1].highlight;
   return ret;
