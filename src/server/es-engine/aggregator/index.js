@@ -19,6 +19,7 @@ class Aggregator {
         properties: {
           imgSrc: data.metadata.imgSrc,
           title: data.metadata.title,
+          description: data.description || null
         },
       };
       return item;
