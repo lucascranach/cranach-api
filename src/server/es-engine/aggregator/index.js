@@ -17,7 +17,6 @@ class Aggregator {
           coordinates,
         },
         properties: {
-          description: data.description || null,
           imgSrc: data.metadata.imgSrc,
           title: data.metadata.title,
         },
