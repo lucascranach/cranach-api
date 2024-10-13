@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - integration
+  pull_request:
+    branches:
+      - integration
+    types:
+      - closed
 
 jobs:
   deploy:
