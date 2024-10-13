@@ -1,0 +1,32 @@
+name: Deploy to Remote Server
+
+on:
+  push:
+    branches:
+      - integration
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the 'integration' branch
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+        with:
+          ref: integration
+
+      # Stop Docker container on the remote server
+      - name: Stop Docker container on the remote server
+        run: |
+          sshpass -p ${{ secrets.SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_DEV_HOST }} "cd ${{ secrets.REMOTE_DIR }} && docker-compose stop api"
+
+      # Copy repository files to the remote server
+      - name: Copy files to the remote server
+        run: |
+          sshpass -p ${{ secrets.SSH_PASSWORD }} rsync -avz --delete ./ ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_DEV_HOST }}:${{ secrets.REMOTE_DIR }}
+
+      # Start Docker container on the remote server
+      - name: Start Docker container on the remote server
+        run: |
+          sshpass -p ${{ secrets.SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_DEV_HOST }} "cd ${{ secrets.REMOTE_DIR }} && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d api"
