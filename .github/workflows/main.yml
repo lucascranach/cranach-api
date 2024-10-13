@@ -1,42 +1,32 @@
-name: Deploy on remote server
+name: Deploy to Remote Server
+
 on:
   push:
-    branches: [master]
-  pull_request:
-    branches: [master]
-    types: [closed]
+    branches:
+      - master
 
-jobs: 
-  build:
-    name: build image and deploy
+jobs:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-    - name: Copy folder content recursively to remote
-      uses: garygrossgarten/github-action-scp@release
-      with:
-        local: ./
-        remote: ${{ secrets.REMOTE_DIR }}cranach-api
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
-        rm: true
-    - name: docker-compose stop via SSH
-      uses: appleboy/ssh-action@master
-      with:
-        script: |
-          cd ${{ secrets.REMOTE_DIR }}cranach-docker
-          docker-compose stop api
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}  
-    - name: docker-compose up -d api via OPEN SSH Private Key
-      uses: appleboy/ssh-action@master
-      with:
-        script: |
-          cd ${{ secrets.REMOTE_DIR }}cranach-docker
-          docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d api
-        host: ${{ secrets.REMOTE_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        password: ${{ secrets.SSH_PASSWORD }}
+      # Checkout the 'master' branch
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      # Stop Docker container on the remote server
+      - name: Stop Docker container on the remote server
+        run: |
+          sshpass -p ${{ secrets.SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_HOST }} "cd ${{ secrets.REMOTE_DIR }}cranach-docker && docker-compose stop api"
+
+      # Copy repository files to the remote server
+      - name: Copy files to the remote server
+        run: |
+          sshpass -p ${{ secrets.SSH_PASSWORD }} rsync -avz --delete ./ ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_HOST }}:${{ secrets.REMOTE_DIR }}cranach-api
+
+      # Start Docker container on the remote server
+      - name: Start Docker container on the remote server
+        run: |
+          sshpass -p ${{ secrets.SSH_PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.REMOTE_HOST }} "cd ${{ secrets.REMOTE_DIR }}cranach-docker && docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d api"

@@ -1,28 +1,29 @@
 class Aggregator {
   static aggregateGeoData(dataHits) {
-    const results = dataHits.map((hit) => {
+    const results = [];
+    dataHits.forEach((hit) => {
       const data = hit._source;
-      const coordinates = {};
-      if (data.locations && data.locations.length > 0 && data.locations[0].geoPosition) {
-        coordinates.lat = data.locations[0].geoPosition.lat;
-        coordinates.lng = data.locations[0].geoPosition.lng;
-      } else {
-        coordinates.lat = null;
-        coordinates.lng = null;
+      if (!data.locations || !data.locations.length) {
+        return;
+      }
+      const location = data.locations[0];
+      if (!location.geoPosition) {
+        return;
       }
       const item = {
         type: 'Feature',
         geometry: {
           type: 'Point',
-          coordinates,
+          coordinates: [location.geoPosition.lng, location.geoPosition.lat],
         },
         properties: {
-          imgSrc: data.metadata.imgSrc,
+          img_src: data.metadata.imgSrc,
           title: data.metadata.title,
-          description: data.description || null
+          inventury_number: data.inventoryNumber,
+          location: location.term,
         },
       };
-      return item;
+      results.push(item);
     });
 
     return results;
