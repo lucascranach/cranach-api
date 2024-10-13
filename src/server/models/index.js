@@ -54,7 +54,6 @@ async function getSingleItem(mappings, params) {
 }
 
 async function getItems(mappings, req, params) {
-
   const queryBuilder = new Querybuilder();
 
   const entityTypeMapping = mappings.getMappingByKey('entity_type');
@@ -63,7 +62,7 @@ async function getItems(mappings, req, params) {
     values: params.entityTypes,
     valueField: entityTypeMapping.value,
     operator: 'eq',
-  }
+  };
 
   // Restrict filter aggregation to certain entity types
   queryBuilder.filterAggregation(entityFilter);
@@ -145,7 +144,6 @@ async function getItems(mappings, req, params) {
     queryBuilder.termsAggregation(aggregationParam);
   });
 
-
   const result = await submitESSearch({ body: queryBuilder.query });
 
   // Aggregate unfiltered filter buckets
@@ -221,7 +219,9 @@ async function getItems(mappings, req, params) {
   Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
     const translationKey = translations.getTranslation(aggregationKey, language) || aggregationKey;
     aggregationsAll[aggregationKey] = {
-      display_value: aggregationsAll[aggregationKey].display_value || translationKey || aggregationKey,
+      display_value: aggregationsAll[aggregationKey].display_value
+        || translationKey
+        || aggregationKey,
       values: aggregationsAll[aggregationKey].value || aggregationData,
     };
   });
@@ -232,11 +232,14 @@ async function getItems(mappings, req, params) {
     hits: result.body.responses[1].hits.total.value,
   };
 
-  const results = Aggregator.aggregateESResult(result.body.responses[1], mappings, showDataAll);
-
   const ret = {};
+  if (params.geoData) {
+    ret.features = Aggregator.aggregateGeoData(result.body.responses[1].hits.hits);
+  } else {
+    ret.results = Aggregator.aggregateESResult(result.body.responses[1], mappings, showDataAll);
+  }
+
   ret.meta = meta;
-  ret.results = results.results;
   ret.filters = aggregationsAll;
   ret.highlights = result.body.responses[1].highlight;
   return ret;

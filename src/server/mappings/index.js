@@ -4,6 +4,7 @@ const MappingType = {
   WORKS: 'works',
   ARCHIVALS: 'archivals',
   LITERATURE: 'literature',
+  DRAWINGS: 'drawings',
 };
 
 class Mappings {

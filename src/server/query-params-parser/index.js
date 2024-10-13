@@ -112,7 +112,6 @@ function validateFilterParams(req, res, mappings) {
       res.status(500).json({ success: false, error: `Not allowed filter type <${filterType}> for filter key <${filterKey}>` });
       res.end();
     }
-
     let filterValues = [];
 
     // Ranges and Wildcard search allows only one filter value
