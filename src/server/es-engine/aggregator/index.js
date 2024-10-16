@@ -19,7 +19,7 @@ class Aggregator {
         properties: {
           img_src: data.metadata.imgSrc,
           title: data.metadata.title,
-          inventury_number: data.inventoryNumber,
+          inventory_number: data.inventoryNumber,
           location: location.term,
         },
       };
