@@ -10,6 +10,8 @@ const routes = require('./routes');
 require('dotenv').config();
 const language = require('./language');
 
+const cacheMiddleware = require('./middlewares/cacheMiddleware');
+
 const app = express();
 const port = process.env.NODE_PORT || 8080;
 const useHTTPS = process.env.HTTPS || false;
@@ -46,6 +48,7 @@ function start() {
     .use(bodyParser.urlencoded({ extended: false }))
     .use(bodyParser.json())
     .use(language)
+    .use(cacheMiddleware)
     .use('/', routes)
     .use((_req, res) => res.status(404).json({ success: false, error: 'Route not found' }));
 }
