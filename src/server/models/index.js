@@ -135,7 +135,6 @@ async function getItems(mappings, req, params) {
   const mappingInventoryNumber = mappings.getMappingByKey('inventory_number');
   const excludeFilter = new FilterParam('inventory_number', excludedInventoryNumbers, 'neq', 'notequals', mappingInventoryNumber.value);
   queryBuilder.mustNot(excludeFilter);
-  console.log(excludeFilter);
 
   params.sort.forEach((sortParamObject) => {
     queryBuilder.sortBy(sortParamObject);
