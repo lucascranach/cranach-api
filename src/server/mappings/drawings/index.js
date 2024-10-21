@@ -158,7 +158,6 @@ const mappings = [
     filter_types: [],
     key: 'dating',
     value: 'metadata.date.keyword',
-    searchTermField: true,
   },
 
   // Datierung Beginn
@@ -497,7 +496,7 @@ const mappings = [
   },
 ];
 
-const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];
+const entityTypes = ['DRAWINGS'];
 
 module.exports = {
   mappings,

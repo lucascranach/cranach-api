@@ -1,5 +1,34 @@
-
 class Aggregator {
+  static aggregateGeoData(dataHits) {
+    const results = [];
+    dataHits.forEach((hit) => {
+      const data = hit._source;
+      if (!data.locations || !data.locations.length) {
+        return;
+      }
+      const location = data.locations[0];
+      if (!location.geoPosition) {
+        return;
+      }
+      const item = {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [location.geoPosition.lng, location.geoPosition.lat],
+        },
+        properties: {
+          img_src: data.metadata.imgSrc,
+          title: data.metadata.title,
+          inventory_number: data.inventoryNumber,
+          location: location.term,
+        },
+      };
+      results.push(item);
+    });
+
+    return results;
+  }
+
   static aggregateESFilterBuckets(params) {
     const { setAsAvailable } = params;
     const { aggregations } = params;
@@ -19,14 +48,13 @@ class Aggregator {
       }
       const { buckets } = currentAggregation;
 
-      // Filter out empty buckets  
+      // Filter out empty buckets
       let currentFilter = buckets.filter((bucket) => {
         if (bucket[aggregationKey].buckets.length > 0) {
           return true;
-        } else {
-          console.error(`Key in aggregation of '${aggregationKey}' does not exist`);
-          return false;
         }
+        console.error(`Key in aggregation of '${aggregationKey}' does not exist`);
+        return false;
       });
 
       currentFilter = currentFilter.map((bucket) => {
@@ -48,8 +76,7 @@ class Aggregator {
 
     const response = params;
     const { hits } = response;
-    const meta = {};
-    const result = {};
+
     // aggregate results
     // TODO: In DTOs bündeln
     const results = hits.hits.map((hit) => {
@@ -84,9 +111,7 @@ class Aggregator {
       return item;
     });
 
-    result.meta = meta;
-    result.results = results;
-    return result;
+    return results;
   }
 
   static aggregateFilterInfos(filterInfos, aggregation) {

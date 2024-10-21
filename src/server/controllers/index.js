@@ -1,5 +1,4 @@
 const model = require('../models');
-const { Mappings } = require('../mappings');
 
 function getSingleItem(mappings) {
   return async (req, res) => {
@@ -22,7 +21,7 @@ function getSingleItem(mappings) {
       console.log(err);
       res.status(500).json({ success: false, error: err.message });
     }
-  }
+  };
 }
 
 function getItems(mappings) {
@@ -36,6 +35,8 @@ function getItems(mappings) {
       searchterms: req.api.searchtermParams,
       showDataAll: req.query.show_data_all || false,
       sort: req.api.sortParams,
+
+      geoData: req.path.match(/\/geodata\/?$/)
     };
 
     const { query } = req;

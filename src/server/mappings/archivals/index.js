@@ -189,6 +189,7 @@ const mappings = [
   // },
 
   // Search sortingnumber
+  // eslint-disable-next-line max-len
   // TODO: 'searchSortingNumber' field does not exist yet, but mapping is currently needed because of it beeing used as default sorting field
   {
     display_value: 'searchSortingNumber.keyword',

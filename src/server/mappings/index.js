@@ -4,6 +4,7 @@ const MappingType = {
   WORKS: 'works',
   ARCHIVALS: 'archivals',
   LITERATURE: 'literature',
+  DRAWINGS: 'drawings',
 };
 
 class Mappings {
@@ -27,6 +28,7 @@ class Mappings {
   static defaultFilterType = 'eq';
   static defaultSortFieldKeys = ['search_sorting_number'];
   static defaultResponseSize = 100;
+  static excludedInvenoryNumbers = ['PRIVATE_NONE-P402'];
 
   static availableSortTypes = {
     asc: 'ascending',
