@@ -22,12 +22,9 @@ function cacheMiddleware(req, res, next) {
   // Check if the response exists in the cache
   const cachedResponse = cache.get(cacheKey);
   if (cachedResponse) {
-    console.log('Response from cache:', cacheKey);
     // Return the response from the cache
     return res.send(cachedResponse);
   }
-
-  console.log('Response not in cache:', cacheKey);
 
   // Store the original res.send function
   const originalSend = res.send.bind(res);
