@@ -23,6 +23,7 @@ function cacheMiddleware(req, res, next) {
   const cachedResponse = cache.get(cacheKey);
   if (cachedResponse) {
     // Return the response from the cache
+    res.setHeader('Content-Type', 'application/json');
     return res.send(cachedResponse);
   }
 
