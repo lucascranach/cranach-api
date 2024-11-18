@@ -10,7 +10,7 @@ const routes = require('./routes');
 require('dotenv').config();
 const language = require('./language');
 
-const cacheMiddleware = require('./middlewares/cacheZipMiddleware');
+const cacheGZipMiddleware = require('./middlewares/cacheGZipMiddleware');
 
 const app = express();
 const port = process.env.NODE_PORT || 8080;
