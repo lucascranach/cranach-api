@@ -366,6 +366,18 @@ const mappings = [
     showAsFilter: true,
     value: 'metadata.isPublished',
   },
+
+  // Inventarnummer
+  {
+    display_value: 'inventoryNumber.keyword',
+    showAsFilter: false,
+    showAsResult: false,
+    filter_types: ['equals', 'notequals', 'similar'],
+    key: 'inventory_number',
+    value: 'inventoryNumber.keyword',
+    searchTermField: false,
+  },
+
 ];
 
 const entityTypes = ['LITERATURE_REFERENCE'];
