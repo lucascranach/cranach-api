@@ -2,6 +2,7 @@ class Aggregator {
   static aggregateGeoData(dataHits) {
     const results = [];
     dataHits.forEach((hit) => {
+
       const data = hit._source;
       if (!data.locations || !data.locations.length) {
         return;
@@ -22,7 +23,8 @@ class Aggregator {
           inventory_number: data.inventoryNumber,
           involved_persons: data.involvedPersons.map((involvedPerson) => involvedPerson.name),
           location: location.term,
-          medium: data.medium,
+          // only take the first line of the medium
+          medium: data.medium.split('\n')[0],
           owner: data.owner,
           title: data.metadata.title,
         },
