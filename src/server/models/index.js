@@ -251,6 +251,7 @@ async function getItems(mappings, req, params) {
   const ret = {};
   if (params.geoData) {
     ret.features = Aggregator.aggregateGeoData(response.hits.hits);
+    ret.type = 'FeatureCollection';
   } else {
     ret.results = Aggregator.aggregateESResult(response, mappings, showDataAll);
     ret.filters = aggregationsAll;
