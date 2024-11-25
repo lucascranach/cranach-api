@@ -2,7 +2,6 @@ class Aggregator {
   static aggregateGeoData(dataHits) {
     const results = [];
     dataHits.forEach((hit) => {
-
       const data = hit._source;
       if (!data.locations || !data.locations.length) {
         return;
