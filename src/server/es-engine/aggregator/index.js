@@ -20,7 +20,7 @@ class Aggregator {
           dating: data.metadata.date,
           img_src: data.metadata.imgSrc,
           inventory_number: data.inventoryNumber,
-          involved_persons: data.involvedPersons.map((involvedPerson) => involvedPerson.name),
+          involved_person: data.involvedPersons[0].name,
           location: location.term,
           // only take the first line of the medium
           medium: data.medium.split('\n')[0],
