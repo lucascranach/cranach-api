@@ -17,10 +17,15 @@ class Aggregator {
           coordinates: [location.geoPosition.lng, location.geoPosition.lat],
         },
         properties: {
+          dating: data.metadata.date,
           img_src: data.metadata.imgSrc,
-          title: data.metadata.title,
           inventory_number: data.inventoryNumber,
+          involved_person: data.involvedPersons[0].name,
           location: location.term,
+          // only take the first line of the medium
+          medium: data.medium.split('\n')[0],
+          owner: data.owner,
+          title: data.metadata.title,
         },
       };
       results.push(item);
