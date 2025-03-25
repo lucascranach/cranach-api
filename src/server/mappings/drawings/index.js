@@ -40,12 +40,12 @@ const mappings = [
 
   // Zuschreibung
   {
-    display_value: 'filterInfos.attribution.id',
+    display_value: 'filterInfos.attribution.id.keyword',
     showAsFilter: true,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
-    value: 'filterInfos.attribution.id',
+    value: 'filterInfos.attribution.id.keyword',
     nestedPath: 'filterInfos.attribution',
     sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
@@ -95,11 +95,11 @@ const mappings = [
 
   // Sammlung / Standort
   {
-    display_value: 'filterInfos.collection_repository.id',
+    display_value: 'filterInfos.collection_repository.id.keyword',
     key: 'collection_repository',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.collection_repository.id',
+    value: 'filterInfos.collection_repository.id.keyword',
     nestedPath: 'filterInfos.collection_repository',
     filter_types: ['equals', 'notequals', 'similar'],
     filterInfos: true,
@@ -107,11 +107,11 @@ const mappings = [
 
   // Untersuchungstechniken
   {
-    display_value: 'filterInfos.examination_analysis.id',
+    display_value: 'filterInfos.examination_analysis.id.keyword',
     key: 'examination_analysis',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.examination_analysis.id',
+    value: 'filterInfos.examination_analysis.id.keyword',
     nestedPath: 'filterInfos.examination_analysis',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
@@ -119,11 +119,11 @@ const mappings = [
 
   // Katalog
   {
-    display_value: 'filterInfos.catalog.id',
+    display_value: 'filterInfos.catalog.id.keyword',
     key: 'catalog',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.catalog.id',
+    value: 'filterInfos.catalog.id.keyword',
     nestedPath: 'filterInfos.catalog',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
@@ -354,11 +354,11 @@ const mappings = [
 
   // Inhalt
   {
-    display_value: 'filterInfos.subject.id',
+    display_value: 'filterInfos.subject.id.keyword',
     key: 'subject',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.subject.id',
+    value: 'filterInfos.subject.id.keyword',
     nestedPath: 'filterInfos.subject',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
@@ -442,23 +442,23 @@ const mappings = [
 
   // Catalog Work Reference
   {
-    display_value: 'catalogWorkReferences.description',
+    display_value: 'catalogWorkReferences.description.keyword',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_name',
-    value: 'catalogWorkReferences.description',
+    value: 'catalogWorkReferences.description.keyword',
     nestedPath: 'catalogWorkReferences',
   },
 
   // Catalog Work Reference Number
   {
-    display_value: 'catalogWorkReferences.referenceNumber',
+    display_value: 'catalogWorkReferences.referenceNumber.keyword',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_work_reference_number',
-    value: 'catalogWorkReferences.referenceNumber',
+    value: 'catalogWorkReferences.referenceNumber.keyword',
     nestedPath: 'catalogWorkReferences',
   },
 
