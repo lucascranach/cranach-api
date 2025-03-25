@@ -24,7 +24,7 @@ class Aggregator {
           location: location.term,
           // only take the first line of the medium
           medium: data.medium.split('\n')[0],
-          owner: data.owner,
+          owner: data.repository,
           title: data.metadata.title,
         },
       };
