@@ -23,6 +23,7 @@ async function submitESSearch(params) {
     const result = await esclient.msearch(params);
     return result;
   } catch (error) {
+    console.error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
     throw new Error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
   }
 }
@@ -38,14 +39,18 @@ async function getSingleItem(mappings, params) {
   queryBuilder.size = 1;
   queryBuilder.from = 0;
 
-  const result = await submitESSearch({ body: queryBuilder.query });
   const { body: { took } } = result;
   const meta = {
     took,
     hits: result.body.responses[0].hits.total.value,
   };
 
-  const results = Aggregator.aggregateESResult(result.body.responses[0], mappings, showDataAll);
+  try {
+    const results = Aggregator.aggregateESResult(result.body.responses[0], mappings, showDataAll);
+  } catch (error) {
+    console.error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
+    throw new Error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
+  }
 
   return {
     meta,
@@ -142,104 +147,110 @@ async function getItems(mappings, req, params) {
   let result;
   let response;
   let aggregationsAll;
+  try {
+    if (params.geoData) {
+      result = await submitESSearch({ body: queryBuilder.query });
+      [response] = result.body.responses;
+    } else {
+      mappings.getVisibleFilters().forEach((filter) => {
+        const aggregationParam = new AggregationParam(
+          filter.key,
+          filter.value,
+          filter.display_value,
+          filter.nestedPath || null,
+        );
+        queryBuilder.termsAggregation(aggregationParam);
+      });
 
-  if (params.geoData) {
-    result = await submitESSearch({ body: queryBuilder.query });
-    [response] = result.body.responses;
-  } else {
-    mappings.getVisibleFilters().forEach((filter) => {
-      const aggregationParam = new AggregationParam(
-        filter.key,
-        filter.value,
-        filter.display_value,
-        filter.nestedPath || null,
-      );
-      queryBuilder.termsAggregation(aggregationParam);
-    });
+      result = await submitESSearch({ body: queryBuilder.query });
+      [, response] = result.body.responses;
 
-    result = await submitESSearch({ body: queryBuilder.query });
-    [, response] = result.body.responses;
+      // Aggregate unfiltered filter buckets
+      aggregationsAll = Aggregator.aggregateESFilterBuckets({
+        aggregations: result.body.responses[0].aggregations,
+        setAsAvailable: false,
+        allFilters: true,
+        mappings,
+      });
 
-    // Aggregate unfiltered filter buckets
-    aggregationsAll = Aggregator.aggregateESFilterBuckets({
-      aggregations: result.body.responses[0].aggregations,
-      setAsAvailable: false,
-      allFilters: true,
-      mappings,
-    });
-
-    // Aggregate filtered filter buckets
-    const aggregationsFiltered = Aggregator.aggregateESFilterBuckets({
-      aggregations: result.body.responses[1].aggregations,
-      setAsAvailable: true,
-      mappings,
-    });
-
-    // Aggregate filter buckets of multi filters
-    const mustMultiFilters = queryBuilder.getMustMultiFilters();
-
-    const agregationsMultiFilter = {};
-    Object.keys(mustMultiFilters).forEach((searchParamsMultiFilter, currentIndex) => {
-      const currentAggregation = Aggregator.aggregateESFilterBuckets({
-        aggregations: result.body.responses[currentIndex + 2].aggregations,
+      // Aggregate filtered filter buckets
+      const aggregationsFiltered = Aggregator.aggregateESFilterBuckets({
+        aggregations: result.body.responses[1].aggregations,
         setAsAvailable: true,
         mappings,
       });
 
-      const filterKey = searchParamsMultiFilter.key;
-      // TODO: Das geht bestimmt auch eleganter
-      agregationsMultiFilter[filterKey] = currentAggregation[filterKey];
-    });
+      // Aggregate filter buckets of multi filters
+      const mustMultiFilters = queryBuilder.getMustMultiFilters();
 
-    const aggregationKeys = Object.keys(aggregationsAll);
-
-    // Merge all and available filters
-    aggregationKeys.forEach((aggregationKey) => {
-      const currentAggregationAll = aggregationsAll[aggregationKey];
-      const currentAggregationFiltered = aggregationsFiltered[aggregationKey];
-      const filterInfosClone = JSON.parse(JSON.stringify(filterInfos[req.language]));
-
-      // Aggregate filterInfos filter
-      if (mappings.isFilterInfosFilter(aggregationKey)) {
-        const currentFilterInfos = filterInfosClone.find((filter) => filter.id === aggregationKey);
-        Aggregator.aggregateFilterInfos(currentFilterInfos.children, currentAggregationFiltered);
-        aggregationsAll[aggregationKey] = {
-          display_value: currentFilterInfos.text,
-          value: currentFilterInfos.children,
-        };
-
-        // Aggregate other filters
-      } else {
-        currentAggregationFiltered.forEach((aggregationFiltered) => {
-          // eslint-disable-next-line arrow-body-style
-          const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
-            return aggregationAll.display_value === aggregationFiltered.display_value;
-          });
-          if (indexOfAggregation > -1) {
-            aggregationsAll[aggregationKey][indexOfAggregation].is_available = true;
-            // eslint-disable-next-line max-len
-            aggregationsAll[aggregationKey][indexOfAggregation].doc_count = aggregationFiltered.doc_count;
-          }
+      const agregationsMultiFilter = {};
+      Object.keys(mustMultiFilters).forEach((searchParamsMultiFilter, currentIndex) => {
+        const currentAggregation = Aggregator.aggregateESFilterBuckets({
+          aggregations: result.body.responses[currentIndex + 2].aggregations,
+          setAsAvailable: true,
+          mappings,
         });
-      }
-    });
 
-    // Merge multi filters
-    Object.entries(agregationsMultiFilter).forEach(([aggregationKey, aggregationData]) => {
-      aggregationsAll[aggregationKey] = aggregationData;
-    });
+        const filterKey = searchParamsMultiFilter.key;
+        // TODO: Das geht bestimmt auch eleganter
+        agregationsMultiFilter[filterKey] = currentAggregation[filterKey];
+      });
 
-    // Enrich filter keys with translations
-    Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
-      const translationKey = translations.getTranslation(aggregationKey, language)
-        || aggregationKey;
-      aggregationsAll[aggregationKey] = {
-        display_value: aggregationsAll[aggregationKey].display_value
-          || translationKey
-          || aggregationKey,
-        values: aggregationsAll[aggregationKey].value || aggregationData,
-      };
-    });
+      const aggregationKeys = Object.keys(aggregationsAll);
+
+      // Merge all and available filters
+      aggregationKeys.forEach((aggregationKey) => {
+        const currentAggregationAll = aggregationsAll[aggregationKey];
+        const currentAggregationFiltered = aggregationsFiltered[aggregationKey];
+        const filterInfosClone = JSON.parse(JSON.stringify(filterInfos[req.language]));
+
+        // Aggregate filterInfos filter
+        if (mappings.isFilterInfosFilter(aggregationKey)) {
+          const currentFilterInfos = filterInfosClone.find(
+            (filter) => filter.id === aggregationKey,
+          );
+          Aggregator.aggregateFilterInfos(currentFilterInfos.children, currentAggregationFiltered);
+          aggregationsAll[aggregationKey] = {
+            display_value: currentFilterInfos.text,
+            value: currentFilterInfos.children,
+          };
+
+          // Aggregate other filters
+        } else {
+          currentAggregationFiltered.forEach((aggregationFiltered) => {
+            // eslint-disable-next-line arrow-body-style
+            const indexOfAggregation = currentAggregationAll.findIndex((aggregationAll) => {
+              return aggregationAll.display_value === aggregationFiltered.display_value;
+            });
+            if (indexOfAggregation > -1) {
+              aggregationsAll[aggregationKey][indexOfAggregation].is_available = true;
+              // eslint-disable-next-line max-len
+              aggregationsAll[aggregationKey][indexOfAggregation].doc_count = aggregationFiltered.doc_count;
+            }
+          });
+        }
+      });
+
+      // Merge multi filters
+      Object.entries(agregationsMultiFilter).forEach(([aggregationKey, aggregationData]) => {
+        aggregationsAll[aggregationKey] = aggregationData;
+      });
+
+      // Enrich filter keys with translations
+      Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
+        const translationKey = translations.getTranslation(aggregationKey, language)
+          || aggregationKey;
+        aggregationsAll[aggregationKey] = {
+          display_value: aggregationsAll[aggregationKey].display_value
+            || translationKey
+            || aggregationKey,
+          values: aggregationsAll[aggregationKey].value || aggregationData,
+        };
+      });
+    }
+  } catch (error) {
+    console.error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
+    throw new Error(`Elasticsearch does not provide a response: ${JSON.stringify(error.meta.body.error)}`);
   }
 
   const { body: { took } } = result;
