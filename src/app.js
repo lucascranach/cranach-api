@@ -1,8 +1,8 @@
 const passport = require('passport');
 const { BasicStrategy } = require('passport-http');
-
 const elastic = require('./elastic');
 const server = require('./server');
+
 require('dotenv').config();
 
 server.start();
