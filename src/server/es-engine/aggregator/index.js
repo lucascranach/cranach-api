@@ -58,7 +58,6 @@ class Aggregator {
         if (bucket[aggregationKey].buckets.length > 0) {
           return true;
         }
-        console.error(`Key in aggregation of '${aggregationKey}' does not exist`);
         return false;
       });
 
