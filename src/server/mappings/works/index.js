@@ -279,6 +279,15 @@ const mappings = [
     searchTermField: true,
   },
 
+  // References - Reprints
+  {
+    display_value: 'references.reprints',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'references_reprints',
+  },
+
   // Object name
   {
     display_value: 'objectName.keyword',
