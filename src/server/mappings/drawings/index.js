@@ -107,11 +107,11 @@ const mappings = [
 
   // Untersuchungstechniken
   {
-    display_value: 'filterInfos.examination_analysis.id',
+    display_value: 'filterInfos.examination_analysis.id.keyword',
     key: 'examination_analysis',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.examination_analysis.id',
+    value: 'filterInfos.examination_analysis.id.keyword',
     nestedPath: 'filterInfos.examination_analysis',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
@@ -442,23 +442,23 @@ const mappings = [
 
   // Catalog Work Reference
   {
-    display_value: 'catalogWorkReferences.description',
+    display_value: 'catalogWorkReferences.description.keyword',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_name',
-    value: 'catalogWorkReferences.description',
+    value: 'catalogWorkReferences.description.keyword',
     nestedPath: 'catalogWorkReferences',
   },
 
   // Catalog Work Reference Number
   {
-    display_value: 'catalogWorkReferences.referenceNumber',
+    display_value: 'catalogWorkReferences.referenceNumber.keyword',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_work_reference_number',
-    value: 'catalogWorkReferences.referenceNumber',
+    value: 'catalogWorkReferences.referenceNumber.keyword',
     nestedPath: 'catalogWorkReferences',
   },
 

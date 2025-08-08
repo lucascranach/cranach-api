@@ -284,6 +284,15 @@ const mappings = [
     searchTermField: true,
   },
 
+  // References - Reprints
+  {
+    display_value: 'references.reprints',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'references_reprints',
+  },
+
   // Object name
   {
     display_value: 'objectName.keyword',
@@ -459,23 +468,23 @@ const mappings = [
 
   // Catalog Work Reference
   {
-    display_value: 'catalogWorkReferences.description',
+    display_value: 'catalogWorkReferences.description.keyword',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_name',
-    value: 'catalogWorkReferences.description',
+    value: 'catalogWorkReferences.description.keyword',
     nestedPath: 'catalogWorkReferences',
   },
 
   // Catalog Work Reference Number
   {
-    display_value: 'catalogWorkReferences.referenceNumber',
+    display_value: 'catalogWorkReferences.referenceNumber.keyword',
     showAsFilter: true,
     showAsResult: false,
     filter_types: ['equals', 'notequals', 'similar'],
     key: 'catalog_work_reference_number',
-    value: 'catalogWorkReferences.referenceNumber',
+    value: 'catalogWorkReferences.referenceNumber.keyword',
     nestedPath: 'catalogWorkReferences',
   },
 
