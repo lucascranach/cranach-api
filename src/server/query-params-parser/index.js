@@ -152,7 +152,10 @@ function validatePaginationParams(req) {
 
 function validateParams(mappings) {
   return function (req, res, next) {
-    req.api = {};
+    // Initialize req.api if it doesn't exist, but don't overwrite existing properties
+    if (!req.api) {
+      req.api = {};
+    }
 
     validateSearchTermParams(req, mappings);
     validateSortParams(req, res, mappings);

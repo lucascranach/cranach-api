@@ -16,7 +16,26 @@ function getSingleItem(mappings) {
     };
     try {
       const result = await model.getSingleItem(params, mappings);
-      res.json({ data: result });
+
+      // Set appropriate Content-Type header
+      if (req.api && req.api.contentType) {
+        res.type(req.api.contentType);
+      }
+
+      // Format response based on requested format
+      const format = req.api && req.api.format ? req.api.format : 'json';
+
+      if (format === 'json') {
+        res.json({ data: result });
+      } else if (format === 'lido') {
+        // TODO: Implement LIDO transformation
+        res.status(501).json({ 
+          error: 'LIDO format not yet implemented',
+          message: 'LIDO transformation will be added in the next step'
+        });
+      } else {
+        res.json({ data: result });
+      }
     } catch (err) {
       console.log(err);
       res.status(500).json({ success: false, error: err.message });
@@ -44,7 +63,28 @@ function getItems(mappings) {
     // }
     try {
       const result = await model.getItems(mappings, query, params);
-      res.json({ data: result });
+
+      // Set appropriate Content-Type header
+      if (req.api && req.api.contentType) {
+        res.type(req.api.contentType);
+      }
+
+      console.log(req.api.format);
+
+      // Format response based on requested format
+      const format = req.api && req.api.format ? req.api.format : 'json';
+
+      if (format === 'json') {
+        res.json({ data: result });
+      } else if (format === 'lido') {
+        // TODO: Implement LIDO transformation
+        res.status(501).json({ 
+          error: 'LIDO format not yet implemented',
+          message: 'LIDO transformation will be added in the next step'
+        });
+      } else {
+        res.json({ data: result });
+      }
     } catch (err) {
       console.log(err);
       res.status(500).json({ success: false, error: err.message });

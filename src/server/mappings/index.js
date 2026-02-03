@@ -8,7 +8,7 @@ const MappingType = {
 };
 
 class Mappings {
-  static specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all'];
+  static specialParams = ['size', 'from', 'sort_by', 'language', 'searchterm', 'show_data_all', 'format'];
 
   static availableFilterTypes = {
     eq: 'equals',
