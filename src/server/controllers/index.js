@@ -1,4 +1,5 @@
 const model = require('../models');
+const Aggregator = require('../es-engine/aggregator');
 
 function getSingleItem(mappings) {
   return async (req, res) => {
@@ -13,9 +14,13 @@ function getSingleItem(mappings) {
     const params = {
       id,
       language: req.query.language,
+      showDataAll: req.query.show_data_all || false,
     };
     try {
       const result = await model.getSingleItem(params, mappings);
+
+      // Aggregate complete response using Aggregator
+      const data = Aggregator.aggregateSingleItemResponse(result, mappings, params.showDataAll);
 
       // Set appropriate Content-Type header
       if (req.api && req.api.contentType) {
@@ -26,7 +31,7 @@ function getSingleItem(mappings) {
       const format = req.api && req.api.format ? req.api.format : 'json';
 
       if (format === 'json') {
-        res.json({ data: result });
+        res.json({ data });
       } else if (format === 'lido') {
         // TODO: Implement LIDO transformation
         res.status(501).json({ 
@@ -34,7 +39,7 @@ function getSingleItem(mappings) {
           message: 'LIDO transformation will be added in the next step'
         });
       } else {
-        res.json({ data: result });
+        res.json({ data });
       }
     } catch (err) {
       console.log(err);
@@ -62,14 +67,19 @@ function getItems(mappings) {
 
     // }
     try {
-      const result = await model.getItems(mappings, query, params);
+      const rawResult = await model.getItems(mappings, query, params);
+
+      // Aggregate complete response using Aggregator
+      const result = params.geoData 
+        ? Aggregator.aggregateGeoDataResponse(rawResult.result)
+        : Aggregator.aggregateItemsResponse(
+          rawResult.result, rawResult.queryBuilder, mappings, params
+        );
 
       // Set appropriate Content-Type header
       if (req.api && req.api.contentType) {
         res.type(req.api.contentType);
       }
-
-      console.log(req.api.format);
 
       // Format response based on requested format
       const format = req.api && req.api.format ? req.api.format : 'json';
