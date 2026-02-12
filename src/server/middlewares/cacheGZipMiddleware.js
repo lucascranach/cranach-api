@@ -29,12 +29,16 @@ function cacheGZipMiddleware(req, res, next) {
   const cachedResponse = cache.get(cacheKey);
 
   if (cachedResponse) {
-    // If the response is found in the cache and the client accepts gzip, set the Content-Encoding header
+    // If the response is found in the cache and the
+    // client accepts gzip, set the Content-Encoding header
     if (acceptsGzip) {
       res.setHeader('Content-Encoding', 'gzip');
     }
-    res.setHeader('Content-Type', 'application/json');
-    return res.send(cachedResponse);
+    // Restore the cached Content-Type
+    if (cachedResponse.contentType) {
+      res.setHeader('Content-Type', cachedResponse.contentType);
+    }
+    return res.send(cachedResponse.body);
   }
 
   // Save the original res.send function
@@ -42,29 +46,36 @@ function cacheGZipMiddleware(req, res, next) {
 
   // Override res.send to store the response in the cache
   res.send = (body) => {
-
     // if the response is not successful, do not cache it
     if (res.statusCode !== 200) {
       return originalSend(body);
     }
 
+    // Get the Content-Type that was set by the controller
+    const contentType = res.getHeader('Content-Type') || 'application/json';
+
+    // Convert body to string if it's an object (for JSON responses)
+    const bodyString = typeof body === 'object'
+      ? JSON.stringify(body)
+      : body;
+
     // If gzip is accepted, compress the response and store it in the cache
     if (acceptsGzip) {
-      zlib.gzip(body, (err, compressedBody) => {
+      zlib.gzip(bodyString, (err, compressedBody) => {
         if (err) {
           console.error('Compression error:', err);
           return originalSend(body);
         }
 
-        // Store the compressed response in the cache
-        cache.set(`${req.originalUrl}-gzip`, compressedBody);
+        // Store the compressed response with content type in the cache
+        cache.set(`${req.originalUrl}-gzip`, { body: compressedBody, contentType });
 
         // Send the uncompressed response
         originalSend(body);
       });
     } else {
-      // If gzip is not accepted, store the uncompressed response in the cache
-      cache.set(cacheKey, body);
+      // If gzip is not accepted, store the uncompressed response with content type in the cache
+      cache.set(cacheKey, { body: bodyString, contentType });
       originalSend(body);
     }
   };

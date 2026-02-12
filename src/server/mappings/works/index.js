@@ -42,7 +42,7 @@ const mappings = [
   {
     display_value: 'filterInfos.attribution.id',
     showAsFilter: true,
-    showAsResult: true,
+    showAsResult: false,
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
     value: 'filterInfos.attribution.id',
@@ -504,6 +504,29 @@ const mappings = [
     showAsFilter: true,
     value: 'metadata.isPublished',
   },
+
+  // LIDO ObjectWorkType - Value
+  {
+    key: 'objectworktype_value',
+    display_value: '',
+    showAsFilter: false,
+    showAsResult: true,
+    aggregateResult(data) {
+      return (data.filterInfos.technique[0].text);
+    },
+  },
+
+  //LIDO ObjectWorkType - ID
+  {
+    key: 'objectworktype_id',
+    display_value: '',
+    showAsFilter: false,
+    showAsResult: true,
+    aggregateResult(data) {
+      return (data.filterInfos.technique[0].id);
+    },
+  },
+
 ];
 
 const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];

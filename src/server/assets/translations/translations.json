@@ -2,5 +2,9 @@
   "entity_type": {
     "de": "Art",
     "en": "Type"
+  },
+  "einzelobjekt": {
+    "de": "Einzelobjekt (Katalogisierungsebene)",
+    "en": "Individual object (cataloguing level)"
   }
 }

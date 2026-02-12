@@ -1,5 +1,6 @@
 const model = require('../models');
 const Aggregator = require('../es-engine/aggregator');
+const FormatterFactory = require('../formatters/formatter-factory');
 
 function getSingleItem(mappings) {
   return async (req, res) => {
@@ -16,31 +17,21 @@ function getSingleItem(mappings) {
       language: req.query.language,
       showDataAll: req.query.show_data_all || false,
     };
+
     try {
-      const result = await model.getSingleItem(params, mappings);
+      const result = await model.getSingleItem(mappings, params);
 
       // Aggregate complete response using Aggregator
       const data = Aggregator.aggregateSingleItemResponse(result, mappings, params.showDataAll);
 
-      // Set appropriate Content-Type header
-      if (req.api && req.api.contentType) {
-        res.type(req.api.contentType);
-      }
-
       // Format response based on requested format
       const format = req.api && req.api.format ? req.api.format : 'json';
+      const formatter = FormatterFactory.getFormatter(format, mappings);
 
-      if (format === 'json') {
-        res.json({ data });
-      } else if (format === 'lido') {
-        // TODO: Implement LIDO transformation
-        res.status(501).json({ 
-          error: 'LIDO format not yet implemented',
-          message: 'LIDO transformation will be added in the next step'
-        });
-      } else {
-        res.json({ data });
-      }
+      const output = formatter.formatSingleItem(data, params.language);
+
+      // Send formatted output with correct content type
+      res.type(formatter.getContentType()).send(output);
     } catch (err) {
       console.log(err);
       res.status(500).json({ success: false, error: err.message });
@@ -59,9 +50,10 @@ function getItems(mappings) {
       searchterms: req.api.searchtermParams,
       showDataAll: req.query.show_data_all || false,
       sort: req.api.sortParams,
-
-      geoData: req.path.match(/\/geodata\/?$/)
+      geoData: req.path.match(/\/geodata\/?$/),
     };
+
+
 
     const { query } = req;
 
@@ -70,31 +62,29 @@ function getItems(mappings) {
       const rawResult = await model.getItems(mappings, query, params);
 
       // Aggregate complete response using Aggregator
-      const result = params.geoData 
+      const result = params.geoData
         ? Aggregator.aggregateGeoDataResponse(rawResult.result)
         : Aggregator.aggregateItemsResponse(
-          rawResult.result, rawResult.queryBuilder, mappings, params
+          rawResult.result, rawResult.queryBuilder, mappings, params,
         );
-
-      // Set appropriate Content-Type header
-      if (req.api && req.api.contentType) {
-        res.type(req.api.contentType);
-      }
 
       // Format response based on requested format
       const format = req.api && req.api.format ? req.api.format : 'json';
+      const formatter = FormatterFactory.getFormatter(format, mappings);
 
-      if (format === 'json') {
-        res.json({ data: result });
-      } else if (format === 'lido') {
-        // TODO: Implement LIDO transformation
+      if (format === 'lido') {
+        // LIDO format for multiple items not yet implemented
         res.status(501).json({ 
-          error: 'LIDO format not yet implemented',
-          message: 'LIDO transformation will be added in the next step'
+          error: 'LIDO format for multiple items not yet implemented',
+          message: 'Currently only single item LIDO export is supported'
         });
-      } else {
-        res.json({ data: result });
+        return;
       }
+
+      const output = formatter.formatItems(result, params);
+
+      // Send formatted output with correct content type
+      res.type(formatter.getContentType()).send(output);
     } catch (err) {
       console.log(err);
       res.status(500).json({ success: false, error: err.message });

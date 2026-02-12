@@ -1,6 +1,6 @@
 class Aggregator {
   static #filterInfos = null;
-  static #translations = null;
+  static translations = require('../../translations');
 
   /**
    * Lazy load filter infos from JSON files
@@ -18,18 +18,6 @@ class Aggregator {
       };
     }
     return Aggregator.#filterInfos;
-  }
-
-  /**
-   * Lazy load translations module
-   * Loads and caches translations on first access
-   * @returns {Object} Translations module
-   */
-  static getTranslations() {
-    if (!Aggregator.#translations) {
-      Aggregator.#translations = require('../../translations');
-    }
-    return Aggregator.#translations;
   }
 
   /**
@@ -228,15 +216,20 @@ class Aggregator {
       visibleResults.forEach((configItem) => {
         let currentObject = hit._source;
 
-        // Split the display value
-        const splittedDisplayValues = configItem.display_value.split('.');
+        if (configItem.aggregateResult) {
+          currentObject = configItem.aggregateResult(currentObject);
+        } else {
 
-        splittedDisplayValues.forEach((currentDisplayValue) => {
-          // create Object of config parts
-          currentObject = (currentObject[currentDisplayValue])
-            ? currentObject[currentDisplayValue]
-            : '';
-        });
+          // Split the display value
+          const splittedDisplayValues = configItem.display_value.split('.');
+
+          splittedDisplayValues.forEach((currentDisplayValue) => {
+            // create Object of config parts
+            currentObject = (currentObject[currentDisplayValue])
+              ? currentObject[currentDisplayValue]
+              : '';
+          });
+        }
         item[configItem.key] = currentObject;
       });
 
@@ -320,10 +313,9 @@ class Aggregator {
    */
   static aggregateAllFilters(params) {
     const { esResult, mappings, queryBuilder, language } = params;
-    
+
     // Get internal resources
     const filterInfos = Aggregator.getFilterInfos();
-    const translations = Aggregator.getTranslations();
 
     // Aggregate unfiltered filter buckets
     let aggregationsAll = Aggregator.aggregateESFilterBuckets({
@@ -395,7 +387,7 @@ class Aggregator {
 
     // Enrich filter keys with translations
     Object.entries(aggregationsAll).forEach(([aggregationKey, aggregationData]) => {
-      const translationKey = translations.getTranslation(aggregationKey, language)
+      const translationKey = Aggregator.translations.getTranslation(aggregationKey, language)
         || aggregationKey;
       aggregationsAll[aggregationKey] = {
         display_value: aggregationsAll[aggregationKey].display_value
