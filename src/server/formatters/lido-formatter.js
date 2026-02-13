@@ -83,7 +83,7 @@ class LidoFormatter extends BaseFormatter {
     const objectClassificationWrap = descriptiveMetadata.ele('lido:objectClassificationWrap');
     const objectWorkTypeWrap = objectClassificationWrap.ele('lido:objectWorkTypeWrap');
     const objectWorkType = objectWorkTypeWrap.ele('lido:objectWorkType');
-    
+
     objectWorkType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
       'lido:pref': 'preferred',
@@ -96,7 +96,7 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'de',
       }).txt(languageData.de.objectworktype_value);
     }
-    
+
     if (languageData.en && languageData.en.objectworktype_value) {
       objectWorkType.ele('lido:term', {
         'lido:pref': 'preferred',
@@ -110,7 +110,7 @@ class LidoFormatter extends BaseFormatter {
     const titleSet = titleWrap.ele('lido:titleSet', {
       'lido:type': 'http://vocab.getty.edu/aat/300417200',
     });
-    
+
     // Output multilingual titles - always output both de and en in consistent order
     if (languageData.de && languageData.de.title) {
       titleSet.ele('lido:appellationValue', {
@@ -118,7 +118,7 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'de',
       }).txt(languageData.de.title);
     }
-    
+
     if (languageData.en && languageData.en.title) {
       titleSet.ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
@@ -145,13 +145,13 @@ class LidoFormatter extends BaseFormatter {
     // Output multilingual terms in both German and English (from translations)
     const einzelobjektDe = translations.getTranslation('einzelobjekt', 'de');
     const einzelobjektEn = translations.getTranslation('einzelobjekt', 'en');
-    
+
     if (einzelobjektDe) {
       recordType.ele('lido:term', {
         'xml:lang': 'de',
       }).txt(einzelobjektDe);
     }
-    
+
     if (einzelobjektEn) {
       recordType.ele('lido:term', {
         'xml:lang': 'en',
