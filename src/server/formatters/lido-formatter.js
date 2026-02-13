@@ -86,20 +86,17 @@ class LidoFormatter extends BaseFormatter {
 
     objectWorkType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      'lido:pref': 'preferred',
     }).txt(this.getObjectWorkTypeURI(primaryData.objectworktype_id));
 
     // Output multilingual terms - always output both de and en in consistent order
     if (languageData.de && languageData.de.objectworktype_value) {
       objectWorkType.ele('lido:term', {
-        'lido:pref': 'preferred',
         'xml:lang': 'de',
       }).txt(languageData.de.objectworktype_value);
     }
 
     if (languageData.en && languageData.en.objectworktype_value) {
       objectWorkType.ele('lido:term', {
-        'lido:pref': 'preferred',
         'xml:lang': 'en',
       }).txt(languageData.en.objectworktype_value);
     }
@@ -215,13 +212,11 @@ class LidoFormatter extends BaseFormatter {
     const objectWorkType = objectWorkTypeWrap.ele('lido:objectWorkType');
     objectWorkType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      'lido:pref': 'preferred',
     }).txt(this.getObjectWorkTypeURI(data.objectworktype_id));
 
     // Single language output
     if (data.objectworktype_value) {
       objectWorkType.ele('lido:term', {
-        'lido:pref': 'preferred',
         'xml:lang': language,
       }).txt(data.objectworktype_value);
     }
