@@ -79,12 +79,40 @@ class Aggregator {
    * @param {Object} esResult - Complete Elasticsearch result
    * @param {Object} mappings - Mappings object
    * @param {boolean} showDataAll - Whether to include all data
+   * @param {boolean} fetchBothLanguages - Whether both language data was fetched
+   * @param {string} primaryLanguage - Primary language of the request
    * @returns {Object} Complete response object with meta and results
    */
-  static aggregateSingleItemResponse(esResult, mappings, showDataAll = false) {
+  static aggregateSingleItemResponse(esResult, mappings, showDataAll = false, fetchBothLanguages = false, primaryLanguage = 'de') {
     const response = esResult.body.responses[0];
     const meta = Aggregator.buildMeta(esResult, response);
-    const results = Aggregator.aggregateESResult(response, mappings, showDataAll);
+    
+    let results = [];
+
+    // Always use consistent structured format with language wrapper
+    const primaryResults = Aggregator.aggregateESResult(response, mappings, showDataAll);
+    
+    if (primaryResults.length > 0) {
+      // Add primary language result
+      results.push({
+        language: primaryLanguage,
+        data: primaryResults[0],
+      });
+
+      // If both languages were fetched, add the second language
+      if (fetchBothLanguages && esResult.body.responses.length > 1) {
+        const otherLanguage = primaryLanguage === 'de' ? 'en' : 'de';
+        const otherLangResponse = esResult.body.responses[1];
+        const otherLangResults = Aggregator.aggregateESResult(otherLangResponse, mappings, showDataAll);
+        
+        if (otherLangResults.length > 0) {
+          results.push({
+            language: otherLanguage,
+            data: otherLangResults[0],
+          });
+        }
+      }
+    }
 
     return {
       meta,

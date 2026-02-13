@@ -17,17 +17,31 @@ async function submitESSearch(params) {
 }
 
 async function getSingleItem(mappings, params) {
+  const { language, fetchBothLanguages } = params;
+
+  // Build query for primary language
   const queryBuilder = new Querybuilder();
-
-  const { language, showDataAll } = params;
-
   queryBuilder.index(getIndexByLanguageKey(language));
-
   queryBuilder.must(new FilterParam('id', [params.id], 'eq', 'equals', '_id'));
   queryBuilder.size = 1;
   queryBuilder.from = 0;
 
-  const result = await submitESSearch({ body: queryBuilder.query });
+  let combinedQuery = queryBuilder.query;
+
+  // If fetchBothLanguages is true (for LIDO format), add the other language query to msearch
+  if (fetchBothLanguages) {
+    const otherLanguage = language === 'de' ? 'en' : 'de';
+    const queryBuilderOtherLang = new Querybuilder();
+    queryBuilderOtherLang.index(getIndexByLanguageKey(otherLanguage));
+    queryBuilderOtherLang.must(new FilterParam('id', [params.id], 'eq', 'equals', '_id'));
+    queryBuilderOtherLang.size = 1;
+    queryBuilderOtherLang.from = 0;
+
+    // Combine both queries into a single msearch request
+    combinedQuery = [...queryBuilder.query, ...queryBuilderOtherLang.query];
+  }
+
+  const result = await submitESSearch({ body: combinedQuery });
 
   return result;
 }

@@ -12,20 +12,27 @@ function getSingleItem(mappings) {
       });
       return;
     }
+
+    // Determine format to check if we need both languages
+    const format = req.api && req.api.format ? req.api.format : 'json';
+    const fetchBothLanguages = format === 'lido';
+
     const params = {
       id,
       language: req.query.language,
       showDataAll: req.query.show_data_all || false,
+      fetchBothLanguages,
     };
 
     try {
       const result = await model.getSingleItem(mappings, params);
 
       // Aggregate complete response using Aggregator
-      const data = Aggregator.aggregateSingleItemResponse(result, mappings, params.showDataAll);
+      const data = Aggregator.aggregateSingleItemResponse(
+        result, mappings, params.showDataAll, fetchBothLanguages, params.language,
+      );
 
       // Format response based on requested format
-      const format = req.api && req.api.format ? req.api.format : 'json';
       const formatter = FormatterFactory.getFormatter(format, mappings);
 
       const output = formatter.formatSingleItem(data, params.language);
@@ -53,8 +60,6 @@ function getItems(mappings) {
       geoData: req.path.match(/\/geodata\/?$/),
     };
 
-
-
     const { query } = req;
 
     // }
@@ -74,9 +79,9 @@ function getItems(mappings) {
 
       if (format === 'lido') {
         // LIDO format for multiple items not yet implemented
-        res.status(501).json({ 
+        res.status(501).json({
           error: 'LIDO format for multiple items not yet implemented',
-          message: 'Currently only single item LIDO export is supported'
+          message: 'Currently only single item LIDO export is supported',
         });
         return;
       }
