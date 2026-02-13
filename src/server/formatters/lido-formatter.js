@@ -66,13 +66,13 @@ class LidoFormatter extends BaseFormatter {
 
     // LIDO Record ID
     lido.ele('lido:lidoRecID', {
-      'lido:type': 'http://terminology.lido-schema.org/identifier_type/local_identifier',
+      'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': sourceUrl,
     }).txt(`${inventoryNumber}/lido`);
 
     // Object Published ID
     lido.ele('lido:objectPublishedID', {
-      'lido:type': 'http://terminology.lido-schema.org/identifier_type/local_identifier',
+      'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': sourceUrl,
     }).txt(`${inventoryNumber}/object`);
 
@@ -194,13 +194,13 @@ class LidoFormatter extends BaseFormatter {
 
     // LIDO Record ID
     lido.ele('lido:lidoRecID', {
-      'lido:type': 'http://terminology.lido-schema.org/identifier_type/local_identifier',
+      'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': sourceUrl,
     }).txt(`${inventoryNumber}/lido`);
 
     // Object Published ID
     lido.ele('lido:objectPublishedID', {
-      'lido:type': 'http://terminology.lido-schema.org/identifier_type/local_identifier',
+      'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': sourceUrl,
     }).txt(`${inventoryNumber}/object`);
 
