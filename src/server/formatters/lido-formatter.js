@@ -303,7 +303,7 @@ class LidoFormatter extends BaseFormatter {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt('https://lucascranach.org');
 
-    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Lucas Cranach Archive');
+    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
 
     return root.end({ prettyPrint: true });
   }
@@ -399,7 +399,7 @@ class LidoFormatter extends BaseFormatter {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt('https://lucascranach.org');
 
-    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Lucas Cranach Archive');
+    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
 
     return root.end({ prettyPrint: true });
   }
