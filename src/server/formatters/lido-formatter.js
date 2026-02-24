@@ -52,6 +52,7 @@ class LidoFormatter extends BaseFormatter {
     const inventoryNumber = primaryData.inventory_number ? primaryData.inventory_number : '';
 
     // Build dynamic source URL
+    const domain = 'https://lucascranach.org';
     const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
     const sourceUrl = `${baseUrl}/${primaryLanguage}/${inventoryNumber}`;
 
@@ -72,9 +73,9 @@ class LidoFormatter extends BaseFormatter {
 
     // Object Published ID
     lido.ele('lido:objectPublishedID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': sourceUrl,
-    }).txt(`${inventoryNumber}/object`);
+      'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      'lido:source': `${domain}`,
+    }).txt(`${sourceUrl}/object`);
 
     // Descriptive Metadata
     const descriptiveMetadata = lido.ele('lido:descriptiveMetadata', { 'xml:lang': primaryLanguage });
