@@ -56,8 +56,9 @@ class LidoFormatter extends BaseFormatter {
     const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
     const sourceUrl = `${baseUrl}/${primaryLanguage}/${inventoryNumber}`;
 
-    const root = create({
-      version: '1.0', encoding: 'UTF-8',
+    const root = create({ version: '1.0', encoding: 'UTF-8' })
+
+    const lido = root.ele('lido:lido', {
       'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
       'xmlns:lido': 'http://www.lido-schema.org',
       'xmlns:owl': 'http://www.w3.org/2002/07/owl#',
@@ -71,8 +72,6 @@ class LidoFormatter extends BaseFormatter {
       'xmlns:smil20lang': 'http://www.w3.org/2001/SMIL20/Language',
       'xsi:schemaLocation': 'http://www.lido-schema.org https://www.lido-schema.org/schema/v1.1/lido-v1.1.xsd',
     });
-
-    const lido = root.ele('lido:lido');
 
     // LIDO Record ID
     lido.ele('lido:lidoRecID', {
