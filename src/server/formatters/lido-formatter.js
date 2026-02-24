@@ -56,12 +56,21 @@ class LidoFormatter extends BaseFormatter {
     const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
     const sourceUrl = `${baseUrl}/${primaryLanguage}/${inventoryNumber}`;
 
-    const root = create({ version: '1.0', encoding: 'UTF-8' })
-      .ele('lido:lidoWrap', {
-        'xmlns:lido': 'http://www.lido-schema.org',
-        'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-        'xsi:schemaLocation': 'http://www.lido-schema.org http://www.lido-schema.org/schema/v1.1/lido-v1.1.xsd',
-      });
+    const root = create({
+      version: '1.0', encoding: 'UTF-8',
+      'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+      'xmlns:lido': 'http://www.lido-schema.org',
+      'xmlns:owl': 'http://www.w3.org/2002/07/owl#',
+      'xmlns:rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+      'xmlns:gml': 'http://www.opengis.net/gml',
+      'xmlns:doc': 'http://www.mda.org.uk/spectrumXML/Documentation',
+      'xmlns:sch': 'http://purl.oclc.org/dsdl/schematron',
+      'xmlns:skos': 'http://www.w3.org/2004/02/skos/core#',
+      'xmlns:tei': 'http://www.tei-c.org/ns/1.0',
+      'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+      'xmlns:smil20lang': 'http://www.w3.org/2001/SMIL20/Language',
+      'xsi:schemaLocation': 'http://www.lido-schema.org https://www.lido-schema.org/schema/v1.1/lido-v1.1.xsd',
+    });
 
     const lido = root.ele('lido:lido');
 
