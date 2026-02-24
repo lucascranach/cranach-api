@@ -71,7 +71,6 @@ const mappings = [
     searchTermField: true,
   },
 
-
   // Standort - Stadt
   {
     display_value: 'locations.term',
@@ -509,26 +508,50 @@ const mappings = [
   {
     key: 'objectworktype_value',
     display_value: '',
-    showAsFilter: false,
     showAsResult: true,
+    filter_types: [],
     aggregateResult(data) {
       return (data.filterInfos.technique[0].text);
     },
   },
 
-  //LIDO ObjectWorkType - ID
+  // LIDO ObjectWorkType - ID
   {
     key: 'objectworktype_id',
     display_value: '',
-    showAsFilter: false,
     showAsResult: true,
+    filter_types: [],
     aggregateResult(data) {
       return (data.filterInfos.technique[0].id);
     },
   },
 
+  // LIDO displayMaterialsTech
+  {
+    key: 'display_materials_tech',
+    display_value: 'medium.keyword',
+    showAsResult: true,
+    filter_types: [],
+  },
+
+  // LIDO descriptiveNoteValue
+  {
+    key: 'descriptive_note_value',
+    display_value: 'description',
+    showAsResult: true,
+    filter_types: [],
+  },
+
+  // LIDO eventDate
+  {
+    key: 'event_date',
+    display_value: 'dating.historicEventInformations',
+    showAsResult: true,
+    filter_types: [],
+  },
 ];
 
+// const entityTypes = ['PAINTING', 'GRAPHIC', 'GRAPHIC_REAL', 'DRAWING'];
 const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];
 
 module.exports = {

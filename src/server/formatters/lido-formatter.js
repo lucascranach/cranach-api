@@ -123,6 +123,148 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.title);
     }
 
+    const objectDescriptionWrap = objectIdentificationWrap.ele('lido:objectDescriptionWrap');
+    const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
+
+    if (languageData.de && languageData.de.descriptive_note_value) {
+      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.descriptive_note_value);
+    }
+
+    if (languageData.en && languageData.en.descriptive_note_value) {
+      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.descriptive_note_value);
+    }
+
+    if (languageData.de && languageData.de.provenance) {
+      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.provenance);
+    }
+
+    if (languageData.en && languageData.en.provenance) {
+      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.provenance);
+    }
+
+    // Object Materials/Techniques
+    const objectMaterialsTechWrap = objectIdentificationWrap.ele('lido:objectMaterialsTechWrap');
+    const objectMaterialsTechSet = objectMaterialsTechWrap.ele('lido:objectMaterialsTechSet');
+
+    // displayMaterialsTech - Freitext für Material und Technik
+    if (languageData.de && languageData.de.display_materials_tech) {
+      objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.display_materials_tech);
+    }
+
+    if (languageData.en && languageData.en.display_materials_tech) {
+      objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.display_materials_tech);
+    }
+
+    const eventWrap = descriptiveMetadata.ele('lido:eventWrap');
+    const eventSet = eventWrap.ele('lido:eventSet');
+
+    const involvedPersonsDe = languageData.de.involved_persons;
+    const involvedPersonsEn = languageData.en.involved_persons;
+    involvedPersonsDe.forEach((person, index) => {
+      const personEn = involvedPersonsEn[index];
+      const eventData = this.getEventDataByRoleType(person.roleType);
+
+      const event = eventSet.ele('lido:event');
+      const eventType = event.ele('lido:eventType');
+      eventType.ele('lido:conceptID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        'lido:source': 'http://terminology.lido-schema.org/eventType',
+      }).txt(eventData.eventType.conceptID);
+      eventType.ele('lido:term', {
+        'xml:lang': 'de',
+      }).txt(eventData.eventType.termDe);
+      eventType.ele('lido:term', {
+        'xml:lang': 'en',
+      }).txt(eventData.eventType.termEn);
+
+      const eventActor = event.ele('lido:eventActor');
+      eventActor.ele('lido:displayActorInRole', {
+        'xml:lang': 'de',
+      }).txt(person.name);
+
+      // Add English name if available
+      if (involvedPersonsEn && involvedPersonsEn[index]) {
+        eventActor.ele('lido:displayActorInRole', {
+          'xml:lang': 'en',
+        }).txt(personEn.name);
+      }
+
+      const actorInRole = eventActor.ele('lido:actorInRole');
+      actorInRole.ele('lido:actor', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00413',
+      }).ele('lido:actorID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        // TODO: Add GND URI for person if available
+      }).txt('TODO: GND URI for person')
+        .up()
+        .ele('lido:nameActorSet')
+        .ele('lido:appellationValue', {
+          'xml:lang': 'de',
+        })
+        .txt(person.name)
+        .up()
+        .ele('lido:appellationValue', {
+          'xml:lang': 'en',
+        })
+        .txt(personEn.name);
+
+      actorInRole.ele('lido:roleActor')
+        .ele('lido:conceptID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        }).txt('TODO: GND URI for role')
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'de',
+        })
+        .txt(person.role)
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'en',
+        })
+        .txt(personEn.role);
+
+      actorInRole.ele('lido:sourceActorInRole').txt(person.remarks);
+
+      event.ele('lido:eventDate')
+        .ele('lido:displayDate')
+        .txt(`${languageData.de.event_date[index].text}\n${languageData.de.event_date[index].remarks}`)
+        .up()
+        .ele('lido:date')
+        .ele('lido:earliestDate')
+        .txt(languageData.de.event_date[index].begin)
+        .up()
+        .ele('lido:latestDate')
+        .txt(languageData.de.event_date[index].end);
+    });
+
+
+    // const event = eventSet.ele('lido:event');
+    // const eventType = event.ele('lido:eventType');
+    // eventType.txt(involvedPersons);
+
+    // eventType.ele('lido:conceptID', {
+    //   'lido:type': 'http://terminology.lido-schema.org/lido00099',
+    //   'lido:source': 'http://terminology.lido-schema.org/eventType',
+    // }).txt('http://terminology.lido-schema.org/lido00007');
+    // evenType.ele('lido:term', {
+    //   'xml:lang': 'de',
+    // }).txt('Herstellung');
+    // eventType.ele('lido:term', {
+    //   'xml:lang': 'en',
+    // }).txt('Production');
+
     // Administrative Metadata
     const administrativeMetadata = lido.ele('lido:administrativeMetadata', { 'xml:lang': primaryLanguage });
 
@@ -291,6 +433,57 @@ class LidoFormatter extends BaseFormatter {
 
       default:
         return '';
+    }
+  }
+
+  getEventDataByRoleType(roleType) {
+    switch (roleType) {
+      case 'ARTIST':
+        return {
+          eventType: {
+            conceptID: 'http://terminology.lido-schema.org/lido00007',
+            termDe: 'Herstellung',
+            termEn: 'Production',
+          },
+        };
+      case 'PRINTER':
+        return {
+          eventType: {
+            conceptID: 'http://terminology.lido-schema.org/lido01096',
+            termDe: 'Herstellung des Exemplars',
+            termEn: 'Production of the exemplar',
+          },
+        };
+      case 'INVENTOR':
+        return {
+          eventType: {
+            conceptID: 'http://terminology.lido-schema.org/lido00224',
+            termDe: 'Entwurf',
+            termEn: 'Design',
+          },
+        };
+      case 'PUBLISHER':
+        return {
+          eventType: {
+            conceptID: 'http://terminology.lido-schema.org/lido00228',
+            termDe: 'Publikation',
+            termEn: 'Publication',
+          },
+        };
+      case 'PRINTMAKER':
+        return {
+          eventType: {
+            conceptID: 'http://terminology.lido-schema.org/lido01089',
+            termDe: 'Herstellung der Druckform',
+            termEn: 'Production of the printing plate',
+          },
+        };
+      default:
+        return {
+          conceptID: 'http://terminology.lido-schema.org/lido00007',
+          termDe: 'Herstellung',
+          termEn: 'Production',
+        };
     }
   }
 }
