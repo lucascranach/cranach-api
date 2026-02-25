@@ -147,14 +147,17 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.descriptive_note_value);
     }
 
+    // Separate objectDescriptionSet for provenance
+    const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
+
     if (languageData.de && languageData.de.provenance) {
-      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+      provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
       }).txt(languageData.de.provenance);
     }
 
     if (languageData.en && languageData.en.provenance) {
-      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+      provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
       }).txt(languageData.en.provenance);
     }
