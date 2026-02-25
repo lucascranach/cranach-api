@@ -308,6 +308,7 @@ class LidoFormatter extends BaseFormatter {
 
     // Record Source
     const recordSource = recordWrap.ele('lido:recordSource');
+    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt('TODO: add ID')
@@ -315,8 +316,6 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:legalBodyWeblink')
       .txt(`${domain}`);
 
-
-    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
 
     return root.end({ prettyPrint: true });
   }
