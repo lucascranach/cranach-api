@@ -148,7 +148,9 @@ class LidoFormatter extends BaseFormatter {
     }
 
     // Separate objectDescriptionSet for provenance
-    const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
+    const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+      'lido:type': 'http://terminology.lido-schema.org/lido01110',
+    });
 
     if (languageData.de && languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
