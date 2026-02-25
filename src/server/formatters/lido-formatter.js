@@ -253,7 +253,7 @@ class LidoFormatter extends BaseFormatter {
 
       event.ele('lido:eventDate')
         .ele('lido:displayDate')
-        .txt(`${languageData.de.event_date[index].text}\n${languageData.de.event_date[index].remarks}`)
+        .txt(`${languageData.de.event_date[index].text}`)
         .up()
         .ele('lido:date')
         .ele('lido:earliestDate')
