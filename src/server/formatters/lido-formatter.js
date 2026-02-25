@@ -155,7 +155,7 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de && languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(languageData.de.provenance);
+      }).txt(languageData.de.provenance.replace(/^ -/, ''));
     }
 
     if (languageData.en && languageData.en.provenance) {
@@ -297,11 +297,11 @@ class LidoFormatter extends BaseFormatter {
 
     // Record Source
     const recordSource = recordWrap.ele('lido:recordSource');
-    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    }).txt('TODO: add ID')
-      .up()
+    }).txt('TODO: add ID');
+    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
+    recordSource
       .ele('lido:legalBodyWeblink')
       .txt(`${domain}`);
 
