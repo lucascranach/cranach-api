@@ -76,13 +76,13 @@ class LidoFormatter extends BaseFormatter {
     // LIDO Record ID
     lido.ele('lido:lidoRecID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': sourceUrl,
+      'lido:source': domain,
     }).txt(`${inventoryNumber}/lido`);
 
     // Object Published ID
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      'lido:source': `${domain}`,
+      'lido:source': domain,
     }).txt(`${sourceUrl}/object`);
 
     // Descriptive Metadata
