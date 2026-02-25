@@ -155,7 +155,7 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de && languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(languageData.de.provenance.replace(/^ -/, ''));
+      }).txt(languageData.de.provenance.replace(/^- /, ''));
     }
 
     if (languageData.en && languageData.en.provenance) {
