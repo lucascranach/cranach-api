@@ -29,7 +29,7 @@ class LidoFormatter extends BaseFormatter {
    * @param {Object} languageParam - Language code (e.g., 'de', 'en')
    * @returns {string} LIDO XML string
    */
-  formatItems(dataParam, languageParam) {
+  formatItems(_dataParam, _languageParam) {
     // TODO: Implement for multiple items
     throw new Error('LIDO format for multiple items not yet implemented');
   }
@@ -56,7 +56,7 @@ class LidoFormatter extends BaseFormatter {
     const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
     const sourceUrl = `${baseUrl}/${primaryLanguage}/${inventoryNumber}`;
 
-    const root = create({ version: '1.0', encoding: 'UTF-8' })
+    const root = create({ version: '1.0', encoding: 'UTF-8' });
 
     const lido = root.ele('lido:lido', {
       'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -258,22 +258,6 @@ class LidoFormatter extends BaseFormatter {
         .txt(languageData.de.event_date[index].end);
     });
 
-
-    // const event = eventSet.ele('lido:event');
-    // const eventType = event.ele('lido:eventType');
-    // eventType.txt(involvedPersons);
-
-    // eventType.ele('lido:conceptID', {
-    //   'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    //   'lido:source': 'http://terminology.lido-schema.org/eventType',
-    // }).txt('http://terminology.lido-schema.org/lido00007');
-    // evenType.ele('lido:term', {
-    //   'xml:lang': 'de',
-    // }).txt('Herstellung');
-    // eventType.ele('lido:term', {
-    //   'xml:lang': 'en',
-    // }).txt('Production');
-
     // Administrative Metadata
     const administrativeMetadata = lido.ele('lido:administrativeMetadata', { 'xml:lang': primaryLanguage });
 
@@ -315,103 +299,6 @@ class LidoFormatter extends BaseFormatter {
       .up()
       .ele('lido:legalBodyWeblink')
       .txt(`${domain}`);
-
-
-    return root.end({ prettyPrint: true });
-  }
-
-  /**
-   * Build LIDO 1.0 XML structure (legacy, single language)
-   * @param {Object} data - The item data
-   * @param {string} language - Language code (e.g., 'de', 'en')
-   * @returns {string} LIDO XML string
-   */
-  buildLidoXml(data, language = 'de') {
-    // Get inventory number from results array
-    const inventoryNumber = data.inventory_number ? data.inventory_number : '';
-
-    // Build dynamic source URL
-    const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
-    const sourceUrl = `${baseUrl}/${language}/${inventoryNumber}`;
-
-    const root = create({ version: '1.0', encoding: 'UTF-8' })
-      .ele('lido:lidoWrap', {
-        'xmlns:lido': 'http://www.lido-schema.org',
-        'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-        'xsi:schemaLocation': 'http://www.lido-schema.org http://www.lido-schema.org/schema/v1.1/lido-v1.1.xsd',
-      });
-
-    const lido = root.ele('lido:lido');
-
-    // LIDO Record ID
-    lido.ele('lido:lidoRecID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': sourceUrl,
-    }).txt(`${inventoryNumber}/lido`);
-
-    // Object Published ID
-    lido.ele('lido:objectPublishedID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': sourceUrl,
-    }).txt(`${inventoryNumber}/object`);
-
-    // Descriptive Metadata
-    const descriptiveMetadata = lido.ele('lido:descriptiveMetadata', { 'xml:lang': language });
-
-    // Object Classification Wrap
-    const objectClassificationWrap = descriptiveMetadata.ele('lido:objectClassificationWrap');
-
-    const objectWorkTypeWrap = objectClassificationWrap.ele('lido:objectWorkTypeWrap');
-
-    const objectWorkType = objectWorkTypeWrap.ele('lido:objectWorkType');
-    objectWorkType.ele('lido:conceptID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    }).txt(this.getObjectWorkTypeURI(data.objectworktype_id));
-
-    // Single language output
-    if (data.objectworktype_value) {
-      objectWorkType.ele('lido:term', {
-        'xml:lang': language,
-      }).txt(data.objectworktype_value);
-    }
-
-    const objectIdentificationWrap = descriptiveMetadata.ele('lido:objectIdentificationWrap');
-
-    const titleWrap = objectIdentificationWrap.ele('lido:titleWrap');
-    titleWrap.ele('lido:titleSet', {
-      'lido:type': 'http://vocab.getty.edu/aat/300417200',
-    }).ele('lido:appellationValue', {
-      'lido:pref': 'http://terminology.lido-schema.org/lido00169',
-      'xml:lang': language,
-    }).txt(data.title);
-
-    // Administrative Metadata
-    const administrativeMetadata = lido.ele('lido:administrativeMetadata', { 'xml:lang': language });
-
-    // Record Wrap
-    const recordWrap = administrativeMetadata.ele('lido:recordWrap');
-    recordWrap
-      .ele('lido:recordID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      }).txt(`${inventoryNumber}/record`);
-
-    // Record Type
-    const recordType = recordWrap.ele('lido:recordType');
-    recordType.ele('lido:conceptID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    }).txt('http://terminology.lido-schema.org/lido00141');
-
-    recordType.ele('lido:term', {
-      'xml:lang': language,
-    }).txt(translations.getTranslation('einzelobjekt', language));
-
-    // Record Source
-    const recordSource = recordWrap.ele('lido:recordSource');
-    recordSource.ele('lido:legalBodyID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    }).txt('https://lucascranach.org');
-
-    recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
 
     return root.end({ prettyPrint: true });
   }
