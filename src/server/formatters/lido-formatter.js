@@ -138,13 +138,13 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de && languageData.de.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(languageData.de.descriptive_note_value);
+      }).txt(this.removeCdaTag(languageData.de.descriptive_note_value));
     }
 
     if (languageData.en && languageData.en.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(languageData.en.descriptive_note_value);
+      }).txt(this.removeCdaTag(languageData.en.descriptive_note_value));
     }
 
     // Separate objectDescriptionSet for provenance
@@ -172,13 +172,13 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de && languageData.de.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'de',
-      }).txt(languageData.de.display_materials_tech);
+      }).txt(this.removeCdaTag(languageData.de.display_materials_tech));
     }
 
     if (languageData.en && languageData.en.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'en',
-      }).txt(languageData.en.display_materials_tech);
+      }).txt(this.removeCdaTag(languageData.en.display_materials_tech));
     }
 
     const eventWrap = descriptiveMetadata.ele('lido:eventWrap');
@@ -314,6 +314,16 @@ class LidoFormatter extends BaseFormatter {
    */
   getContentType() {
     return 'application/xml';
+  }
+
+  /**
+   * Remove the substring '\n[cda 2026]' from the end of a string
+   * @param {string} text - The input string
+   * @returns {string} The cleaned string
+   */
+  removeCdaTag(text) {
+    if (!text) return text;
+    return text.replace(/\n\[cda 2026\]$/, '');
   }
 
   /**
