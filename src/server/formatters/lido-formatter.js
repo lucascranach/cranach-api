@@ -217,7 +217,7 @@ class LidoFormatter extends BaseFormatter {
 
       const actorInRole = eventActor.ele('lido:actorInRole');
       actorInRole.ele('lido:actor', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00413',
+        'lido:type': 'http://terminology.lido-schema.org/lido00163',
       }).ele('lido:actorID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
         // TODO: Add GND URI for person if available
