@@ -237,7 +237,7 @@ class LidoFormatter extends BaseFormatter {
       actorInRole.ele('lido:roleActor')
         .ele('lido:conceptID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
-        }).txt('TODO: GND URI for role')
+        }).txt(eventData.roleActor.conceptID)
         .up()
         .ele('lido:term', {
           'xml:lang': 'de',
@@ -359,6 +359,9 @@ class LidoFormatter extends BaseFormatter {
             termDe: 'Herstellung',
             termEn: 'Production',
           },
+          roleActor: {
+            conceptID: 'http://vocab.getty.edu/aat/300025103',
+          },
         };
       case 'PRINTER':
         return {
@@ -366,6 +369,9 @@ class LidoFormatter extends BaseFormatter {
             conceptID: 'http://terminology.lido-schema.org/lido01096',
             termDe: 'Herstellung des Exemplars',
             termEn: 'Production of the exemplar',
+          },
+          roleActor: {
+            conceptID: 'http://vocab.getty.edu/aat/300025732',
           },
         };
       case 'INVENTOR':
@@ -375,6 +381,9 @@ class LidoFormatter extends BaseFormatter {
             termDe: 'Entwurf',
             termEn: 'Design',
           },
+          roleActor: {
+            conceptID: 'http://vocab.getty.edu/aat/300025845',
+          },
         };
       case 'PUBLISHER':
         return {
@@ -382,6 +391,9 @@ class LidoFormatter extends BaseFormatter {
             conceptID: 'http://terminology.lido-schema.org/lido00228',
             termDe: 'Publikation',
             termEn: 'Publication',
+          },
+          roleActor: {
+            conceptID: 'http://vocab.getty.edu/aat/300025574',
           },
         };
       case 'PRINTMAKER':
@@ -391,12 +403,20 @@ class LidoFormatter extends BaseFormatter {
             termDe: 'Herstellung der Druckform',
             termEn: 'Production of the printing plate',
           },
+          roleActor: {
+            conceptID: 'http://vocab.getty.edu/aat/300025165',
+          },
         };
       default:
         return {
-          conceptID: 'http://terminology.lido-schema.org/lido00007',
-          termDe: 'Herstellung',
-          termEn: 'Production',
+          eventType: {
+            conceptID: '',
+            termDe: 'nicht spezifiziert',
+            termEn: 'not specified',
+          },
+          roleActor: {
+            conceptID: '',
+          },
         };
     }
   }
