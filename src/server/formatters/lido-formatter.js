@@ -186,9 +186,25 @@ class LidoFormatter extends BaseFormatter {
 
     const involvedPersonsDe = languageData.de.involved_persons;
     const involvedPersonsEn = languageData.en.involved_persons;
+
+    // Group persons by roleType
+    const personsByRoleType = {};
     involvedPersonsDe.forEach((person, index) => {
-      const personEn = involvedPersonsEn[index];
-      const eventData = this.getEventDataByRoleType(person.roleType);
+      const roleType = person.roleType;
+      if (!personsByRoleType[roleType]) {
+        personsByRoleType[roleType] = [];
+      }
+      personsByRoleType[roleType].push({
+        personDe: person,
+        personEn: involvedPersonsEn[index],
+        index,
+      });
+    });
+
+    // Create one lido:event per roleType
+    Object.keys(personsByRoleType).forEach((roleType) => {
+      const persons = personsByRoleType[roleType];
+      const eventData = this.getEventDataByRoleType(roleType);
 
       const event = eventSet.ele('lido:event');
       const eventType = event.ele('lido:eventType');
@@ -203,57 +219,78 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       }).txt(eventData.eventType.termEn);
 
-      const eventActor = event.ele('lido:eventActor');
-      eventActor.ele('lido:displayActorInRole', {
-        'xml:lang': 'de',
-      }).txt(person.name);
-
-      // Add English name if available
-      if (involvedPersonsEn && involvedPersonsEn[index]) {
+      // Add all persons with this roleType as eventActors
+      persons.forEach(({ personDe, personEn }, personIndex) => {
+        const eventActor = event.ele('lido:eventActor');
         eventActor.ele('lido:displayActorInRole', {
-          'xml:lang': 'en',
-        }).txt(personEn.name);
-      }
-
-      const actorInRole = eventActor.ele('lido:actorInRole');
-      actorInRole.ele('lido:actor', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00163',
-      }).ele('lido:actorID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00099',
-        // TODO: Add GND URI for person if available
-      }).txt('TODO: GND URI for person')
-        .up()
-        .ele('lido:nameActorSet')
-        .ele('lido:appellationValue', {
           'xml:lang': 'de',
-        })
-        .txt(person.name)
-        .up()
-        .ele('lido:appellationValue', {
-          'xml:lang': 'en',
-        })
-        .txt(personEn.name);
+        }).txt(personDe.name);
 
-      actorInRole.ele('lido:roleActor')
-        .ele('lido:conceptID', {
+        // Add English name if available
+        if (personEn) {
+          eventActor.ele('lido:displayActorInRole', {
+            'xml:lang': 'en',
+          }).txt(personEn.name);
+        }
+
+        const actorInRole = eventActor.ele('lido:actorInRole');
+        actorInRole.ele('lido:actor', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00163',
+        }).ele('lido:actorID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
-        }).txt(eventData.roleActor.conceptID)
-        .up()
-        .ele('lido:term', {
-          'xml:lang': 'de',
-        })
-        .txt(person.role)
-        .up()
-        .ele('lido:term', {
-          'xml:lang': 'en',
-        })
-        .txt(personEn.role);
+          // TODO: Add GND URI for person if available
+        }).txt('TODO: GND URI for person')
+          .up()
+          .ele('lido:nameActorSet')
+          .ele('lido:appellationValue', {
+            'xml:lang': 'de',
+          })
+          .txt(personDe.name)
+          .up()
+          .ele('lido:appellationValue', {
+            'xml:lang': 'en',
+          })
+          .txt(personEn.name);
 
-      actorInRole.ele('lido:sourceActorInRole').txt(person.remarks);
+        actorInRole.ele('lido:roleActor')
+          .ele('lido:conceptID', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00099',
+          }).txt(eventData.roleActor.conceptID)
+          .up()
+          .ele('lido:term', {
+            'xml:lang': 'de',
+          })
+          .txt(personDe.role)
+          .up()
+          .ele('lido:term', {
+            'xml:lang': 'en',
+          })
+          .txt(personEn.role);
+
+        // Add attributionQualifierActor for all persons except the first one in this event
+        if (personIndex > 0) {
+          actorInRole.ele('lido:attributionQualifierActor')
+            .ele('lido:conceptID', {
+              'lido:type': 'http://terminology.lido-schema.org/lido00099',
+            }).txt('http://vocab.getty.edu/aat/300404269')
+            .up()
+            .ele('lido:term', {
+              'xml:lang': 'de',
+            })
+            .txt('zugeschrieben an')
+            .up()
+            .ele('lido:term', {
+              'xml:lang': 'en',
+            })
+            .txt('attributed to');
+        }
+
+        actorInRole.ele('lido:sourceActorInRole').txt(personDe.remarks);
+      });
 
       event.ele('lido:eventDate')
         .ele('lido:displayDate')
-        .txt(`${languageData.de.event_date[index].text}`)
+        .txt(`TODO: Hier fehlen in den Daten die Eventdaten, wenn mehrere Personen vorhanden sind - ${languageData.de.event_date[0].text}`)
         .up()
         .ele('lido:date')
         .ele('lido:earliestDate')
