@@ -201,6 +201,14 @@ class LidoFormatter extends BaseFormatter {
       });
     });
 
+    // Determine which roleType should receive the eventDate
+    let eventDateRoleType = 'ARTIST'; // Default fallback
+    if (personsByRoleType.PRINTER) {
+      eventDateRoleType = 'PRINTER';
+    } else if (personsByRoleType.PRINTMAKER) {
+      eventDateRoleType = 'PRINTMAKER';
+    }
+
     // Create one lido:event per roleType
     Object.keys(personsByRoleType).forEach((roleType) => {
       const persons = personsByRoleType[roleType];
@@ -288,103 +296,105 @@ class LidoFormatter extends BaseFormatter {
         actorInRole.ele('lido:sourceActorInRole').txt(personDe.remarks);
       });
 
-      // Add lido:eventDate for this event
-      const eventDateDe = languageData.de.event_date;
-      const eventDateEn = languageData.en.event_date;
+      // Add lido:eventDate only to the event with the designated roleType
+      if (roleType === eventDateRoleType) {
+        const eventDateDe = languageData.de.event_date;
+        const eventDateEn = languageData.en.event_date;
 
-      if (eventDateDe) {
-        // Collect all begin and end dates
-        const beginDates = [eventDateDe.begin];
-        const endDates = [eventDateDe.end];
+        if (eventDateDe) {
+          // Collect all begin and end dates
+          const beginDates = [eventDateDe.begin];
+          const endDates = [eventDateDe.end];
 
-        // Add dates from historicEventInformations if available
-        const historicEvents = eventDateDe.historicEventInformations;
-        if (Array.isArray(historicEvents)) {
-          historicEvents.forEach((info) => {
-            if (info.begin) beginDates.push(info.begin);
-            if (info.end) endDates.push(info.end);
-          });
-        }
-
-        // Find earliest and latest dates (filter out null/undefined values)
-        const validBeginDates = beginDates.filter((d) => d != null && !Number.isNaN(d));
-        const validEndDates = endDates.filter((d) => d != null && !Number.isNaN(d));
-        const earliestDate = validBeginDates.length > 0 ? Math.min(...validBeginDates) : null;
-        const latestDate = validEndDates.length > 0 ? Math.max(...validEndDates) : null;
-
-        // Build displayDate string for German
-        let displayDateDe = '';
-        if (eventDateDe.dated) {
-          displayDateDe = eventDateDe.dated;
-          if (eventDateDe.remarks) {
-            displayDateDe += ` ${eventDateDe.remarks}`;
+          // Add dates from historicEventInformations if available
+          const historicEvents = eventDateDe.historicEventInformations;
+          if (Array.isArray(historicEvents)) {
+            historicEvents.forEach((info) => {
+              if (info.begin) beginDates.push(info.begin);
+              if (info.end) endDates.push(info.end);
+            });
           }
-        }
 
-        // Add historic event informations to displayDate
-        if (Array.isArray(historicEvents)) {
-          historicEvents.forEach((info) => {
-            if (info.text) {
-              if (displayDateDe) displayDateDe += ', ';
-              displayDateDe += info.text;
-              if (info.remarks) {
-                displayDateDe += ` ${info.remarks}`;
-              }
+          // Find earliest and latest dates (filter out null/undefined values)
+          const validBeginDates = beginDates.filter((d) => d != null && !Number.isNaN(d));
+          const validEndDates = endDates.filter((d) => d != null && !Number.isNaN(d));
+          const earliestDate = validBeginDates.length > 0 ? Math.min(...validBeginDates) : null;
+          const latestDate = validEndDates.length > 0 ? Math.max(...validEndDates) : null;
+
+          // Build displayDate string for German
+          let displayDateDe = '';
+          if (eventDateDe.dated) {
+            displayDateDe = eventDateDe.dated;
+            if (eventDateDe.remarks) {
+              displayDateDe += ` ${eventDateDe.remarks}`;
             }
-          });
-        }
-
-        // Build displayDate string for English
-        let displayDateEn = '';
-        if (eventDateEn.dated) {
-          displayDateEn = eventDateEn.dated;
-          if (eventDateEn.remarks) {
-            displayDateEn += ` ${eventDateEn.remarks}`;
           }
-        }
 
-        // Add historic event informations to displayDate (English)
-        if (Array.isArray(eventDateEn.historicEventInformations)) {
-          eventDateEn.historicEventInformations.forEach((info) => {
-            if (info.text) {
-              if (displayDateEn) displayDateEn += ', ';
-              displayDateEn += info.text;
-              if (info.remarks) {
-                displayDateEn += ` ${info.remarks}`;
+          // Add historic event informations to displayDate
+          if (Array.isArray(historicEvents)) {
+            historicEvents.forEach((info) => {
+              if (info.text) {
+                if (displayDateDe) displayDateDe += ', ';
+                displayDateDe += info.text;
+                if (info.remarks) {
+                  displayDateDe += ` ${info.remarks}`;
+                }
               }
-            }
-          });
-        }
-
-        const eventDate = event.ele('lido:eventDate');
-
-        // Add display dates for both languages
-        if (displayDateDe) {
-          eventDate.ele('lido:displayDate', {
-            'xml:lang': 'de',
-          }).txt(displayDateDe);
-        }
-
-        if (displayDateEn) {
-          eventDate.ele('lido:displayDate', {
-            'xml:lang': 'en',
-          }).txt(displayDateEn);
-        }
-
-        // Add structured date if we have valid dates
-        if (earliestDate !== null || latestDate !== null) {
-          const date = eventDate.ele('lido:date');
-
-          if (earliestDate !== null) {
-            date.ele('lido:earliestDate', {
-              'lido:type': 'http://terminology.lido-schema.org/lido00529',
-            }).txt(earliestDate.toString());
+            });
           }
 
-          if (latestDate !== null) {
-            date.ele('lido:latestDate', {
-              'lido:type': 'http://terminology.lido-schema.org/lido00529',
-            }).txt(latestDate.toString());
+          // Build displayDate string for English
+          let displayDateEn = '';
+          if (eventDateEn.dated) {
+            displayDateEn = eventDateEn.dated;
+            if (eventDateEn.remarks) {
+              displayDateEn += ` ${eventDateEn.remarks}`;
+            }
+          }
+
+          // Add historic event informations to displayDate (English)
+          if (Array.isArray(eventDateEn.historicEventInformations)) {
+            eventDateEn.historicEventInformations.forEach((info) => {
+              if (info.text) {
+                if (displayDateEn) displayDateEn += ', ';
+                displayDateEn += info.text;
+                if (info.remarks) {
+                  displayDateEn += ` ${info.remarks}`;
+                }
+              }
+            });
+          }
+
+          const eventDate = event.ele('lido:eventDate');
+
+          // Add display dates for both languages
+          if (displayDateDe) {
+            eventDate.ele('lido:displayDate', {
+              'xml:lang': 'de',
+            }).txt(displayDateDe);
+          }
+
+          if (displayDateEn) {
+            eventDate.ele('lido:displayDate', {
+              'xml:lang': 'en',
+            }).txt(displayDateEn);
+          }
+
+          // Add structured date if we have valid dates
+          if (earliestDate !== null || latestDate !== null) {
+            const date = eventDate.ele('lido:date');
+
+            if (earliestDate !== null) {
+              date.ele('lido:earliestDate', {
+                'lido:type': 'http://terminology.lido-schema.org/lido00529',
+              }).txt(earliestDate.toString());
+            }
+
+            if (latestDate !== null) {
+              date.ele('lido:latestDate', {
+                'lido:type': 'http://terminology.lido-schema.org/lido00529',
+              }).txt(latestDate.toString());
+            }
           }
         }
       }
