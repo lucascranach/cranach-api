@@ -545,7 +545,7 @@ const mappings = [
   // LIDO eventDate
   {
     key: 'event_date',
-    display_value: 'dating.historicEventInformations',
+    display_value: 'dating',
     showAsResult: true,
     filter_types: [],
   },
