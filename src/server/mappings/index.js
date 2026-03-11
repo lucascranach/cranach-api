@@ -42,9 +42,10 @@ class Mappings {
       throw new Error(`Unsupported mapping type: ${type}`);
     }
 
-    const { mappings, entityTypes } = require(`./${type}/index.js`);
+    const { mappings, entityTypes, referencedFieldsToCopy } = require(`./${type}/index.js`);
     this.mappings = mappings;
     this.entityTypes = entityTypes;
+    this.referencedFieldsToCopy = referencedFieldsToCopy || [];
   }
 
   isFilterInfosFilter(filterKey) {
@@ -98,6 +99,10 @@ class Mappings {
 
   getEntityTypes() {
     return this.entityTypes;
+  }
+
+  getReferencedFieldsToCopy() {
+    return this.referencedFieldsToCopy;
   }
 }
 

@@ -293,6 +293,16 @@ const mappings = [
     key: 'references_reprints',
   },
 
+  // isVirtual (Druckplatte vs. gedrucktes Exemplar)
+  {
+    display_value: 'isVirtual',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'is_virtual',
+    value: 'isVirtual',
+  },
+
   // Object name
   {
     display_value: 'objectName.keyword',
@@ -527,7 +537,12 @@ const entityTypes = [
   ...archivalsMappings.entityTypes,
 ];
 
+// Fields to copy from referenced object (e.g., printing plate) when isVirtual = false
+const referencedFieldsToCopy = [
+];
+
 module.exports = {
   mappings,
   entityTypes,
+  referencedFieldsToCopy,
 };

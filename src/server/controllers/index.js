@@ -32,6 +32,64 @@ function getSingleItem(mappings) {
         result, mappings, params.showDataAll, fetchBothLanguages, params.language,
       );
 
+      // Check if we need to fetch fields from referenced printing plate
+      // If isVirtual is false, this is a printed exemplar and we need certain fields
+      // from the printing plate
+      if (fetchBothLanguages && data.results && data.results.length > 0) {
+        const primaryData = data.results[0].data;
+        const isVirtual = primaryData.is_virtual;
+        const hasReferences = primaryData.references_reprints
+          && primaryData.references_reprints.length > 0;
+
+        if (isVirtual === false && hasReferences) {
+          const referencedInventoryNumber = primaryData.references_reprints[0].inventoryNumber;
+          if (referencedInventoryNumber) {
+            try {
+              // Fetch the referenced printing plate record for both languages
+              const referencedParams = {
+                id: referencedInventoryNumber,
+                language: params.language,
+                showDataAll: false,
+                fetchBothLanguages: true,
+              };
+              const referencedResult = await model.getSingleItem(mappings, referencedParams);
+              const referencedData = Aggregator.aggregateSingleItemResponse(
+                referencedResult, mappings, false, true, params.language,
+              );
+
+              // Get fields to copy from the referenced object to the current object
+              // This is configured in the mappings for each entity type
+              const fieldsToCopy = mappings.getReferencedFieldsToCopy();
+
+              // Copy specified fields from the referenced record
+              if (referencedData.results && referencedData.results.length > 0) {
+                referencedData.results.forEach((referencedItem) => {
+                  const matchingItem = data.results.find(
+                    (item) => item.language === referencedItem.language,
+                  );
+                  if (matchingItem) {
+                    fieldsToCopy.forEach((field) => {
+                      if (referencedItem.data[field] !== undefined
+                          && referencedItem.data[field] !== null
+                          && referencedItem.data[field] !== '') {
+                        matchingItem.data[field] = referencedItem.data[field];
+                      }
+                    });
+                  }
+                });
+              }
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error(
+                `Failed to fetch referenced record ${referencedInventoryNumber}:`,
+                error,
+              );
+              // Continue with original data if fetch fails
+            }
+          }
+        }
+      }
+
       // Format response based on requested format
       const formatter = FormatterFactory.getFormatter(format, mappings);
 
@@ -40,6 +98,7 @@ function getSingleItem(mappings) {
       // Send formatted output with correct content type
       res.type(formatter.getContentType()).send(output);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
       res.status(500).json({ success: false, error: err.message });
     }
@@ -91,6 +150,7 @@ function getItems(mappings) {
       // Send formatted output with correct content type
       res.type(formatter.getContentType()).send(output);
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.log(err);
       res.status(500).json({ success: false, error: err.message });
     }

@@ -287,6 +287,16 @@ const mappings = [
     key: 'references_reprints',
   },
 
+  // isVirtual (Druckplatte vs. gedrucktes Exemplar)
+  {
+    display_value: 'isVirtual',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [],
+    key: 'is_virtual',
+    value: 'isVirtual',
+  },
+
   // Object name
   {
     display_value: 'objectName.keyword',
@@ -448,7 +458,6 @@ const mappings = [
     value: '_score',
   },
 
-
   // Catalog Work Reference
   {
     display_value: 'catalogWorkReferences.description.keyword',
@@ -554,7 +563,16 @@ const mappings = [
 // const entityTypes = ['PAINTING', 'GRAPHIC', 'GRAPHIC_REAL', 'DRAWING'];
 const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];
 
+// Fields to copy from referenced object (e.g., printing plate) when isVirtual = false
+const referencedFieldsToCopy = [
+  'objectworktype_id',
+  'title',
+  'involved_persons',
+
+];
+
 module.exports = {
   mappings,
   entityTypes,
+  referencedFieldsToCopy,
 };
