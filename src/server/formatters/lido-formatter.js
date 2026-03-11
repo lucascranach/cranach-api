@@ -76,8 +76,8 @@ class LidoFormatter extends BaseFormatter {
     // LIDO Record ID
     lido.ele('lido:lidoRecID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': domain,
-    }).txt(`${inventoryNumber}/lido`);
+      'lido:source': 'https://d-nb.info/gnd/1073160734',
+    }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
     // Object Published ID
     lido.ele('lido:objectPublishedID', {
