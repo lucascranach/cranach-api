@@ -29,7 +29,8 @@ class LidoFormatter extends BaseFormatter {
    * @param {Object} languageParam - Language code (e.g., 'de', 'en')
    * @returns {string} LIDO XML string
    */
-  formatItems(_dataParam, _languageParam) {
+  // eslint-disable-next-line no-unused-vars
+  formatItems(dataParam, languageParam) {
     // TODO: Implement for multiple items
     throw new Error('LIDO format for multiple items not yet implemented');
   }
@@ -190,7 +191,7 @@ class LidoFormatter extends BaseFormatter {
     // Group persons by roleType
     const personsByRoleType = {};
     involvedPersonsDe.forEach((person, index) => {
-      const roleType = person.roleType;
+      const { roleType } = person;
       if (!personsByRoleType[roleType]) {
         personsByRoleType[roleType] = [];
       }
