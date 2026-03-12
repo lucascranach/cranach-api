@@ -41,7 +41,7 @@ function getSingleItem(mappings) {
         const hasReferences = primaryData.references_reprints
           && primaryData.references_reprints.length > 0;
 
-        if (isVirtual === false && hasReferences) {
+        if (isVirtual !== true && hasReferences) {
           const referencedInventoryNumber = primaryData.references_reprints[0].inventoryNumber;
           if (referencedInventoryNumber) {
             try {
