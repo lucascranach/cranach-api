@@ -111,6 +111,24 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.objectworktype_value);
     }
 
+    objectClassificationWrap.ele('lido:classificationWrap')
+      .ele('lido:classification', {
+        'lido:type': 'Objektklassifikation',
+      })
+      .ele('lido:conceptID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      }).txt(this.getClassificationURI(languageData.de.classification))
+      .up()
+      .ele('lido:term', {
+        'xml:lang': 'de',
+      })
+      .txt(languageData.de.classification)
+      .up()
+      .ele('lido:term', {
+        'xml:lang': 'en',
+      })
+      .txt(primaryData.classification);
+
     const objectIdentificationWrap = descriptiveMetadata.ele('lido:objectIdentificationWrap');
 
     const titleWrap = objectIdentificationWrap.ele('lido:titleWrap');
@@ -296,6 +314,7 @@ class LidoFormatter extends BaseFormatter {
 
         actorInRole.ele('lido:sourceActorInRole').txt(personDe.remarks);
       });
+
 
       // Add lido:eventDate only to the event with the designated roleType
       if (roleType === eventDateRoleType) {
@@ -483,6 +502,18 @@ class LidoFormatter extends BaseFormatter {
       case '010505':
         return 'http://vocab.getty.edu/aat/300041410';
 
+      default:
+        return '';
+    }
+  }
+
+  getClassificationURI(classification) {
+    switch (classification) {
+      // Zeichnung oder Drawing
+      case 'Zeichnung':
+        return 'http://vocab.getty.edu/aat/300033973';
+      case 'Druckgrafik':
+        return 'http://vocab.getty.edu/aat/300041273';
       default:
         return '';
     }
