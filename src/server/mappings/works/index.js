@@ -289,12 +289,12 @@ const mappings = [
 
   // isVirtual (Druckplatte vs. gedrucktes Exemplar)
   {
-    display_value: 'isVirtual',
+    display_value: 'isVirtual.keyword',
     showAsFilter: false,
     showAsResult: true,
     filter_types: [],
     key: 'is_virtual',
-    value: 'isVirtual',
+    value: 'isVirtual.keyword',
   },
 
   // Object name
@@ -558,6 +558,15 @@ const mappings = [
     showAsResult: true,
     filter_types: [],
   },
+
+  // LIDO classification
+  {
+    key: 'classification',
+    display_value: 'classification.classification',
+    showAsResult: true,
+    filter_types: [],
+  },
+
 ];
 
 // const entityTypes = ['PAINTING', 'GRAPHIC', 'GRAPHIC_REAL', 'DRAWING'];
@@ -568,6 +577,7 @@ const referencedFieldsToCopy = [
   'objectworktype_id',
   'title',
   'involved_persons',
+  'event_date',
 
 ];
 
