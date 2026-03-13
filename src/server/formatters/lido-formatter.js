@@ -311,8 +311,6 @@ class LidoFormatter extends BaseFormatter {
             })
             .txt('attributed to');
         }
-
-        actorInRole.ele('lido:sourceActorInRole').txt(personDe.remarks);
       });
 
 
