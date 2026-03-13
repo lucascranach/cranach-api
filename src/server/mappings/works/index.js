@@ -574,10 +574,11 @@ const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];
 
 // Fields to copy from referenced object (e.g., printing plate) when isVirtual = false
 const referencedFieldsToCopy = [
-  'objectworktype_id',
-  'title',
-  'involved_persons',
   'event_date',
+  'involved_persons',
+  'objectworktype_id',
+  'signature',
+  'title',
 
 ];
 

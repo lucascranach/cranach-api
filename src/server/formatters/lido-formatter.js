@@ -151,6 +151,21 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.title);
     }
 
+    objectIdentificationWrap.ele('lido:inscriptionsWrap')
+      .ele('lido:inscription', {
+        'lido:type': 'http://vocab.getty.edu/aat/300028702',
+      })
+      .ele('inscriptionDescription')
+      .ele('descriptiveNoteValue', {
+        'xml:lang': 'de',
+      })
+      .txt(this.removeCdaTag(languageData.de.signature))
+      .up()
+      .ele('descriptiveNoteValue', {
+        'xml:lang': 'en',
+      })
+      .txt(this.removeCdaTag(languageData.en.signature));
+
     const objectDescriptionWrap = objectIdentificationWrap.ele('lido:objectDescriptionWrap');
     const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
