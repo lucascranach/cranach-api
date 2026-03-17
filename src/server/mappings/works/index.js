@@ -74,11 +74,11 @@ const mappings = [
   // Standort - Stadt
   {
     display_value: 'locations.term',
-    filter_types: ['equals', 'notequals', 'similar'],
+    filter_types: [''],
     key: 'locations',
     value: 'locations.term',
     nestedPath: 'locations',
-    showAsResult: true,
+    showAsResult: false,
     searchTermField: true,
   },
 
@@ -567,6 +567,50 @@ const mappings = [
     filter_types: [],
   },
 
+  // LIDO dimensions referenced printing plate
+  {
+    display_value: 'dimensions',
+    showAsResult: true,
+    filter_types: [],
+    key: 'dimensions_referenced',
+  },
+
+  // Inventarnummer
+  {
+    display_value: 'inventoryNumber.keyword',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'inventory_number_referenced',
+  },
+
+  // LIDO catalog work references
+  {
+    display_value: 'catalogWorkReferences',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'catalog_work_references',
+  },
+
+  // LIDO catalog work references
+  {
+    display_value: 'markings',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'markings',
+  },
+
+  // LIDO catalog work references
+  {
+    display_value: '',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'location',
+    aggregateResult(data) {
+      return (data.locations[0]);
+    },
+
+  },
+
 ];
 
 // const entityTypes = ['PAINTING', 'GRAPHIC', 'GRAPHIC_REAL', 'DRAWING'];
@@ -574,6 +618,10 @@ const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];
 
 // Fields to copy from referenced object (e.g., printing plate) when isVirtual = false
 const referencedFieldsToCopy = [
+  'catalog_work_references',
+  'descriptive_note_value',
+  'dimensions_referenced',
+  'inventory_number_referenced',
   'event_date',
   'involved_persons',
   'objectworktype_id',
