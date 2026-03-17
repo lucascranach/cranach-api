@@ -57,6 +57,59 @@ class LidoFormatter extends BaseFormatter {
     const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
     const sourceUrl = `${baseUrl}/${primaryLanguage}/${inventoryNumber}`;
 
+    // =============================================================================
+    // LIDO XML STRUCTURE
+    // =============================================================================
+    //
+    // lido:lido (Root element)
+    // │
+    // ├─ lido:lidoRecID
+    // ├─ lido:objectPublishedID
+    // │
+    // ├─ lido:descriptiveMetadata (Descriptive metadata)
+    // │  │
+    // │  ├─ lido:objectClassificationWrap
+    // │  │  ├─ lido:objectWorkTypeWrap (Work type: engraving, drawing, etc.)
+    // │  │  └─ lido:classificationWrap (Category: drawing, print)
+    // │  │
+    // │  ├─ lido:objectIdentificationWrap
+    // │  │  ├─ lido:titleWrap (Title)
+    // │  │  ├─ lido:inscriptionsWrap
+    // │  │  │  ├─ lido:inscriptions (Signatures)
+    // │  │  │  └─ lido:inscriptions (Markings)
+    // │  │  ├─ lido:objectDescriptionWrap
+    // │  │  │  ├─ lido:objectDescriptionSet (General description)
+    // │  │  │  └─ lido:objectDescriptionSet (Provenance)
+    // │  │  ├─ lido:objectMeasurementsWrap
+    // │  │  │  ├─ lido:objectMeasurementsSet (Sheet measurements)
+    // │  │  │  └─ lido:objectMeasurementsSet (Image measurements)
+    // │  │  └─ lido:objectMaterialsTechWrap (Material and technique)
+    // │  │
+    // │  ├─ lido:eventWrap (Events)
+    // │  │  └─ lido:eventSet
+    // │  │     └─ lido:event (per role type: ARTIST, PRINTER, PRINTMAKER, etc.)
+    // │  │        ├─ lido:eventType
+    // │  │        ├─ lido:eventActor (Involved persons)
+    // │  │        └─ lido:eventDate (Dating)
+    // │  │
+    // │  └─ lido:objectRelationWrap (Relations to other works)
+    // │     └─ lido:relatedWorksWrap
+    // │        └─ lido:relatedWorkSet
+    // │           ├─ lido:relatedWork
+    // │           │  └─ lido:object
+    // │           │     ├─ lido:objectID (GND URI)
+    // │           │     ├─ lido:objectID (Bartsch catalog number)
+    // │           │     └─ lido:objectID (Referenced inventory number)
+    // │           └─ lido:relatedWorkRelType (Relationship type)
+    // │
+    // └─ lido:administrativeMetadata (Administrative metadata)
+    //    └─ lido:recordWrap
+    //       ├─ lido:recordID
+    //       ├─ lido:recordType
+    //       └─ lido:recordSource
+    //
+    // =============================================================================
+
     const root = create({ version: '1.0', encoding: 'UTF-8' });
 
     const lido = root.ele('lido:lido', {
@@ -74,23 +127,26 @@ class LidoFormatter extends BaseFormatter {
       'xsi:schemaLocation': 'http://www.lido-schema.org https://www.lido-schema.org/schema/v1.1/lido-v1.1.xsd',
     });
 
-    // LIDO Record ID
+    // ── lido:lidoRecID ──
     lido.ele('lido:lidoRecID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
-    // Object Published ID
+    // ── lido:objectPublishedID ──
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
       'lido:source': domain,
     }).txt(`${sourceUrl}/object`);
 
-    // Descriptive Metadata
+    // ╔═══════════════════════════════════════════════════════════════════════════╗
+    // ║  lido:descriptiveMetadata                                                 ║
+    // ╚═══════════════════════════════════════════════════════════════════════════╝
     const descriptiveMetadata = lido.ele('lido:descriptiveMetadata', { 'xml:lang': primaryLanguage });
 
-    // Object Classification Wrap
+    // ┌─ lido:objectClassificationWrap ────────────────────────────────────────┐
     const objectClassificationWrap = descriptiveMetadata.ele('lido:objectClassificationWrap');
+    //   ├─ lido:objectWorkTypeWrap (Work type)
     const objectWorkTypeWrap = objectClassificationWrap.ele('lido:objectWorkTypeWrap');
     const objectWorkType = objectWorkTypeWrap.ele('lido:objectWorkType');
 
@@ -98,19 +154,20 @@ class LidoFormatter extends BaseFormatter {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt(this.getObjectWorkTypeURI(primaryData.objectworktype_id));
 
-    // Output multilingual terms - always output both de and en in consistent order
-    if (languageData.de && languageData.de.objectworktype_value) {
+
+    if (languageData.de.objectworktype_value) {
       objectWorkType.ele('lido:term', {
         'xml:lang': 'de',
       }).txt(languageData.de.objectworktype_value);
     }
 
-    if (languageData.en && languageData.en.objectworktype_value) {
+    if (languageData.en.objectworktype_value) {
       objectWorkType.ele('lido:term', {
         'xml:lang': 'en',
       }).txt(languageData.en.objectworktype_value);
     }
 
+    //   └─ lido:classificationWrap (parent category)
     objectClassificationWrap.ele('lido:classificationWrap')
       .ele('lido:classification', {
         'lido:type': 'Objektklassifikation',
@@ -127,101 +184,239 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:term', {
         'xml:lang': 'en',
       })
-      .txt(primaryData.classification);
+      .txt(languageData.en.classification);
+    // └─ lido:objectClassificationWrap──────────────────────────────────┘
 
+    // ┌─ lido:objectIdentificationWrap ────────────────────────────────────────┐
     const objectIdentificationWrap = descriptiveMetadata.ele('lido:objectIdentificationWrap');
 
+    //   ├─ lido:titleWrap
     const titleWrap = objectIdentificationWrap.ele('lido:titleWrap');
     const titleSet = titleWrap.ele('lido:titleSet', {
       'lido:type': 'http://vocab.getty.edu/aat/300417200',
     });
 
-    // Output multilingual titles - always output both de and en in consistent order
-    if (languageData.de && languageData.de.title) {
+    if (languageData.de.title) {
       titleSet.ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'de',
       }).txt(languageData.de.title);
     }
 
-    if (languageData.en && languageData.en.title) {
+    if (languageData.en.title) {
       titleSet.ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'en',
       }).txt(languageData.en.title);
     }
+    //   └─ End: lido:titleWrap
 
-    objectIdentificationWrap.ele('lido:inscriptionsWrap')
-      .ele('lido:inscription', {
-        'lido:type': 'http://vocab.getty.edu/aat/300028702',
-      })
-      .ele('inscriptionDescription')
-      .ele('descriptiveNoteValue', {
+    //   ├─ lido:inscriptionsWrap
+    const inscriptionsWrap = objectIdentificationWrap.ele('lido:inscriptionsWrap');
+    //   │  ├─ lido:inscriptions (Signatures)
+    inscriptionsWrap.ele('lido:inscriptions', {
+      'lido:type': 'http://vocab.getty.edu/aat/300028702',
+    })
+      .ele('lido:inscriptionDescription')
+      .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      })
-      .txt(this.removeCdaTag(languageData.de.signature))
+      }).txt(this.removeCdaTag(languageData.de.signature))
       .up()
-      .ele('descriptiveNoteValue', {
+      .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      })
-      .txt(this.removeCdaTag(languageData.en.signature));
+      }).txt(this.removeCdaTag(languageData.en.signature));
 
+    //   │  └─ lido:inscriptions (Markings)
+    inscriptionsWrap.ele('lido:inscriptions', {
+      'lido:type': 'http://vocab.getty.edu/aat/300028760',
+    })
+      .ele('lido:inscriptionDescription')
+      .ele('lido:descriptiveNoteID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      }).txt('http://www.marquesdecollections.fr/detail.cfm/marque/8918')
+      .up()
+      .ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.markings)
+      .up()
+      .ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.markings);
+    //   └─ End: lido:inscriptionsWrap
+
+    //   ├─ lido:repositoryWrap
+    const repositoryWrap = objectIdentificationWrap.ele('lido:repositoryWrap');
+    const repositorySet = repositoryWrap.ele('lido:repositorySet', {
+      'lido:type': 'http://terminology.lido-schema.org/lido01017',
+    });
+    //   │  ├─ lido:displayRepository
+    repositorySet.ele('lido:displayRepository', {
+      'xml:lang': 'de',
+    }).txt(`${languageData.de.repository} ${languageData.de.location.term} - TODO: There are several locations here; how should this be handled?`);
+    repositorySet.ele('lido:displayRepository', {
+      'xml:lang': 'en',
+    }).txt(`${languageData.en.repository} ${languageData.de.location.term} - TODO: There are several locations here; how should this be handled?`);
+    
+    //   │  ├─ lido:repositoryName
+    repositorySet.ele('lido:repositoryName')
+      .ele('lido:legalBodyID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      }).txt('TODO: ID of the institution or person, need to resolve this via a lookup')
+      .up()
+      .ele('lido:legalBodyName')
+      .ele('lido:appellationValue', {
+        'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+        'xml:lang': 'de',
+      }).txt(languageData.de.repository)
+      .up()
+      .ele('lido:appellationValue', {
+        'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+        'xml:lang': 'en',
+      });
+    
+    //   │  ├─ lido:workID
+    repositorySet.ele('lido:workID', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00113',
+    }).txt('TODO: Clarify how this URL is derived');
+    
+    //   │  └─ lido:repositoryLocation
+    repositorySet.ele('lido:repositoryLocation')
+      .ele('lido:placeID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      }).txt(languageData.de.location.url)
+      .up()
+      .ele('lido:namePlaceSet')
+      .ele('lido:appellationValue', {
+        'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+        'xml:lang': 'de',
+      }).txt(languageData.de.location.term)
+      .up()
+      .ele('lido:appellationValue', {
+        'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+        'xml:lang': 'en',
+      }).txt(languageData.en.location.term);
+    //   └─ End: lido:repositoryWrap
+
+    //   ├─ lido:objectDescriptionWrap
     const objectDescriptionWrap = objectIdentificationWrap.ele('lido:objectDescriptionWrap');
+    //   │  ├─ objectDescriptionSet (general description)
     const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
-    if (languageData.de && languageData.de.descriptive_note_value) {
+    if (languageData.de.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
       }).txt(this.removeCdaTag(languageData.de.descriptive_note_value));
     }
 
-    if (languageData.en && languageData.en.descriptive_note_value) {
+    if (languageData.en.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
       }).txt(this.removeCdaTag(languageData.en.descriptive_note_value));
     }
 
-    // Separate objectDescriptionSet for provenance
+    //   │  └─ objectDescriptionSet (Provenance)
     const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01110',
     });
 
-    if (languageData.de && languageData.de.provenance) {
+    if (languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
       }).txt(languageData.de.provenance.replace(/^- /, ''));
     }
 
-    if (languageData.en && languageData.en.provenance) {
+    if (languageData.en.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
       }).txt(languageData.en.provenance);
     }
+    //   └─ End: lido:objectDescriptionWrap
 
-    // Object Materials/Techniques
+    //   ├─ lido:objectMeasurementsWrap
+    const objectMeasurementsWrap = objectIdentificationWrap.ele('lido:objectMeasurementsWrap')
+    //   │  ├─ objectMeasurementsSet #1 (sheet measurements)
+    let objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
+
+    if (languageData.de.dimensions) {
+      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.dimensions);
+      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.dimensions);
+    }
+
+    objectMeasurementsSet.ele('lido:objectMeasurements')
+      .ele('lido:measurementsSet')
+      .ele('lido:measurementType')
+      .txt('Höhe x Breite')
+      .up()
+      .ele('lido:measurementUnit')
+      .txt('mm')
+      .up()
+      .ele('lido:measurementValue')
+      .txt(this.extractDimensions(languageData.de.dimensions))
+      .up()
+      .up()
+      .ele('lido:extentMeasurements')
+      .txt('Blatt');
+    //   └─ End: lido:objectMeasurements #1
+
+    //   │  └─ objectMeasurementsSet #2 (image measurements)
+    objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
+
+    if (languageData.de.dimensions_referenced) {
+      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.dimensions_referenced);
+      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.dimensions_referenced);
+    }
+
+    objectMeasurementsSet.ele('lido:objectMeasurements')
+      .ele('lido:measurementsSet')
+      .ele('lido:measurementType')
+      .txt('Höhe x Breite')
+      .up()
+      .ele('lido:measurementUnit')
+      .txt('mm')
+      .up()
+      .ele('lido:measurementValue')
+      .txt(this.extractDimensions(languageData.de.dimensions_referenced))
+      .up()
+      .up()
+      .ele('lido:extentMeasurements')
+      .txt('Darstellung');
+    //   └─ End: lido:objectMeasurements #2
+    //   └─ End: lido:objectMeasurementsWrap
+
+    //   └─ lido:objectMaterialsTechWrap
     const objectMaterialsTechWrap = objectIdentificationWrap.ele('lido:objectMaterialsTechWrap');
     const objectMaterialsTechSet = objectMaterialsTechWrap.ele('lido:objectMaterialsTechSet');
 
-    // displayMaterialsTech - Freitext für Material und Technik
-    if (languageData.de && languageData.de.display_materials_tech) {
+    if (languageData.de.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'de',
       }).txt(this.removeCdaTag(languageData.de.display_materials_tech));
     }
 
-    if (languageData.en && languageData.en.display_materials_tech) {
+    if (languageData.en.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'en',
       }).txt(this.removeCdaTag(languageData.en.display_materials_tech));
     }
+    //   └─ End: lido:objectMaterialsTechWrap
+    // └─ lido:objectIdentificationWrap──────────────────────────────────┘
 
+    // ┌─ lido:eventWrap ───────────────────────────────────────────────────────┐
     const eventWrap = descriptiveMetadata.ele('lido:eventWrap');
     const eventSet = eventWrap.ele('lido:eventSet');
 
     const involvedPersonsDe = languageData.de.involved_persons;
     const involvedPersonsEn = languageData.en.involved_persons;
 
-    // Group persons by roleType
+    // Group persons by role type (ARTIST, PRINTER, PRINTMAKER, etc.)
     const personsByRoleType = {};
     involvedPersonsDe.forEach((person, index) => {
       const { roleType } = person;
@@ -235,20 +430,22 @@ class LidoFormatter extends BaseFormatter {
       });
     });
 
-    // Determine which roleType should receive the eventDate
-    let eventDateRoleType = 'ARTIST'; // Default fallback
+    // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
+    let eventDateRoleType = 'ARTIST';
     if (personsByRoleType.PRINTER) {
       eventDateRoleType = 'PRINTER';
     } else if (personsByRoleType.PRINTMAKER) {
       eventDateRoleType = 'PRINTMAKER';
     }
 
-    // Create one lido:event per roleType
+    // Create a separate lido:event element per role type
     Object.keys(personsByRoleType).forEach((roleType) => {
       const persons = personsByRoleType[roleType];
       const eventData = this.getEventDataByRoleType(roleType);
 
+      //   ├─ lido:event (for role type: ${roleType})
       const event = eventSet.ele('lido:event');
+      //   │  ├─ lido:eventType
       const eventType = event.ele('lido:eventType');
       eventType.ele('lido:conceptID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -261,14 +458,13 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       }).txt(eventData.eventType.termEn);
 
-      // Add all persons with this roleType as eventActors
+      //   │  ├─ lido:eventActor (for all persons of this role type)
       persons.forEach(({ personDe, personEn }, personIndex) => {
         const eventActor = event.ele('lido:eventActor');
         eventActor.ele('lido:displayActorInRole', {
           'xml:lang': 'de',
         }).txt(personDe.name);
 
-        // Add English name if available
         if (personEn) {
           eventActor.ele('lido:displayActorInRole', {
             'xml:lang': 'en',
@@ -280,7 +476,7 @@ class LidoFormatter extends BaseFormatter {
           'lido:type': 'http://terminology.lido-schema.org/lido00163',
         }).ele('lido:actorID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          // TODO: Add GND URI for person if available
+          // TODO: Add GND URI for the person if available
         }).txt('TODO: GND URI for person')
           .up()
           .ele('lido:nameActorSet')
@@ -309,7 +505,7 @@ class LidoFormatter extends BaseFormatter {
           })
           .txt(personEn.role);
 
-        // Add attributionQualifierActor for all persons except the first one in this event
+        // From second person onwards: attribution qualifier "attributed to"
         if (personIndex > 0) {
           actorInRole.ele('lido:attributionQualifierActor')
             .ele('lido:conceptID', {
@@ -328,18 +524,16 @@ class LidoFormatter extends BaseFormatter {
         }
       });
 
-
-      // Add lido:eventDate only to the event with the designated roleType
+      //   │  └─ lido:eventDate (only for the designated role type)
       if (roleType === eventDateRoleType) {
         const eventDateDe = languageData.de.event_date;
         const eventDateEn = languageData.en.event_date;
 
         if (eventDateDe) {
-          // Collect all begin and end dates
+          // Collect all begin and end dates (incl. historic events)
           const beginDates = [eventDateDe.begin];
           const endDates = [eventDateDe.end];
 
-          // Add dates from historicEventInformations if available
           const historicEvents = eventDateDe.historicEventInformations;
           if (Array.isArray(historicEvents)) {
             historicEvents.forEach((info) => {
@@ -348,13 +542,13 @@ class LidoFormatter extends BaseFormatter {
             });
           }
 
-          // Find earliest and latest dates (filter out null/undefined values)
+          // Determine earliest and latest date
           const validBeginDates = beginDates.filter((d) => d != null && !Number.isNaN(d));
           const validEndDates = endDates.filter((d) => d != null && !Number.isNaN(d));
           const earliestDate = validBeginDates.length > 0 ? Math.min(...validBeginDates) : null;
           const latestDate = validEndDates.length > 0 ? Math.max(...validEndDates) : null;
 
-          // Build displayDate string for German
+          // Build displayDate string (German)
           let displayDateDe = '';
           if (eventDateDe.dated) {
             displayDateDe = eventDateDe.dated;
@@ -363,7 +557,6 @@ class LidoFormatter extends BaseFormatter {
             }
           }
 
-          // Add historic event informations to displayDate
           if (Array.isArray(historicEvents)) {
             historicEvents.forEach((info) => {
               if (info.text) {
@@ -376,7 +569,7 @@ class LidoFormatter extends BaseFormatter {
             });
           }
 
-          // Build displayDate string for English
+          // Build displayDate string (English)
           let displayDateEn = '';
           if (eventDateEn.dated) {
             displayDateEn = eventDateEn.dated;
@@ -385,7 +578,6 @@ class LidoFormatter extends BaseFormatter {
             }
           }
 
-          // Add historic event informations to displayDate (English)
           if (Array.isArray(eventDateEn.historicEventInformations)) {
             eventDateEn.historicEventInformations.forEach((info) => {
               if (info.text) {
@@ -400,7 +592,6 @@ class LidoFormatter extends BaseFormatter {
 
           const eventDate = event.ele('lido:eventDate');
 
-          // Add display dates for both languages
           if (displayDateDe) {
             eventDate.ele('lido:displayDate', {
               'xml:lang': 'de',
@@ -413,7 +604,7 @@ class LidoFormatter extends BaseFormatter {
             }).txt(displayDateEn);
           }
 
-          // Add structured date if we have valid dates
+          // Structured date with earliestDate/latestDate
           if (earliestDate !== null || latestDate !== null) {
             const date = eventDate.ele('lido:date');
 
@@ -432,24 +623,67 @@ class LidoFormatter extends BaseFormatter {
         }
       }
     });
+    // └─ lido:eventWrap─────────────────────────────────────────────────┘
 
-    // Administrative Metadata
+    // ┌─ lido:objectRelationWrap ──────────────────────────────────────────────┐
+    descriptiveMetadata.ele('lido:objectRelationWrap')
+      .ele('lido:relatedWorksWrap')
+      .ele('lido:relatedWorkSet')
+      .ele('lido:relatedWork')
+      .ele('lido:object')
+      .ele('lido:objectID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      })
+      .txt('TODO: GND URI for person')
+      .up()
+      .ele('lido:objectID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00100',
+        'lido:source': 'https://d-nb.info/gnd/4405115-3',
+      })
+      .txt(this.getBartschReference(languageData.de.catalog_work_references))
+      .up()
+      .ele('lido:objectID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00100',
+        'lido:source': `${domain}`,
+      })
+      .txt(`${languageData.de.inventory_number_referenced}`)
+      .up()
+      .up()
+      .up()
+      .ele('lido:relatedWorkRelType')
+      .ele('skos:Concept', {
+        'rdf:about': 'http://terminology.lido-schema.org/lido00627',
+      })
+      .ele('skos:prefLabel', {
+        'xml:lang': 'de',
+      })
+      .txt('ist Exemplar von')
+      .up()
+      .ele('skos:prefLabel', {
+        'xml:lang': 'en',
+      })
+      .txt('is example of');
+    // └─ lido:objectRelationWrap─────────────────────────────────────────┘
+
+    // ╔═══════════════════════════════════════════════════════════════════════════╗
+    // ║  lido:administrativeMetadata                                              ║
+    // ╚═══════════════════════════════════════════════════════════════════════════╝
     const administrativeMetadata = lido.ele('lido:administrativeMetadata', { 'xml:lang': primaryLanguage });
 
-    // Record Wrap
+    // ┌─ lido:recordWrap ──────────────────────────────────────────────────────┐
     const recordWrap = administrativeMetadata.ele('lido:recordWrap');
+    //   ├─ lido:recordID
     recordWrap
       .ele('lido:recordID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
       }).txt(`${inventoryNumber}/record`);
 
-    // Record Type
+    //   ├─ lido:recordType
     const recordType = recordWrap.ele('lido:recordType');
     recordType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt('http://terminology.lido-schema.org/lido00141');
 
-    // Output multilingual terms in both German and English (from translations)
     const einzelobjektDe = translations.getTranslation('einzelobjekt', 'de');
     const einzelobjektEn = translations.getTranslation('einzelobjekt', 'en');
 
@@ -465,7 +699,7 @@ class LidoFormatter extends BaseFormatter {
       }).txt(einzelobjektEn);
     }
 
-    // Record Source
+    //   └─ lido:recordSource
     const recordSource = recordWrap.ele('lido:recordSource');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -474,6 +708,7 @@ class LidoFormatter extends BaseFormatter {
     recordSource
       .ele('lido:legalBodyWeblink')
       .txt(`${domain}`);
+    // └─ lido:recordWrap─────────────────────────────────────────────────────┘
 
     return root.end({ prettyPrint: true });
   }
@@ -497,21 +732,46 @@ class LidoFormatter extends BaseFormatter {
   }
 
   /**
+   * Extract dimensions from a string starting with any word followed by a colon
+   * @param {string} text - The input string (e.g., "Blatt: 277 x 190 mm, Darstellung: 282-284 x 194-202 mm")
+   * @returns {string} The extracted dimensions (e.g., "277 x 190" or "282-284 x 194-202") without unit
+   */
+  extractDimensions(text) {
+    if (!text) return '';
+    const match = text.match(/\w+:\s*([\d-]+\s*x\s*[\d-]+)/i);
+    return match ? match[1] : '';
+  }
+
+  /**
+   * Get Bartsch catalog reference
+   * @param {Array} catalogWorkReferences - Array of catalog reference objects
+   * @returns {Object|} The Bartsch catalog reference object or null if not found
+   */
+  getBartschReference(catalogWorkReferences) {
+    if (!Array.isArray(catalogWorkReferences)) return '';
+    const catalogWorkReference = catalogWorkReferences.find((ref) => ref.description === 'Bartsch');
+    if (!catalogWorkReference) {
+      return '';
+    }
+    return `${catalogWorkReference.description} ${catalogWorkReference.referenceNumber}`;
+  }
+
+  /**
    * Get GND URI for object work type
    * @param {string} id - Object type ID
    * @returns {string} GND URI or empty string
    */
   getObjectWorkTypeURI(id) {
     switch (id) {
-      // Kupferstich
+      // Engraving
       case '010506':
         return 'http://vocab.getty.edu/aat/300041341';
 
-      // Zeichnung
+      // Drawing
       case '010501':
         return 'http://vocab.getty.edu/aat/300033973';
 
-      // Holzschnitt
+      // Woodcut
       case '010505':
         return 'http://vocab.getty.edu/aat/300041410';
 
@@ -522,7 +782,7 @@ class LidoFormatter extends BaseFormatter {
 
   getClassificationURI(classification) {
     switch (classification) {
-      // Zeichnung oder Drawing
+      // Drawing
       case 'Zeichnung':
         return 'http://vocab.getty.edu/aat/300033973';
       case 'Druckgrafik':
