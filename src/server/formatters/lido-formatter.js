@@ -175,7 +175,7 @@ class LidoFormatter extends BaseFormatter {
     //   └─ lido:classificationWrap (parent category)
     objectClassificationWrap.ele('lido:classificationWrap')
       .ele('lido:classification', {
-        'lido:type': 'Objektklassifikation',
+        'lido:type': 'http://terminology.lido-schema.org/lido00853',
       })
       .ele('lido:conceptID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
