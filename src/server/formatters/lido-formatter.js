@@ -234,7 +234,7 @@ class LidoFormatter extends BaseFormatter {
     //   │  └─ lido:inscriptions (Markings)
 
     const descriptiveNoteValueMarkingsDe = this.extractTextAndCitation(languageData.de.markings);
-    const descriptiveNoteValueMarkingsEn = this.extractTextAndCitation(languageData.en.markings);  
+    const descriptiveNoteValueMarkingsEn = this.extractTextAndCitation(languageData.en.markings);
 
     inscriptionsWrap.ele('lido:inscriptions', {
       'lido:type': 'http://vocab.getty.edu/aat/300028760',
@@ -424,13 +424,13 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'de',
-      }).txt(languageData.de.objectworktype_value);
+      }).txt(languageData.de.display_materials_tech);
     }
 
     if (languageData.en.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'en',
-      }).txt(languageData.en.objectworktype_value);
+      }).txt(languageData.en.display_materials_tech);
     }
     //   └─ End: lido:objectMaterialsTechWrap
     // └─ lido:objectIdentificationWrap──────────────────────────────────┘
@@ -660,13 +660,13 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:objectID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
       })
-      .txt('TODO: GND URI for person')
+      .txt(this.getCatalogReference(languageData.de.catalog_work_references, 'GND'))
       .up()
       .ele('lido:objectID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
         'lido:source': 'https://d-nb.info/gnd/4405115-3',
       })
-      .txt(this.getBartschReference(languageData.de.catalog_work_references))
+      .txt(`Bartsch ${this.getCatalogReference(languageData.de.catalog_work_references, 'Bartsch')}`)
       .up()
       .ele('lido:objectID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
@@ -769,17 +769,20 @@ class LidoFormatter extends BaseFormatter {
   }
 
   /**
-   * Get Bartsch catalog reference
+   * Get catalog reference by description
    * @param {Array} catalogWorkReferences - Array of catalog reference objects
-   * @returns {Object|} The Bartsch catalog reference object or null if not found
+   * @param {string} description - The description to search for (e.g., 'Bartsch')
+   * @returns {string} The formatted catalog reference or empty string if not found
    */
-  getBartschReference(catalogWorkReferences) {
+  getCatalogReference(catalogWorkReferences, description) {
     if (!Array.isArray(catalogWorkReferences)) return '';
-    const catalogWorkReference = catalogWorkReferences.find((ref) => ref.description === 'Bartsch');
+    const catalogWorkReference = catalogWorkReferences.find(
+      (ref) => ref.description === description,
+    );
     if (!catalogWorkReference) {
       return '';
     }
-    return `${catalogWorkReference.description} ${catalogWorkReference.referenceNumber}`;
+    return `${catalogWorkReference.referenceNumber}`;
   }
 
   /**
