@@ -384,8 +384,15 @@ class LidoFormatter extends BaseFormatter {
       .txt(this.extractDimensions(languageData.de.dimensions))
       .up()
       .up()
-      .ele('lido:extentMeasurements')
-      .txt('Blatt');
+      .ele('lido:extentMeasurements', {
+        'xml:lang': 'de',
+      })
+      .txt('Blatt')
+      .up()
+      .ele('lido:extentMeasurements', {
+        'xml:lang': 'en',
+      })
+      .txt('sheet');
     //   └─ End: lido:objectMeasurements #1
 
     //   │  └─ objectMeasurementsSet #2 (image measurements)
@@ -412,8 +419,16 @@ class LidoFormatter extends BaseFormatter {
       .txt(this.extractDimensions(languageData.de.dimensions_referenced))
       .up()
       .up()
-      .ele('lido:extentMeasurements')
-      .txt('Darstellung');
+      .ele('lido:extentMeasurements', {
+        'xml:lang': 'de',
+      })
+      .txt('Darstellung')
+      .up()
+      .ele('lido:extentMeasurements', {
+        'xml:lang': 'en',
+      })
+      .txt('presentation');
+
     //   └─ End: lido:objectMeasurements #2
     //   └─ End: lido:objectMeasurementsWrap
 
@@ -424,13 +439,34 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'de',
-      }).txt(languageData.de.display_materials_tech);
+      }).txt(languageData.de.objectworktype_value);
     }
 
     if (languageData.en.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'en',
-      }).txt(languageData.en.display_materials_tech);
+      }).txt(languageData.en.objectworktype_value);
+    }
+
+    // Add lido:materialsTech based on objectworktype_value
+    const materialsTechData = this.getMaterialsTechData(languageData.de.objectworktype_value);
+    if (materialsTechData) {
+      objectMaterialsTechSet.ele('lido:materialsTech')
+        .ele('lido:termMaterialsTech')
+        .ele('lido:conceptID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido0009',
+        })
+        .txt(materialsTechData.conceptID)
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'de',
+        })
+        .txt(materialsTechData.termDe)
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'en',
+        })
+        .txt(materialsTechData.termEn);
     }
     //   └─ End: lido:objectMaterialsTechWrap
     // └─ lido:objectIdentificationWrap──────────────────────────────────┘
@@ -917,6 +953,36 @@ class LidoFormatter extends BaseFormatter {
             conceptID: '',
           },
         };
+    }
+  }
+
+  /**
+   * Get materials and technique data by type
+   * @param {string} materialsTechType - Materials/technique type (e.g., 'Holzschnitt', 'Kupferstich', 'Zeichnung')
+   * @returns {Object} Object with conceptID, termDe, and termEn
+   */
+  getMaterialsTechData(materialsTechType) {
+    switch (materialsTechType) {
+      case 'Holzschnitt':
+        return {
+          conceptID: 'http://vocab.getty.edu/aat/300053296',
+          termDe: 'Holzschnitt (Druckverfahren)',
+          termEn: 'woodcut (process)',
+        };
+      case 'Kupferstich':
+        return {
+          conceptID: 'http://vocab.getty.edu/aat/300053225',
+          termDe: 'Kupferstich (Druckverfahren)',
+          termEn: 'engraving (printing process)',
+        };
+      case 'Zeichnung':
+        return {
+          conceptID: 'http://vocab.getty.edu/aat/300054196',
+          termDe: 'Zeichnung',
+          termEn: 'drawing (image-making)',
+        };
+      default:
+        return null;
     }
   }
 }
