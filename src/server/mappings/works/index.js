@@ -608,7 +608,14 @@ const mappings = [
     aggregateResult(data) {
       return (data.locations[0]);
     },
+  },
 
+  // LIDO publications
+  {
+    display_value: 'publications',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'publications',
   },
 
 ];

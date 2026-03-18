@@ -1,6 +1,8 @@
 const model = require('../models');
 const Aggregator = require('../es-engine/aggregator');
 const FormatterFactory = require('../formatters/formatter-factory');
+const { Mappings, MappingType } = require('../mappings');
+const FilterParam = require('../../entities/filterparam');
 
 function getSingleItem(mappings) {
   return async (req, res) => {
@@ -70,8 +72,8 @@ function getSingleItem(mappings) {
                   if (matchingItem) {
                     fieldsToCopy.forEach((field) => {
                       if (referencedItem.data[field] !== undefined
-                          && referencedItem.data[field] !== null
-                          && referencedItem.data[field] !== '') {
+                        && referencedItem.data[field] !== null
+                        && referencedItem.data[field] !== '') {
                         matchingItem.data[field] = referencedItem.data[field];
                       }
                     });
@@ -84,6 +86,98 @@ function getSingleItem(mappings) {
                 `Failed to fetch referenced record ${referencedInventoryNumber}:`,
                 error,
               );
+              // Continue with original data if fetch fails
+            }
+          }
+        }
+
+        // Enrich publications with literature reference data
+        if (data.results && data.results.length > 0) {
+          // Extract all unique referenceIds from publications (using primary language data)
+          const referenceIds = new Set();
+          if (Array.isArray(primaryData.publications)) {
+            primaryData.publications.forEach((publication) => {
+              if (publication.referenceId) {
+                referenceIds.add(publication.referenceId);
+              }
+            });
+          }
+
+
+          if (referenceIds.size > 0) {
+            try {
+              // Create literature mappings
+              const literatureMappings = new Mappings(MappingType.LITERATURE);
+
+              // Fetch literature references
+              const literatureParams = {
+                entityTypes: literatureMappings.getEntityTypes(),
+                filters: [
+                  new FilterParam(
+                    'reference_id',
+                    Array.from(referenceIds),
+                    'eq',
+                    'equals',
+                    'referenceId',
+                  ),
+                ],
+                from: 0,
+                language: 'de',
+                size: referenceIds.size,
+                searchterms: [],
+                showDataAll: false,
+                sort: [],
+              };
+
+
+              const literatureResult = await model.getItems(
+                literatureMappings,
+                {},
+                literatureParams,
+              );
+
+
+              const literatureData = Aggregator.aggregateItemsResponse(
+                literatureResult.result,
+                literatureResult.queryBuilder,
+                literatureMappings,
+                literatureParams,
+              );
+
+              // Create a map of referenceId to literature data
+              const literatureMap = {};
+              if (literatureData.results && Array.isArray(literatureData.results)) {
+                literatureData.results.forEach((item) => {
+                  literatureMap[item.reference_id] = item;
+                });
+
+                // Enrich publications in all language results with the same literature data
+                for (let i = 0; i < data.results.length; i += 1) {
+                  const languageItem = data.results[i];
+                  if (Array.isArray(languageItem.data.publications)) {
+                    data.results[i].data.publications = languageItem.data.publications.map(
+                      (publication) => {
+                        if (publication.referenceId) {
+                          const literatureItem = literatureMap[publication.referenceId];
+                          if (literatureItem) {
+                            return {
+                              ...publication,
+                              authors: literatureItem.authors,
+                              publish_location: literatureItem.publish_location,
+                              publish_date: literatureItem.publish_date,
+
+                            };
+                          }
+                        }
+                        return publication;
+                      },
+                    );
+                  }
+                }
+              }
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error('Failed to fetch literature references:', error);
               // Continue with original data if fetch fails
             }
           }

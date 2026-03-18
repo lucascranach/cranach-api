@@ -134,10 +134,15 @@ class LidoFormatter extends BaseFormatter {
     }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
     // ── lido:objectPublishedID ──
+    lido.com('TODO: Clarify how this ID should be constructed');
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
       'lido:source': domain,
     }).txt(`${sourceUrl}/object`);
+    lido.ele('lido:objectPublishedID', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      'lido:source': 'TODO: Add GND URI',
+    }).txt('TODO: GND URI for the object');
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
     // ║  lido:descriptiveMetadata                                                 ║
@@ -153,7 +158,6 @@ class LidoFormatter extends BaseFormatter {
     objectWorkType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt(this.getObjectWorkTypeURI(primaryData.objectworktype_id));
-
 
     if (languageData.de.objectworktype_value) {
       objectWorkType.ele('lido:term', {
@@ -256,7 +260,7 @@ class LidoFormatter extends BaseFormatter {
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'en',
     }).txt(`${languageData.en.repository} ${languageData.de.location.term} - TODO: There are several locations here; how should this be handled?`);
-    
+
     //   │  ├─ lido:repositoryName
     repositorySet.ele('lido:repositoryName')
       .ele('lido:legalBodyID', {
@@ -273,12 +277,12 @@ class LidoFormatter extends BaseFormatter {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'en',
       });
-    
+
     //   │  ├─ lido:workID
     repositorySet.ele('lido:workID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00113',
     }).txt('TODO: Clarify how this URL is derived');
-    
+
     //   │  └─ lido:repositoryLocation
     repositorySet.ele('lido:repositoryLocation')
       .ele('lido:placeID', {
@@ -302,16 +306,30 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ objectDescriptionSet (general description)
     const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
+    // extractTextAndCitation of descriptive_note_value
+
+    const descriptiveNoteValueDe = this.extractTextAndCitation(
+      languageData.de.descriptive_note_value,
+    );
+    const descriptiveNoteValueEn = this.extractTextAndCitation(
+      languageData.en.descriptive_note_value,
+    );
+
     if (languageData.de.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(this.removeCdaTag(languageData.de.descriptive_note_value));
+      }).txt(descriptiveNoteValueDe.text);
     }
 
     if (languageData.en.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(this.removeCdaTag(languageData.en.descriptive_note_value));
+      }).txt(descriptiveNoteValueEn.text);
+    }
+
+    if (descriptiveNoteValueDe.citation !== '') {
+      objectDescriptionSet.ele('sourceDescriptiveNote')
+        .txt(descriptiveNoteValueDe.citation);
     }
 
     //   │  └─ objectDescriptionSet (Provenance)
@@ -333,17 +351,17 @@ class LidoFormatter extends BaseFormatter {
     //   └─ End: lido:objectDescriptionWrap
 
     //   ├─ lido:objectMeasurementsWrap
-    const objectMeasurementsWrap = objectIdentificationWrap.ele('lido:objectMeasurementsWrap')
+    const objectMeasurementsWrap = objectIdentificationWrap.ele('lido:objectMeasurementsWrap');
     //   │  ├─ objectMeasurementsSet #1 (sheet measurements)
     let objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
 
     if (languageData.de.dimensions) {
       objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
         'xml:lang': 'de',
-      }).txt(languageData.de.dimensions);
+      }).txt(this.extractTextAndCitation(languageData.de.dimensions).text);
       objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
         'xml:lang': 'en',
-      }).txt(languageData.en.dimensions);
+      }).txt(this.extractTextAndCitation(languageData.en.dimensions).text);
     }
 
     objectMeasurementsSet.ele('lido:objectMeasurements')
@@ -368,10 +386,10 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de.dimensions_referenced) {
       objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
         'xml:lang': 'de',
-      }).txt(languageData.de.dimensions_referenced);
+      }).txt(this.extractTextAndCitation(languageData.de.dimensions_referenced).text);
       objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
         'xml:lang': 'en',
-      }).txt(languageData.en.dimensions_referenced);
+      }).txt(this.extractTextAndCitation(languageData.en.dimensions_referenced).text);
     }
 
     objectMeasurementsSet.ele('lido:objectMeasurements')
@@ -524,7 +542,7 @@ class LidoFormatter extends BaseFormatter {
         }
       });
 
-      //   │  └─ lido:eventDate (only for the designated role type)
+      //   │  ├─ lido:eventDate (only for the designated role type)
       if (roleType === eventDateRoleType) {
         const eventDateDe = languageData.de.event_date;
         const eventDateEn = languageData.en.event_date;
@@ -626,10 +644,14 @@ class LidoFormatter extends BaseFormatter {
     // └─ lido:eventWrap─────────────────────────────────────────────────┘
 
     // ┌─ lido:objectRelationWrap ──────────────────────────────────────────────┐
-    descriptiveMetadata.ele('lido:objectRelationWrap')
-      .ele('lido:relatedWorksWrap')
-      .ele('lido:relatedWorkSet')
-      .ele('lido:relatedWork')
+    const relatedWorksWrap = descriptiveMetadata.ele('lido:objectRelationWrap')
+      .ele('lido:relatedWorksWrap');
+
+    //   ├─ lido:relatedWorkSet
+    const relatedWorkSet = relatedWorksWrap.ele('lido:relatedWorkSet');
+
+    //   │  ├─ lido:relatedWork
+    relatedWorkSet.ele('lido:relatedWork')
       .ele('lido:object')
       .ele('lido:objectID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -646,11 +668,10 @@ class LidoFormatter extends BaseFormatter {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
         'lido:source': `${domain}`,
       })
-      .txt(`${languageData.de.inventory_number_referenced}`)
-      .up()
-      .up()
-      .up()
-      .ele('lido:relatedWorkRelType')
+      .txt(`${languageData.de.inventory_number_referenced}`);
+
+    //   │  └─ lido:relatedWorkRelType
+    relatedWorkSet.ele('lido:relatedWorkRelType')
       .ele('skos:Concept', {
         'rdf:about': 'http://terminology.lido-schema.org/lido00627',
       })
@@ -663,6 +684,33 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt('is example of');
+
+    languageData.de.publications.forEach((publication) => {
+      relatedWorksWrap.ele('lido:relatedWorkSet')
+        .ele('lido:relatedWork')
+        .ele('lido:object')
+        .ele('objectNote')
+        .txt(`${publication.authors}, ${publication.title}, ${publication.publish_location}, ${publication.publish_date}, ${publication.pageNumber}`)
+        .up()
+        .up()
+        .up()
+        .ele('lido:relatedWorkRelType')
+        .ele('lido:conceptID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        })
+        .txt('http://terminology.lido-schema.org/lido00617')
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'de',
+        })
+        .txt('ist dokumentiert in')
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'en',
+        })
+        .txt('is documented in');
+    });
+
     // └─ lido:objectRelationWrap─────────────────────────────────────────┘
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -710,6 +758,34 @@ class LidoFormatter extends BaseFormatter {
       .txt(`${domain}`);
     // └─ lido:recordWrap─────────────────────────────────────────────────────┘
 
+    administrativeMetadata.ele('lido:recordRights')
+      .ele('lido:rightsType', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00921',
+      })
+      .ele('skos:Concept', {
+        'rdf:about': 'http://creativecommons.org/publicdomain/zero/1.0/',
+      })
+      .ele('skos:prefLabel', {
+        'xml:lang': 'de',
+      })
+      .txt('CC0 1.0 Universell Public Domain Dedication')
+      .up()
+      .ele('skos:prefLabel', {
+        'xml:lang': 'en',
+      })
+      .txt('CC0 1.0 Universal Public Domain Dedication');
+
+    administrativeMetadata.ele('lido:recordInfoSet', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00471',
+    }).ele('recordInfoLink')
+      .txt(`${sourceUrl}`);
+
+    administrativeMetadata.ele('lido:recordInfoSet', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00470',
+    }).ele('recordMetadataDate', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00473',
+      'lido:source': domain,
+    }).txt('TODO: Add date of last modification of the record');
     return root.end({ prettyPrint: true });
   }
 
@@ -754,6 +830,34 @@ class LidoFormatter extends BaseFormatter {
       return '';
     }
     return `${catalogWorkReference.description} ${catalogWorkReference.referenceNumber}`;
+  }
+
+  /**
+   * Extract text and citation from a string
+   * @param {string} text - The input string with citation in square brackets at the end
+   * @returns {Object} Object with 'text' and 'citation' properties
+   * @example
+   * // Input: "Some text about art.\n[Exhib Cat. Düsseldorf 2017, 109, no. 7]"
+   * // Output: { text: "Some text about art.", citation: "Exhib Cat. Düsseldorf 2017, 109, no. 7" }
+   */
+  extractTextAndCitation(text) {
+    if (!text) return { text: '', citation: '' };
+
+    // Match optional newline/whitespace, then [content] at the end
+    const match = text.match(/^(.*?)\s*\n?\s*\[([^\]]+)\]\s*$/s);
+
+    if (match) {
+      return {
+        text: match[1].trim(),
+        citation: match[2].trim(),
+      };
+    }
+
+    // No citation found, return entire text
+    return {
+      text: text.trim(),
+      citation: '',
+    };
   }
 
   /**
