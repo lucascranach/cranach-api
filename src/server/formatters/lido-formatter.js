@@ -139,6 +139,11 @@ class LidoFormatter extends BaseFormatter {
       'lido:source': domain,
     }).txt(`${sourceUrl}/object`);
 
+    lido.ele('lido:objectPublishedID', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00100',
+      'lido:source': 'https://d-nb.info/gnd/1073160734,'
+    }).txt(`gnd1073160734/object/${inventoryNumber}`);
+
     // ╔═══════════════════════════════════════════════════════════════════════════╗
     // ║  lido:descriptiveMetadata                                                 ║
     // ╚═══════════════════════════════════════════════════════════════════════════╝
