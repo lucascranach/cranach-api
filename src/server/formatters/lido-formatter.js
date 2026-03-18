@@ -403,13 +403,13 @@ class LidoFormatter extends BaseFormatter {
     if (languageData.de.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'de',
-      }).txt(this.removeCdaTag(languageData.de.display_materials_tech));
+      }).txt(languageData.de.objectworktype_value);
     }
 
     if (languageData.en.display_materials_tech) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'en',
-      }).txt(this.removeCdaTag(languageData.en.display_materials_tech));
+      }).txt(languageData.en.objectworktype_value);
     }
     //   └─ End: lido:objectMaterialsTechWrap
     // └─ lido:objectIdentificationWrap──────────────────────────────────┘
