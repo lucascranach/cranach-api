@@ -232,6 +232,10 @@ class LidoFormatter extends BaseFormatter {
       }).txt(this.removeCdaTag(languageData.en.signature));
 
     //   │  └─ lido:inscriptions (Markings)
+
+    const descriptiveNoteValueMarkingsDe = this.extractTextAndCitation(languageData.de.markings);
+    const descriptiveNoteValueMarkingsEn = this.extractTextAndCitation(languageData.en.markings);  
+
     inscriptionsWrap.ele('lido:inscriptions', {
       'lido:type': 'http://vocab.getty.edu/aat/300028760',
     })
@@ -242,11 +246,14 @@ class LidoFormatter extends BaseFormatter {
       .up()
       .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(languageData.de.markings)
+      }).txt(descriptiveNoteValueMarkingsDe.text)
       .up()
       .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(languageData.en.markings);
+      }).txt(descriptiveNoteValueMarkingsEn.text)
+      .up()
+      .ele('sourceDescriptiveNote')
+      .txt(descriptiveNoteValueMarkingsDe.citation);
     //   └─ End: lido:inscriptionsWrap
 
     //   ├─ lido:repositoryWrap
@@ -261,7 +268,7 @@ class LidoFormatter extends BaseFormatter {
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'en',
     }).txt(`${languageData.en.repository} ${languageData.de.location.term} - TODO: There are several locations here; how should this be handled?`);
-    
+
     //   │  ├─ lido:repositoryName
     repositorySet.ele('lido:repositoryName')
       .ele('lido:legalBodyID', {
@@ -278,12 +285,12 @@ class LidoFormatter extends BaseFormatter {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'en',
       });
-    
+
     //   │  ├─ lido:workID
     repositorySet.ele('lido:workID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00113',
     }).txt('TODO: Clarify how this URL is derived');
-    
+
     //   │  └─ lido:repositoryLocation
     repositorySet.ele('lido:repositoryLocation')
       .ele('lido:placeID', {
@@ -307,16 +314,30 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ objectDescriptionSet (general description)
     const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
+    // extractTextAndCitation of descriptive_note_value
+
+    const descriptiveNoteValueDe = this.extractTextAndCitation(
+      languageData.de.descriptive_note_value,
+    );
+    const descriptiveNoteValueEn = this.extractTextAndCitation(
+      languageData.en.descriptive_note_value,
+    );
+
     if (languageData.de.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(this.removeCdaTag(languageData.de.descriptive_note_value));
+      }).txt(descriptiveNoteValueDe.text);
     }
 
     if (languageData.en.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(this.removeCdaTag(languageData.en.descriptive_note_value));
+      }).txt(descriptiveNoteValueEn.text);
+    }
+
+    if (descriptiveNoteValueDe.citation !== '') {
+      objectDescriptionSet.ele('sourceDescriptiveNote')
+        .txt(descriptiveNoteValueDe.citation);
     }
 
     //   │  └─ objectDescriptionSet (Provenance)
@@ -759,6 +780,34 @@ class LidoFormatter extends BaseFormatter {
       return '';
     }
     return `${catalogWorkReference.description} ${catalogWorkReference.referenceNumber}`;
+  }
+
+  /**
+   * Extract text and citation from a string
+   * @param {string} text - The input string with citation in square brackets at the end
+   * @returns {Object} Object with 'text' and 'citation' properties
+   * @example
+   * // Input: "Some text about art.\n[Exhib Cat. Düsseldorf 2017, 109, no. 7]"
+   * // Output: { text: "Some text about art.", citation: "Exhib Cat. Düsseldorf 2017, 109, no. 7" }
+   */
+  extractTextAndCitation(text) {
+    if (!text) return { text: '', citation: '' };
+
+    // Match optional newline/whitespace, then [content] at the end
+    const match = text.match(/^(.*?)\s*\n?\s*\[([^\]]+)\]\s*$/s);
+
+    if (match) {
+      return {
+        text: match[1].trim(),
+        citation: match[2].trim(),
+      };
+    }
+
+    // No citation found, return entire text
+    return {
+      text: text.trim(),
+      citation: '',
+    };
   }
 
   /**
