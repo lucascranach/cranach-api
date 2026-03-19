@@ -247,13 +247,15 @@ class LidoFormatter extends BaseFormatter {
       .up()
       .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(descriptiveNoteValueMarkingsDe.text)
+      })
+      .txt(descriptiveNoteValueMarkingsDe.text)
       .up()
       .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(descriptiveNoteValueMarkingsEn.text)
+      })
+      .txt(descriptiveNoteValueMarkingsEn.text)
       .up()
-      .ele('sourceDescriptiveNote')
+      .ele('lido:sourceDescriptiveNote')
       .txt(descriptiveNoteValueMarkingsDe.citation);
     //   └─ End: lido:inscriptionsWrap
 
@@ -339,7 +341,7 @@ class LidoFormatter extends BaseFormatter {
     }
 
     if (descriptiveNoteValueDe.citation !== '') {
-      objectDescriptionSet.ele('sourceDescriptiveNote')
+      objectDescriptionSet.ele('lido:sourceDescriptiveNote')
         .txt(descriptiveNoteValueDe.citation);
     }
 
