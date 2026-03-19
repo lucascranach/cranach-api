@@ -2,6 +2,7 @@
 const { create } = require('xmlbuilder2');
 const BaseFormatter = require('./base-formatter');
 const translations = require('../translations');
+const { getPersonGND, getRepositoryID } = require('../mappings/authority-files');
 
 /**
  * LIDO XML formatter for cultural heritage objects
@@ -273,18 +274,20 @@ class LidoFormatter extends BaseFormatter {
     repositorySet.ele('lido:repositoryName')
       .ele('lido:legalBodyID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt(this.getRepositoryID(languageData.de.repository))
+      }).txt(getRepositoryID(languageData.de.repository))
       .up()
       .ele('lido:legalBodyName')
       .ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'de',
-      }).txt(languageData.de.repository)
+      })
+      .txt(languageData.de.repository)
       .up()
       .ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'en',
-      });
+      })
+      .txt(languageData.en.repository);
 
     //   │  ├─ lido:workID
     repositorySet.ele('lido:workID', {
@@ -567,8 +570,7 @@ class LidoFormatter extends BaseFormatter {
             'lido:type': 'http://terminology.lido-schema.org/lido00163',
           }).ele('lido:actorID', {
             'lido:type': 'http://terminology.lido-schema.org/lido00099',
-            // TODO: Add GND URI for the person if available
-          }).txt('TODO: GND URI for person')
+          }).txt(getPersonGND(personDe.name))
             .up()
             .ele('lido:nameActorSet')
             .ele('lido:appellationValue', {
@@ -1028,29 +1030,6 @@ class LidoFormatter extends BaseFormatter {
           },
         };
     }
-  }
-
-  /**
-   * Get repository ID by institution name
-   * @param {string} institutionName - Name of the institution (e.g., 'Albertina, Wien')
-   * @returns {string} Repository ID (e.g., 'https://d-nb.info/gnd/2012512-4') or empty string if not found
-   */
-  getRepositoryID(institutionName) {
-    const repositoryMapping = {
-      'Albertina, Wien': 'https://d-nb.info/gnd/2012512-4',
-      'Friedrich-Alexander-Universität Erlangen-Nürnberg': 'https://lobid.org/organisations/DE-29',
-      'Germanisches Nationalmuseum Nürnberg': 'https://lobid.org/organisations/DE-MUS-105615',
-      'Herzog Anton Ulrich-Museum Braunschweig': 'https://lobid.org/organisations/DE-MUS-026819',
-      'Herzog August Bibliothek Wolfenbüttel': 'https://lobid.org/organisations/DE-MUS-162514',
-      'Kunsthalle Bremen': 'https://lobid.org/organisations/DE-MUS-027614',
-      'Kunstsammlungen der Veste Coburg': 'https://lobid.org/organisations/DE-MUS-032517',
-      'Kupferstichkabinett, Staatliche Museen zu Berlin': 'https://lobid.org/organisations/DE-MUS-018511',
-      'München, Staatliche Graphische Sammlung (München)': 'https://lobid.org/organisations/DE-2948',
-      'Staatsbibliothek Bamberg': 'https://lobid.org/organisations/DE-22',
-      'Städel Museum Frankfurt am Main': 'https://lobid.org/organisations/DE-MUS-048017',
-    };
-
-    return repositoryMapping[institutionName] || '';
   }
 
   /**
