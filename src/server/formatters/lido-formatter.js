@@ -472,37 +472,65 @@ class LidoFormatter extends BaseFormatter {
     // └─ lido:objectIdentificationWrap──────────────────────────────────┘
 
     // ┌─ lido:eventWrap ───────────────────────────────────────────────────────┐
+
     const eventWrap = descriptiveMetadata.ele('lido:eventWrap');
     const eventSet = eventWrap.ele('lido:eventSet');
+
+    const involvedPersonsReferencedDe = languageData.de.involved_persons_referenced;
+    const involvedPersonsReferencedEn = languageData.en.involved_persons_referenced;
 
     const involvedPersonsDe = languageData.de.involved_persons;
     const involvedPersonsEn = languageData.en.involved_persons;
 
+
+    // Find first involved person with roleType "PRINTER" from involvedPersonsDe
+    const involvedPersonPrinterDe = involvedPersonsDe.find(
+      (person) => person.roleType === 'PRINTER',
+    );
+
+    const involvedPersonPrinterEn = involvedPersonsEn.find(
+      (person) => person.roleType === 'PRINTER',
+    );
+
     // Group persons by role type (ARTIST, PRINTER, PRINTMAKER, etc.)
-    const personsByRoleType = {};
-    involvedPersonsDe.forEach((person, index) => {
+    const personsByRoleTypeReferenced = {};
+    involvedPersonsReferencedDe.forEach((person, index) => {
       const { roleType } = person;
-      if (!personsByRoleType[roleType]) {
-        personsByRoleType[roleType] = [];
+      if (!personsByRoleTypeReferenced[roleType]) {
+        personsByRoleTypeReferenced[roleType] = [];
       }
-      personsByRoleType[roleType].push({
+      personsByRoleTypeReferenced[roleType].push({
         personDe: person,
-        personEn: involvedPersonsEn[index],
-        index,
+        personEn: involvedPersonsReferencedEn[index],
       });
     });
 
-    // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
-    let eventDateRoleType = 'ARTIST';
-    if (personsByRoleType.PRINTER) {
-      eventDateRoleType = 'PRINTER';
-    } else if (personsByRoleType.PRINTMAKER) {
-      eventDateRoleType = 'PRINTMAKER';
+    if (involvedPersonPrinterDe && involvedPersonPrinterEn) {
+      personsByRoleTypeReferenced.PRINTER = [{
+        personDe: involvedPersonPrinterDe,
+        personEn: involvedPersonPrinterEn,
+      }];
+    } else {
+      // Ensure PRINTER event exists even without persons
+      personsByRoleTypeReferenced.PRINTER = [];
     }
 
+
+
+    // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
+
+    // ** BO Old procedure
+    // let eventDateRoleTypeArtist = 'ARTIST';
+    // if (personsByRoleTypeReferenced.PRINTER) {
+    //   eventDateRoleTypeArtist = 'PRINTER';
+    // } else if (personsByRoleTypeReferenced.PRINTMAKER) {
+    //   eventDateRoleTypeArtist = 'PRINTMAKER';
+    // }
+    // ** EO Old procedure
+
     // Create a separate lido:event element per role type
-    Object.keys(personsByRoleType).forEach((roleType) => {
-      const persons = personsByRoleType[roleType];
+    Object.keys(personsByRoleTypeReferenced).forEach((roleType) => {
+      const persons = personsByRoleTypeReferenced[roleType];
       const eventData = this.getEventDataByRoleType(roleType);
 
       //   ├─ lido:event (for role type: ${roleType})
@@ -520,170 +548,216 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       }).txt(eventData.eventType.termEn);
 
-      //   │  ├─ lido:eventActor (for all persons of this role type)
-      persons.forEach(({ personDe, personEn }, personIndex) => {
-        const eventActor = event.ele('lido:eventActor');
-        eventActor.ele('lido:displayActorInRole', {
-          'xml:lang': 'de',
-        }).txt(personDe.name);
-
-        if (personEn) {
+      //   │  ├─ lido:eventActor (for all persons of this role type, if any)
+      if (persons.length > 0) {
+        persons.forEach(({ personDe, personEn }, personIndex) => {
+          const eventActor = event.ele('lido:eventActor');
           eventActor.ele('lido:displayActorInRole', {
-            'xml:lang': 'en',
-          }).txt(personEn.name);
-        }
-
-        const actorInRole = eventActor.ele('lido:actorInRole');
-        actorInRole.ele('lido:actor', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00163',
-        }).ele('lido:actorID', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          // TODO: Add GND URI for the person if available
-        }).txt('TODO: GND URI for person')
-          .up()
-          .ele('lido:nameActorSet')
-          .ele('lido:appellationValue', {
             'xml:lang': 'de',
-          })
-          .txt(personDe.name)
-          .up()
-          .ele('lido:appellationValue', {
-            'xml:lang': 'en',
-          })
-          .txt(personEn.name);
+          }).txt(personDe.name);
 
-        actorInRole.ele('lido:roleActor')
-          .ele('lido:conceptID', {
+          if (personEn) {
+            eventActor.ele('lido:displayActorInRole', {
+              'xml:lang': 'en',
+            }).txt(personEn.name);
+          }
+
+          const actorInRole = eventActor.ele('lido:actorInRole');
+          actorInRole.ele('lido:actor', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00163',
+          }).ele('lido:actorID', {
             'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          }).txt(eventData.roleActor.conceptID)
-          .up()
-          .ele('lido:term', {
-            'xml:lang': 'de',
-          })
-          .txt(personDe.role)
-          .up()
-          .ele('lido:term', {
-            'xml:lang': 'en',
-          })
-          .txt(personEn.role);
+            // TODO: Add GND URI for the person if available
+          }).txt('TODO: GND URI for person')
+            .up()
+            .ele('lido:nameActorSet')
+            .ele('lido:appellationValue', {
+              'xml:lang': 'de',
+            })
+            .txt(personDe.name)
+            .up()
+            .ele('lido:appellationValue', {
+              'xml:lang': 'en',
+            })
+            .txt(personEn.name);
 
-        // From second person onwards: attribution qualifier "attributed to"
-        if (personIndex > 0) {
-          actorInRole.ele('lido:attributionQualifierActor')
+          actorInRole.ele('lido:roleActor')
             .ele('lido:conceptID', {
               'lido:type': 'http://terminology.lido-schema.org/lido00099',
-            }).txt('http://vocab.getty.edu/aat/300404269')
+            }).txt(eventData.roleActor.conceptID)
             .up()
             .ele('lido:term', {
               'xml:lang': 'de',
             })
-            .txt('zugeschrieben an')
+            .txt(personDe.role)
             .up()
             .ele('lido:term', {
               'xml:lang': 'en',
             })
-            .txt('attributed to');
+            .txt(personEn.role);
+
+          // From second person onwards: attribution qualifier "attributed to"
+          if (personIndex > 0) {
+            actorInRole.ele('lido:attributionQualifierActor')
+              .ele('lido:conceptID', {
+                'lido:type': 'http://terminology.lido-schema.org/lido00099',
+              }).txt('http://vocab.getty.edu/aat/300404269')
+              .up()
+              .ele('lido:term', {
+                'xml:lang': 'de',
+              })
+              .txt('zugeschrieben an')
+              .up()
+              .ele('lido:term', {
+                'xml:lang': 'en',
+              })
+              .txt('attributed to');
+          }
+        });
+      }
+
+      if (roleType === 'INVENTOR' || roleType === 'PRINTER') {
+        let eventDateData = {};
+        if (roleType === 'INVENTOR') {
+          eventDateData = {
+            datedDe: languageData.de.date_referenced.dated,
+            datedEn: languageData.en.date_referenced.dated,
+            begin: languageData.en.date_referenced.begin,
+            end: languageData.en.date_referenced.end,
+          };
+        } else if (roleType === 'PRINTER') {
+          eventDateData = {
+            datedDe: languageData.de.dating,
+            datedEn: languageData.en.dating,
+            begin: languageData.en.dating_begin,
+            end: languageData.en.dating_end,
+          };
         }
-      });
+
+
+        const eventDate = event.ele('lido:eventDate');
+
+        eventDate.ele('lido:displayDate', {
+          'xml:lang': 'de',
+        }).txt(eventDateData.datedDe);
+
+        eventDate.ele('lido:displayDate', {
+          'xml:lang': 'en',
+        }).txt(eventDateData.datedEn);
+
+        const date = eventDate.ele('lido:date');
+
+        date.ele('lido:earliestDate', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00529',
+        }).txt(eventDateData.begin.toString());
+
+        date.ele('lido:latestDate', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00529',
+        }).txt(eventDateData.end.toString());
+      }
 
       //   │  └─ lido:eventDate (only for the designated role type)
-      if (roleType === eventDateRoleType) {
-        const eventDateDe = languageData.de.event_date;
-        const eventDateEn = languageData.en.event_date;
 
-        if (eventDateDe) {
-          // Collect all begin and end dates (incl. historic events)
-          const beginDates = [eventDateDe.begin];
-          const endDates = [eventDateDe.end];
+      /* BO Old procedure */
+      // if (roleType === eventDateRoleTypeArtist) {
+      //   const eventDateDe = languageData.de.date_referenced;
+      //   const eventDateEn = languageData.en.date_referenced;
 
-          const historicEvents = eventDateDe.historicEventInformations;
-          if (Array.isArray(historicEvents)) {
-            historicEvents.forEach((info) => {
-              if (info.begin) beginDates.push(info.begin);
-              if (info.end) endDates.push(info.end);
-            });
-          }
+      //   if (eventDateDe) {
+      //     // Collect all begin and end dates (incl. historic events)
+      //     const beginDates = [eventDateDe.begin];
+      //     const endDates = [eventDateDe.end];
 
-          // Determine earliest and latest date
-          const validBeginDates = beginDates.filter((d) => d != null && !Number.isNaN(d));
-          const validEndDates = endDates.filter((d) => d != null && !Number.isNaN(d));
-          const earliestDate = validBeginDates.length > 0 ? Math.min(...validBeginDates) : null;
-          const latestDate = validEndDates.length > 0 ? Math.max(...validEndDates) : null;
+      //     const historicEvents = eventDateDe.historicEventInformations;
+      //     if (Array.isArray(historicEvents)) {
+      //       historicEvents.forEach((info) => {
+      //         if (info.begin) beginDates.push(info.begin);
+      //         if (info.end) endDates.push(info.end);
+      //       });
+      //     }
 
-          // Build displayDate string (German)
-          let displayDateDe = '';
-          if (eventDateDe.dated) {
-            displayDateDe = eventDateDe.dated;
-            if (eventDateDe.remarks) {
-              displayDateDe += ` ${eventDateDe.remarks}`;
-            }
-          }
+      //     // Determine earliest and latest date
+      //     const validBeginDates = beginDates.filter((d) => d != null && !Number.isNaN(d));
+      //     const validEndDates = endDates.filter((d) => d != null && !Number.isNaN(d));
+      //     const earliestDate = validBeginDates.length > 0 ? Math.min(...validBeginDates) : null;
+      //     const latestDate = validEndDates.length > 0 ? Math.max(...validEndDates) : null;
 
-          if (Array.isArray(historicEvents)) {
-            historicEvents.forEach((info) => {
-              if (info.text) {
-                if (displayDateDe) displayDateDe += ', ';
-                displayDateDe += info.text;
-                if (info.remarks) {
-                  displayDateDe += ` ${info.remarks}`;
-                }
-              }
-            });
-          }
+      //     // Build displayDate string (German)
+      //     let displayDateDe = '';
+      //     if (eventDateDe.dated) {
+      //       displayDateDe = eventDateDe.dated;
+      //       if (eventDateDe.remarks) {
+      //         displayDateDe += ` ${eventDateDe.remarks}`;
+      //       }
+      //     }
 
-          // Build displayDate string (English)
-          let displayDateEn = '';
-          if (eventDateEn.dated) {
-            displayDateEn = eventDateEn.dated;
-            if (eventDateEn.remarks) {
-              displayDateEn += ` ${eventDateEn.remarks}`;
-            }
-          }
+      //     if (Array.isArray(historicEvents)) {
+      //       historicEvents.forEach((info) => {
+      //         if (info.text) {
+      //           if (displayDateDe) displayDateDe += ', ';
+      //           displayDateDe += info.text;
+      //           if (info.remarks) {
+      //             displayDateDe += ` ${info.remarks}`;
+      //           }
+      //         }
+      //       });
+      //     }
 
-          if (Array.isArray(eventDateEn.historicEventInformations)) {
-            eventDateEn.historicEventInformations.forEach((info) => {
-              if (info.text) {
-                if (displayDateEn) displayDateEn += ', ';
-                displayDateEn += info.text;
-                if (info.remarks) {
-                  displayDateEn += ` ${info.remarks}`;
-                }
-              }
-            });
-          }
+      //     // Build displayDate string (English)
+      //     let displayDateEn = '';
+      //     if (eventDateEn.dated) {
+      //       displayDateEn = eventDateEn.dated;
+      //       if (eventDateEn.remarks) {
+      //         displayDateEn += ` ${eventDateEn.remarks}`;
+      //       }
+      //     }
 
-          const eventDate = event.ele('lido:eventDate');
+      //     if (Array.isArray(eventDateEn.historicEventInformations)) {
+      //       eventDateEn.historicEventInformations.forEach((info) => {
+      //         if (info.text) {
+      //           if (displayDateEn) displayDateEn += ', ';
+      //           displayDateEn += info.text;
+      //           if (info.remarks) {
+      //             displayDateEn += ` ${info.remarks}`;
+      //           }
+      //         }
+      //       });
+      //     }
 
-          if (displayDateDe) {
-            eventDate.ele('lido:displayDate', {
-              'xml:lang': 'de',
-            }).txt(displayDateDe);
-          }
+      //     const eventDate = event.ele('lido:eventDate');
 
-          if (displayDateEn) {
-            eventDate.ele('lido:displayDate', {
-              'xml:lang': 'en',
-            }).txt(displayDateEn);
-          }
+      //     if (displayDateDe) {
+      //       eventDate.ele('lido:displayDate', {
+      //         'xml:lang': 'de',
+      //       }).txt(displayDateDe);
+      //     }
 
-          // Structured date with earliestDate/latestDate
-          if (earliestDate !== null || latestDate !== null) {
-            const date = eventDate.ele('lido:date');
+      //     if (displayDateEn) {
+      //       eventDate.ele('lido:displayDate', {
+      //         'xml:lang': 'en',
+      //       }).txt(displayDateEn);
+      //     }
 
-            if (earliestDate !== null) {
-              date.ele('lido:earliestDate', {
-                'lido:type': 'http://terminology.lido-schema.org/lido00529',
-              }).txt(earliestDate.toString());
-            }
+      //     // Structured date with earliestDate/latestDate
+      //     if (earliestDate !== null || latestDate !== null) {
+      //       const date = eventDate.ele('lido:date');
 
-            if (latestDate !== null) {
-              date.ele('lido:latestDate', {
-                'lido:type': 'http://terminology.lido-schema.org/lido00529',
-              }).txt(latestDate.toString());
-            }
-          }
-        }
-      }
+      //       if (earliestDate !== null) {
+      //         date.ele('lido:earliestDate', {
+      //           'lido:type': 'http://terminology.lido-schema.org/lido00529',
+      //         }).txt(earliestDate.toString());
+      //       }
+
+      //       if (latestDate !== null) {
+      //         date.ele('lido:latestDate', {
+      //           'lido:type': 'http://terminology.lido-schema.org/lido00529',
+      //         }).txt(latestDate.toString());
+      //       }
+      //     }
+      //   }
+      // }
+
+      /* EO Old procedure */
     });
     // └─ lido:eventWrap─────────────────────────────────────────────────┘
 
