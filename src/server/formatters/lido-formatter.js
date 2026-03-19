@@ -265,10 +265,10 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ lido:displayRepository
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'de',
-    }).txt(`${languageData.de.repository} ${languageData.de.location.term} - TODO: There are several locations here; how should this be handled?`);
+    }).txt(`${languageData.de.repository} (${languageData.de.location.term}) - TODO: There are several locations here; how should this be handled?`);
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'en',
-    }).txt(`${languageData.en.repository} ${languageData.de.location.term} - TODO: There are several locations here; how should this be handled?`);
+    }).txt(`${languageData.en.repository} (${languageData.de.location.term}) - TODO: There are several locations here; how should this be handled?`);
 
     //   │  ├─ lido:repositoryName
     repositorySet.ele('lido:repositoryName')
@@ -292,7 +292,7 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ lido:workID
     repositorySet.ele('lido:workID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00113',
-    }).txt('TODO: Clarify how this URL is derived');
+    }).txt(inventoryNumber.split('_').pop());
 
     //   │  └─ lido:repositoryLocation
     repositorySet.ele('lido:repositoryLocation')
