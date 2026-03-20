@@ -78,6 +78,11 @@ class LidoFormatter extends BaseFormatter {
     // │  │  ├─ lido:inscriptionsWrap
     // │  │  │  ├─ lido:inscriptions (Signatures)
     // │  │  │  └─ lido:inscriptions (Markings)
+    // │  │  ├─ lido:repositoryWrap
+    // │  │  │  ├─ lido:displayRepository (Institution with location)
+    // │  │  │  ├─ lido:repositoryName (Institution with GND)
+    // │  │  │  ├─ lido:workID (Object identifier)
+    // │  │  │  └─ lido:repositoryLocation (Geographic location)
     // │  │  ├─ lido:objectDescriptionWrap
     // │  │  │  ├─ lido:objectDescriptionSet (General description)
     // │  │  │  └─ lido:objectDescriptionSet (Provenance)
@@ -269,7 +274,7 @@ class LidoFormatter extends BaseFormatter {
     const repositorySet = repositoryWrap.ele('lido:repositorySet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01017',
     });
-    //   │  ├─ lido:displayRepository
+    //   │  ├─ lido:displayRepository (Human-readable: "Institution (Location)")
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'de',
     }).txt(`${languageData.de.repository} (${languageData.de.location.term})`);
@@ -277,7 +282,7 @@ class LidoFormatter extends BaseFormatter {
       'xml:lang': 'en',
     }).txt(`${languageData.en.repository} (${languageData.de.location.term})`);
 
-    //   │  ├─ lido:repositoryName
+    //   │  ├─ lido:repositoryName (Institution with GND identifier)
     repositorySet.ele('lido:repositoryName')
       .ele('lido:legalBodyID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -296,12 +301,12 @@ class LidoFormatter extends BaseFormatter {
       })
       .txt(languageData.en.repository);
 
-    //   │  ├─ lido:workID
+    //   │  ├─ lido:workID (Object identifier within repository)
     repositorySet.ele('lido:workID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00113',
     }).txt(inventoryNumber.split('_').pop());
 
-    //   │  └─ lido:repositoryLocation
+    //   │  └─ lido:repositoryLocation (Geographic location with GND place identifier)
     repositorySet.ele('lido:repositoryLocation')
       .ele('lido:placeID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -437,7 +442,7 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:extentMeasurements', {
         'xml:lang': 'en',
       })
-      .txt('presentation');
+      .txt('image');
 
     //   └─ End: lido:objectMeasurements #2
     //   └─ End: lido:objectMeasurementsWrap
