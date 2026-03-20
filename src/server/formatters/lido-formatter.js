@@ -817,8 +817,8 @@ class LidoFormatter extends BaseFormatter {
       relatedWorksWrap.ele('lido:relatedWorkSet')
         .ele('lido:relatedWork')
         .ele('lido:object')
-        .ele('objectNote')
-        .txt(`${publication.authors}, ${publication.title}, ${publication.publish_location}, ${publication.publish_date}, ${publication.pageNumber}`)
+        .ele('lido:objectNote')
+        .txt(`${publication.authors}, ${publication.title}, ${publication.publish_location}, ${publication.publish_date}, S. ${publication.pageNumber}`)
         .up()
         .up()
         .up()
@@ -876,7 +876,7 @@ class LidoFormatter extends BaseFormatter {
     }
 
     //   └─ lido:recordSource
-    const recordSource = recordWrap.ele('lido:recordSource');
+    let recordSource = recordWrap.ele('lido:recordSource');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt('https://d-nb.info/gnd/1073160734');
@@ -886,7 +886,7 @@ class LidoFormatter extends BaseFormatter {
       .txt(`${domain}`);
     // └─ lido:recordWrap─────────────────────────────────────────────────────┘
 
-    administrativeMetadata.ele('lido:recordRights')
+    recordWrap.ele('lido:recordRights')
       .ele('lido:rightsType', {
         'lido:type': 'http://terminology.lido-schema.org/lido00921',
       })
@@ -903,17 +903,75 @@ class LidoFormatter extends BaseFormatter {
       })
       .txt('CC0 1.0 Universal Public Domain Dedication');
 
-    administrativeMetadata.ele('lido:recordInfoSet', {
+    recordWrap.ele('lido:recordInfoSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido00471',
-    }).ele('recordInfoLink')
+    }).ele('lido:recordInfoLink')
       .txt(`${sourceUrl}`);
 
-    administrativeMetadata.ele('lido:recordInfoSet', {
+    recordWrap.ele('lido:recordInfoSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido00470',
-    }).ele('recordMetadataDate', {
+    }).ele('lido:recordMetadataDate', {
       'lido:type': 'http://terminology.lido-schema.org/lido00473',
       'lido:source': domain,
-    }).txt('TODO: Add date of last modification of the record');
+    }).txt('TODO: Add date of last modification of the record. I don\'t know yet where to get the date from.');
+
+    const resourceWrap = administrativeMetadata.ele('lido:resourceWrap');
+    const resourceSet = resourceWrap.ele('lido:resourceSet');
+
+    resourceSet.com('TODO: I don\'t know where to get the data in this element. Or are they the same in all records?');
+    resourceSet.ele('lido:resourceID', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00100',
+      'lido:source': 'http://ld.zdb-services.de/resource/organisations/DE-2102',
+    }).txt('RBA 214 932');
+
+    resourceSet.ele('lido:resourceRepresentation', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00451',
+    }).ele('lido:linkResource')
+      .txt(languageData.de.image_thumbnail);
+
+    resourceSet.ele('lido:resourceRepresentation', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00464',
+    }).ele('lido:linkResource')
+      .txt(languageData.de.image_highres);
+
+    resourceSet.ele('lido:resourceSource', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00413',
+    })
+      .ele('lido:legalBodyID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      })
+      .txt('https://d-nb.info/gnd/1073160734')
+      .up()
+      .ele('lido:legalBodyName')
+      .ele('lido:appellationValue')
+      .txt('Cranach Digital Archive')
+      .up()
+      .up()
+      .ele('lido:legalBodyWeblink')
+      .txt('https://lucascranach.org');
+
+    resourceSet.ele('lido:rightsResource')
+      .ele('lido:rightsType', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00921',
+      })
+      .ele('skos:Concept', {
+        'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
+      })
+      .ele('skos:prefLabel', {
+        'xml:lang': 'de',
+      })
+      .txt('Kein Urheberrechtsschutz')
+      .up()
+      .ele('skos:prefLabel', {
+        'xml:lang': 'en',
+      })
+      .txt('No Copyright')
+      .up()
+      .up()
+      .up()
+      .ele('lido:creditLine')
+      .txt('Cranach Digital Archive');
+
     return root.end({ prettyPrint: true });
   }
 
