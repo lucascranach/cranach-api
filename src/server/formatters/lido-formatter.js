@@ -272,10 +272,10 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ lido:displayRepository
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'de',
-    }).txt(`${languageData.de.repository} (${languageData.de.location.term}) - TODO: There are several locations here; how should this be handled?`);
+    }).txt(`${languageData.de.repository} (${languageData.de.location.term})`);
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'en',
-    }).txt(`${languageData.en.repository} (${languageData.de.location.term}) - TODO: There are several locations here; how should this be handled?`);
+    }).txt(`${languageData.en.repository} (${languageData.de.location.term})`);
 
     //   │  ├─ lido:repositoryName
     repositorySet.ele('lido:repositoryName')
