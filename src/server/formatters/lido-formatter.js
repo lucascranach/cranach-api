@@ -142,7 +142,7 @@ class LidoFormatter extends BaseFormatter {
 
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': 'https://d-nb.info/gnd/1073160734,'
+      'lido:source': 'https://d-nb.info/gnd/1073160734',
     }).txt(`gnd1073160734/object/${inventoryNumber}`);
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -457,7 +457,9 @@ class LidoFormatter extends BaseFormatter {
     const materialsTechData = this.getMaterialsTechData(languageData.de.objectworktype_value);
     if (materialsTechData) {
       objectMaterialsTechSet.ele('lido:materialsTech')
-        .ele('lido:termMaterialsTech')
+        .ele('lido:termMaterialsTech', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00131',
+        })
         .ele('lido:conceptID', {
           'lido:type': 'http://terminology.lido-schema.org/lido0009',
         })
@@ -479,7 +481,6 @@ class LidoFormatter extends BaseFormatter {
     // ┌─ lido:eventWrap ───────────────────────────────────────────────────────┐
 
     const eventWrap = descriptiveMetadata.ele('lido:eventWrap');
-    const eventSet = eventWrap.ele('lido:eventSet');
 
     const involvedPersonsReferencedDe = languageData.de.involved_persons_referenced;
     const involvedPersonsReferencedEn = languageData.en.involved_persons_referenced;
@@ -539,6 +540,7 @@ class LidoFormatter extends BaseFormatter {
       const eventData = this.getEventDataByRoleType(roleType);
 
       //   ├─ lido:event (for role type: ${roleType})
+      const eventSet = eventWrap.ele('lido:eventSet');
       const event = eventSet.ele('lido:event');
       //   │  ├─ lido:eventType
       const eventType = event.ele('lido:eventType');
