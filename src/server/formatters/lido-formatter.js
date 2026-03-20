@@ -154,7 +154,8 @@ class LidoFormatter extends BaseFormatter {
     const objectClassificationWrap = descriptiveMetadata.ele('lido:objectClassificationWrap');
     //   ├─ lido:objectWorkTypeWrap (Work type)
     const objectWorkTypeWrap = objectClassificationWrap.ele('lido:objectWorkTypeWrap');
-    const objectWorkType = objectWorkTypeWrap.ele('lido:objectWorkType');
+    const objectWorkType = objectWorkTypeWrap.ele('lido:objectWorkType',
+      { 'lido:type': 'http://terminology.lido-schema.org/lido00789' });
 
     objectWorkType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
