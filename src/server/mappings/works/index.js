@@ -551,9 +551,9 @@ const mappings = [
     filter_types: [],
   },
 
-  // LIDO eventDate
+  // LIDO eventDate referenced printing plate
   {
-    key: 'event_date',
+    key: 'date_referenced',
     display_value: 'dating',
     showAsResult: true,
     filter_types: [],
@@ -581,6 +581,14 @@ const mappings = [
     showAsResult: true,
     filter_types: [''],
     key: 'inventory_number_referenced',
+  },
+
+  // LIDO involved persons referenced printing plate
+  {
+    display_value: 'involvedPersons',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'involved_persons_referenced',
   },
 
   // LIDO catalog work references
@@ -629,8 +637,8 @@ const referencedFieldsToCopy = [
   'descriptive_note_value',
   'dimensions_referenced',
   'inventory_number_referenced',
-  'event_date',
-  'involved_persons',
+  'date_referenced',
+  'involved_persons_referenced',
   'objectworktype_id',
   'signature',
   'title',
