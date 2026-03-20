@@ -242,8 +242,19 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       }).txt(this.removeCdaTag(languageData.en.signature));
 
-    //   │  └─ lido:inscriptions (Markings)
+    const inscriptionTranscription = this.extractInscriptionsFromEdition(
+      languageData.de.condition, languageData.de.inscription,
+    );
 
+    if (inscriptionTranscription) {
+      inscriptionsWrap.ele('lido:inscriptions', {
+        'lido:type': 'http://vocab.getty.edu/aat/300028702',
+      }).ele('lido:inscriptionTranscription', {
+        'xml:lang': 'mul',
+      }).txt(inscriptionTranscription);
+    }
+
+    //   │  └─ lido:inscriptions (Markings)
     const descriptiveNoteValueMarkingsDe = this.extractTextAndCitation(languageData.de.markings);
     const descriptiveNoteValueMarkingsEn = this.extractTextAndCitation(languageData.en.markings);
 
@@ -881,7 +892,7 @@ class LidoFormatter extends BaseFormatter {
     }
 
     //   └─ lido:recordSource
-    let recordSource = recordWrap.ele('lido:recordSource');
+    const recordSource = recordWrap.ele('lido:recordSource');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
     }).txt('https://d-nb.info/gnd/1073160734');
@@ -1052,6 +1063,55 @@ class LidoFormatter extends BaseFormatter {
       text: text.trim(),
       citation: '',
     };
+  }
+
+  /**
+   * Extract inscriptions up to and including the specified edition
+   * @param {string} condition - Condition string (e.g., "I. Zustand; Auflage e)")
+   * @param {string} inscription - Inscription string with multiple editions
+   * @returns {string} All inscriptions from the beginning up to and including the specified edition
+   * @example
+   * // condition: "I. Zustand; Auflage e)"
+   * // inscription: "Auflage d)\n...\n\nAuflage e)\n...\n\nAuflage g)\n..."
+   * // Returns: "Auflage d)\n...\n\nAuflage e)\n..."
+   */
+  extractInscriptionsFromEdition(condition, inscription) {
+    if (!condition || !inscription) return inscription || '';
+
+    // Extract edition letter from condition (e.g., "e" from "Auflage e)")
+    const conditionMatch = condition.match(/Auflage ([a-z])\)/i);
+    if (!conditionMatch) {
+      return inscription; // No edition found in condition, return full inscription
+    }
+
+    const conditionLetter = conditionMatch[1].toLowerCase();
+
+    // Find all editions in the inscription text
+    const editionPattern = /\bAuflage ([a-z])\)/gi;
+    let match;
+    let firstExcludedEditionIndex = -1;
+
+    // Search for the first edition that is HIGHER than the condition edition
+    while ((match = editionPattern.exec(inscription)) !== null) {
+      const foundLetter = match[1].toLowerCase();
+
+      // If this edition is after the condition edition alphabetically, mark it for exclusion
+      if (foundLetter > conditionLetter) {
+        firstExcludedEditionIndex = match.index;
+        break;
+      }
+    }
+
+    // If we found an edition to exclude, cut off everything from that point
+    let result = inscription;
+    if (firstExcludedEditionIndex !== -1) {
+      result = inscription.substring(0, firstExcludedEditionIndex).trim();
+    }
+
+    // Remove all "Auflage x)" lines from the result
+    result = result.replace(/^Auflage [a-z]\)\s*\n?/gim, '');
+
+    return result.trim();
   }
 
   /**

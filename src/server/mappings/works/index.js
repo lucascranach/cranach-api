@@ -648,6 +648,22 @@ const mappings = [
     },
   },
 
+  // LIDO Highres image
+  {
+    display_value: 'inscription',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'inscription',
+  },
+
+  // LIDO Highres image
+  {
+    display_value: 'classification.condition',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'condition',
+  },
+
 ];
 
 // const entityTypes = ['PAINTING', 'GRAPHIC', 'GRAPHIC_REAL', 'DRAWING'];
@@ -661,6 +677,7 @@ const referencedFieldsToCopy = [
   'inventory_number_referenced',
   'date_referenced',
   'involved_persons_referenced',
+  'inscription',
   'objectworktype_id',
   'signature',
   'title',
