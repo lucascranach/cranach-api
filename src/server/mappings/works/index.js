@@ -626,6 +626,28 @@ const mappings = [
     key: 'publications',
   },
 
+  // LIDO thumbnail
+  {
+    display_value: '',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'image_thumbnail',
+    aggregateResult(data) {
+      return (data.images.overall.images[0].sizes.xsmall.src)
+    }
+  },
+
+  // LIDO Highres image
+  {
+    display_value: '',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'image_highres',
+    aggregateResult(data) {
+      return (data.images.overall.images[0].sizes.origin.src)
+    },
+  },
+
 ];
 
 // const entityTypes = ['PAINTING', 'GRAPHIC', 'GRAPHIC_REAL', 'DRAWING'];
