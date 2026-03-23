@@ -220,6 +220,28 @@ const mappings = [
     showAsFilter: true,
     value: 'metadata.isPublished',
   },
+
+  // Transcription
+  {
+    display_value: 'transcription',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [''],
+    key: 'transcription',
+    value: 'transcription',
+    searchTermField: true,
+  },
+
+  // Comments
+  {
+    display_value: 'comments',
+    showAsFilter: false,
+    showAsResult: true,
+    filter_types: [''],
+    key: 'comments',
+    value: 'comments',
+    searchTermField: true,
+  },
 ];
 
 const entityTypes = ['ARCHIVAL'];
