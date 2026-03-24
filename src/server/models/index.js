@@ -152,6 +152,9 @@ async function getItems(mappings, req, params) {
       result = await submitESSearch({ body: queryBuilder.query });
       [response] = result.body.responses;
     } else {
+      // Add aggregation for counting total reprints
+      queryBuilder.sumArrayLengthAggregation('total_reprints', 'references.reprints');
+
       mappings.getVisibleFilters().forEach((filter) => {
         const aggregationParam = new AggregationParam(
           filter.key,
@@ -258,6 +261,13 @@ async function getItems(mappings, req, params) {
     took,
     hits: response.hits.total.value,
   };
+
+  // Add reprints count from aggregation if available
+  if (!params.geoData
+      && result.body.responses[1].aggregations
+      && result.body.responses[1].aggregations.total_reprints) {
+    meta.reprints = Math.round(result.body.responses[1].aggregations.total_reprints.value || 0);
+  }
 
   const ret = {};
   if (params.geoData) {

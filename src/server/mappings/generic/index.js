@@ -465,7 +465,6 @@ const mappings = [
     value: '_score',
   },
 
-
   // Catalog Work Reference
   {
     display_value: 'catalogWorkReferences.description.keyword',
