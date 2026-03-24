@@ -869,7 +869,30 @@ class LidoFormatter extends BaseFormatter {
     // ╚═══════════════════════════════════════════════════════════════════════════╝
     const administrativeMetadata = lido.ele('lido:administrativeMetadata', { 'xml:lang': primaryLanguage });
 
-    administrativeMetadata
+    // ┌─ lido:rightsWorkWrap ──────────────────────────────────────────────────┐
+    const rightsWorkWrap = administrativeMetadata.ele('lido:rightsWorkWrap');
+    const rightsWorkSet = rightsWorkWrap.ele('lido:rightsWorkSet');
+    //   ├─ lido:rightsType (Specific information about rights)
+    rightsWorkSet.ele('lido:rightsType', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00921',
+    })
+      .ele('skos:Concept', {
+        'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
+      })
+      .ele('skos:prefLabel', {
+        'xml:lang': 'de',
+      })
+      .txt('Kein Urheberrechtsschutz')
+      .up()
+      .ele('skos:prefLabel', {
+        'xml:lang': 'en',
+      })
+      .txt('No Copyright');
+
+    //   └─ lido:creditLine
+    rightsWorkSet.ele('lido:creditLine')
+      .txt('gemeinfrei');
+    // └─ lido:rightsWorkWrap─────────────────────────────────────────────────┘    
 
     // ┌─ lido:recordWrap ──────────────────────────────────────────────────────┐
     const recordWrap = administrativeMetadata.ele('lido:recordWrap');
@@ -939,31 +962,6 @@ class LidoFormatter extends BaseFormatter {
       'lido:type': 'http://terminology.lido-schema.org/lido00473',
       'lido:source': domain,
     }).txt('TODO: Add date of last modification of the record. I don\'t know yet where to get the date from.');
-
-    // ┌─ lido:rightsWorkWrap ──────────────────────────────────────────────────┐
-    const rightsWorkWrap = administrativeMetadata.ele('lido:rightsWorkWrap');
-    const rightsWorkSet = rightsWorkWrap.ele('lido:rightsWorkSet');
-    //   ├─ lido:rightsType (Specific information about rights)
-    rightsWorkSet.ele('lido:rightsType', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00921',
-    })
-      .ele('skos:Concept', {
-        'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
-      })
-      .ele('skos:prefLabel', {
-        'xml:lang': 'de',
-      })
-      .txt('Kein Urheberrechtsschutz')
-      .up()
-      .ele('skos:prefLabel', {
-        'xml:lang': 'en',
-      })
-      .txt('No Copyright');
-
-    //   └─ lido:creditLine
-    rightsWorkSet.ele('lido:creditLine')
-      .txt('gemeinfrei');
-    // └─ lido:rightsWorkWrap─────────────────────────────────────────────────┘
 
     const resourceWrap = administrativeMetadata.ele('lido:resourceWrap');
     const resourceSet = resourceWrap.ele('lido:resourceSet');
