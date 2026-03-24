@@ -140,15 +140,15 @@ class LidoFormatter extends BaseFormatter {
     }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
     // ── lido:objectPublishedID ──
-    lido.com('TODO: Clarify how this ID should be constructed');
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
       'lido:source': domain,
-    }).txt(`${sourceUrl}/object`);
+    }).txt(`${sourceUrl}`);
+
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      'lido:source': 'TODO: Add GND URI',
-    }).txt('TODO: GND URI for the object');
+      'lido:source': 'https://portal.dnb.de',
+    }).txt(this.getCatalogReference(languageData.de.catalog_work_references, 'GND'));
 
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
