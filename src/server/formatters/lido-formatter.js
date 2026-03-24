@@ -240,7 +240,8 @@ class LidoFormatter extends BaseFormatter {
       .up()
       .ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(this.removeCdaTag(languageData.en.signature));
+      })
+      .txt(this.removeCdaTag(languageData.en.signature));
 
     const inscriptionTranscription = this.extractInscriptionsFromEdition(
       languageData.de.condition, languageData.de.inscription,
@@ -327,12 +328,14 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'de',
-      }).txt(languageData.de.location.term)
+      })
+      .txt(languageData.de.location.term)
       .up()
       .ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'en',
-      }).txt(languageData.en.location.term);
+      })
+      .txt(languageData.en.location.term);
     //   └─ End: lido:repositoryWrap
 
     //   ├─ lido:objectDescriptionWrap
@@ -541,8 +544,6 @@ class LidoFormatter extends BaseFormatter {
       personsByRoleTypeReferenced.PRINTER = [];
     }
 
-
-
     // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
 
     // ** BO Old procedure
@@ -659,7 +660,6 @@ class LidoFormatter extends BaseFormatter {
             end: languageData.en.dating_end,
           };
         }
-
 
         const eventDate = event.ele('lido:eventDate');
 
@@ -1011,8 +1011,10 @@ class LidoFormatter extends BaseFormatter {
 
   /**
    * Extract dimensions from a string starting with any word followed by a colon
-   * @param {string} text - The input string (e.g., "Blatt: 277 x 190 mm, Darstellung: 282-284 x 194-202 mm")
-   * @returns {string} The extracted dimensions (e.g., "277 x 190" or "282-284 x 194-202") without unit
+   * @param {string} text - The input string
+   *   (e.g., "Blatt: 277 x 190 mm, Darstellung: 282-284 x 194-202 mm")
+   * @returns {string} The extracted dimensions without unit
+   *   (e.g., "277 x 190" or "282-284 x 194-202")
    */
   extractDimensions(text) {
     if (!text) return '';
@@ -1092,6 +1094,7 @@ class LidoFormatter extends BaseFormatter {
     let firstExcludedEditionIndex = -1;
 
     // Search for the first edition that is HIGHER than the condition edition
+    // eslint-disable-next-line no-cond-assign
     while ((match = editionPattern.exec(inscription)) !== null) {
       const foundLetter = match[1].toLowerCase();
 
@@ -1223,7 +1226,8 @@ class LidoFormatter extends BaseFormatter {
 
   /**
    * Get materials and technique data by type
-   * @param {string} materialsTechType - Materials/technique type (e.g., 'Holzschnitt', 'Kupferstich', 'Zeichnung')
+   * @param {string} materialsTechType - Materials/technique type
+   *   (e.g., 'Holzschnitt', 'Kupferstich', 'Zeichnung')
    * @returns {Object} Object with conceptID, termDe, and termEn
    */
   getMaterialsTechData(materialsTechType) {
