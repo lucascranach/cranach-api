@@ -261,7 +261,7 @@ const mappings = [
   {
     display_value: 'images',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: [],
     key: 'images',
     value: 'images',

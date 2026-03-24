@@ -2,7 +2,14 @@
 const { create } = require('xmlbuilder2');
 const BaseFormatter = require('./base-formatter');
 const translations = require('../translations');
-const { getPersonGND, getRepositoryID } = require('../mappings/authority-files');
+const {
+  getPersonGND,
+  getRepositoryID,
+  getEventDataByRoleType,
+  getMaterialsTechData,
+  getObjectWorkTypeURI,
+  getClassificationURI,
+} = require('../mappings/authority-files');
 
 /**
  * LIDO XML formatter for cultural heritage objects
@@ -169,7 +176,7 @@ class LidoFormatter extends BaseFormatter {
 
     objectWorkType.ele('lido:conceptID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    }).txt(this.getObjectWorkTypeURI(primaryData.objectworktype_id));
+    }).txt(getObjectWorkTypeURI(primaryData.objectworktype_id));
 
     if (languageData.de.objectworktype_value) {
       objectWorkType.ele('lido:term', {
@@ -190,7 +197,7 @@ class LidoFormatter extends BaseFormatter {
       })
       .ele('lido:conceptID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt(this.getClassificationURI(languageData.de.classification))
+      }).txt(getClassificationURI(languageData.de.classification))
       .up()
       .ele('lido:term', {
         'xml:lang': 'de',
@@ -478,7 +485,7 @@ class LidoFormatter extends BaseFormatter {
     }
 
     // Add lido:materialsTech based on objectworktype_value
-    const materialsTechData = this.getMaterialsTechData(languageData.de.objectworktype_value);
+    const materialsTechData = getMaterialsTechData(languageData.de.objectworktype_value);
     if (materialsTechData) {
       objectMaterialsTechSet.ele('lido:materialsTech')
         .ele('lido:termMaterialsTech', {
@@ -558,7 +565,7 @@ class LidoFormatter extends BaseFormatter {
     // Create a separate lido:event element per role type
     Object.keys(personsByRoleTypeReferenced).forEach((roleType) => {
       const persons = personsByRoleTypeReferenced[roleType];
-      const eventData = this.getEventDataByRoleType(roleType);
+      const eventData = getEventDataByRoleType(roleType);
 
       //   ├─ lido:event (for role type: ${roleType})
       const eventSet = eventWrap.ele('lido:eventSet');
@@ -862,6 +869,8 @@ class LidoFormatter extends BaseFormatter {
     // ╚═══════════════════════════════════════════════════════════════════════════╝
     const administrativeMetadata = lido.ele('lido:administrativeMetadata', { 'xml:lang': primaryLanguage });
 
+    administrativeMetadata
+
     // ┌─ lido:recordWrap ──────────────────────────────────────────────────────┐
     const recordWrap = administrativeMetadata.ele('lido:recordWrap');
     //   ├─ lido:recordID
@@ -931,14 +940,45 @@ class LidoFormatter extends BaseFormatter {
       'lido:source': domain,
     }).txt('TODO: Add date of last modification of the record. I don\'t know yet where to get the date from.');
 
+    // ┌─ lido:rightsWorkWrap ──────────────────────────────────────────────────┐
+    const rightsWorkWrap = administrativeMetadata.ele('lido:rightsWorkWrap');
+    const rightsWorkSet = rightsWorkWrap.ele('lido:rightsWorkSet');
+    //   ├─ lido:rightsType (Specific information about rights)
+    rightsWorkSet.ele('lido:rightsType', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00921',
+    })
+      .ele('skos:Concept', {
+        'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
+      })
+      .ele('skos:prefLabel', {
+        'xml:lang': 'de',
+      })
+      .txt('Kein Urheberrechtsschutz')
+      .up()
+      .ele('skos:prefLabel', {
+        'xml:lang': 'en',
+      })
+      .txt('No Copyright');
+
+    //   └─ lido:creditLine
+    rightsWorkSet.ele('lido:creditLine')
+      .txt('gemeinfrei');
+    // └─ lido:rightsWorkWrap─────────────────────────────────────────────────┘
+
     const resourceWrap = administrativeMetadata.ele('lido:resourceWrap');
     const resourceSet = resourceWrap.ele('lido:resourceSet');
 
-    resourceSet.com('TODO: I don\'t know where to get the data in this element. Or are they the same in all records?');
-    resourceSet.ele('lido:resourceID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00100',
-      'lido:source': 'http://ld.zdb-services.de/resource/organisations/DE-2102',
-    }).txt('RBA 214 932');
+    const imageIds = this.extractImageIds(languageData.de.images);
+    console.log(imageIds);
+
+    imageIds.forEach((imageId) => {
+
+
+      resourceSet.ele('lido:resourceID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00100',
+        'lido:source': 'https://lucascranach.org',
+      }).txt(imageId);
+    });
 
     resourceSet.ele('lido:resourceRepresentation', {
       'lido:type': 'http://terminology.lido-schema.org/lido00451',
@@ -1118,141 +1158,32 @@ class LidoFormatter extends BaseFormatter {
   }
 
   /**
-   * Get GND URI for object work type
-   * @param {string} id - Object type ID
-   * @returns {string} GND URI or empty string
+   * Extract all image IDs from images object
+   * @param {Object} images - Images object with arbitrary section names (e.g., overall, other, etc.)
+   * @returns {Array<string>} Array of image IDs
+   * @example
+   * // Returns: ['G_DE_KSVC_I-43-65_Overall', 'G_DE_KSVC_I-43-65_Overall-001', 'G_DE_KSVC_I-43-65_TL']
    */
-  getObjectWorkTypeURI(id) {
-    switch (id) {
-      // Engraving
-      case '010506':
-        return 'http://vocab.getty.edu/aat/300041341';
+  extractImageIds(images) {
+    const imageIds = [];
 
-      // Drawing
-      case '010501':
-        return 'http://vocab.getty.edu/aat/300033973';
-
-      // Woodcut
-      case '010505':
-        return 'http://vocab.getty.edu/aat/300041410';
-
-      default:
-        return '';
+    if (!images || typeof images !== 'object') {
+      return imageIds;
     }
-  }
 
-  getClassificationURI(classification) {
-    switch (classification) {
-      // Drawing
-      case 'Zeichnung':
-        return 'http://vocab.getty.edu/aat/300033973';
-      case 'Druckgrafik':
-        return 'http://vocab.getty.edu/aat/300041273';
-      default:
-        return '';
-    }
-  }
+    // Iterate over all sections (overall, other, or any other name)
+    Object.keys(images).forEach((sectionKey) => {
+      const section = images[sectionKey];
 
-  getEventDataByRoleType(roleType) {
-    switch (roleType) {
-      case 'ARTIST':
-        return {
-          eventType: {
-            conceptID: 'http://terminology.lido-schema.org/lido00007',
-            termDe: 'Herstellung',
-            termEn: 'Production',
-          },
-          roleActor: {
-            conceptID: 'http://vocab.getty.edu/aat/300025103',
-          },
-        };
-      case 'PRINTER':
-        return {
-          eventType: {
-            conceptID: 'http://terminology.lido-schema.org/lido01096',
-            termDe: 'Herstellung des Exemplars',
-            termEn: 'Production of the exemplar',
-          },
-          roleActor: {
-            conceptID: 'http://vocab.getty.edu/aat/300025732',
-          },
-        };
-      case 'INVENTOR':
-        return {
-          eventType: {
-            conceptID: 'http://terminology.lido-schema.org/lido00224',
-            termDe: 'Entwurf',
-            termEn: 'Design',
-          },
-          roleActor: {
-            conceptID: 'http://vocab.getty.edu/aat/300025845',
-          },
-        };
-      case 'PUBLISHER':
-        return {
-          eventType: {
-            conceptID: 'http://terminology.lido-schema.org/lido00228',
-            termDe: 'Publikation',
-            termEn: 'Publication',
-          },
-          roleActor: {
-            conceptID: 'http://vocab.getty.edu/aat/300025574',
-          },
-        };
-      case 'PRINTMAKER':
-        return {
-          eventType: {
-            conceptID: 'http://terminology.lido-schema.org/lido01089',
-            termDe: 'Herstellung der Druckform',
-            termEn: 'Production of the printing plate',
-          },
-          roleActor: {
-            conceptID: 'http://vocab.getty.edu/aat/300025165',
-          },
-        };
-      default:
-        return {
-          eventType: {
-            conceptID: '',
-            termDe: 'nicht spezifiziert',
-            termEn: 'not specified',
-          },
-          roleActor: {
-            conceptID: '',
-          },
-        };
-    }
-  }
+      // Check if this section has an images array
+      if (section?.images && Array.isArray(section.images)) {
+        section.images.forEach((image) => {
+          imageIds.push(image.id);
+        });
+      }
+    });
 
-  /**
-   * Get materials and technique data by type
-   * @param {string} materialsTechType - Materials/technique type
-   *   (e.g., 'Holzschnitt', 'Kupferstich', 'Zeichnung')
-   * @returns {Object} Object with conceptID, termDe, and termEn
-   */
-  getMaterialsTechData(materialsTechType) {
-    switch (materialsTechType) {
-      case 'Holzschnitt':
-        return {
-          conceptID: 'http://vocab.getty.edu/aat/300053296',
-          termDe: 'Holzschnitt (Druckverfahren)',
-          termEn: 'woodcut (process)',
-        };
-      case 'Kupferstich':
-        return {
-          conceptID: 'http://vocab.getty.edu/aat/300053225',
-          termDe: 'Kupferstich (Druckverfahren)',
-          termEn: 'engraving (printing process)',
-        };
-      case 'Zeichnung':
-        return {
-          conceptID: 'http://vocab.getty.edu/aat/300054196',
-          termDe: 'Zeichnung',
-          termEn: 'drawing (image-making)',
-        };
-      default:
-        return null;
-    }
+    return imageIds;
   }
 }
 

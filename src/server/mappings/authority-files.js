@@ -121,7 +121,159 @@ function getRepositoryID(institutionName) {
   return repositoryMapping[institutionName] || '';
 }
 
+/**
+ * Get Getty AAT URI for object work type
+ * @param {string} id - Object type ID
+ * @returns {string} Getty AAT URI or empty string
+ */
+function getObjectWorkTypeURI(id) {
+  switch (id) {
+    // Engraving
+    case '010506':
+      return 'http://vocab.getty.edu/aat/300041341';
+
+    // Drawing
+    case '010501':
+      return 'http://vocab.getty.edu/aat/300033973';
+
+    // Woodcut
+    case '010505':
+      return 'http://vocab.getty.edu/aat/300041410';
+
+    default:
+      return '';
+  }
+}
+
+/**
+ * Get Getty AAT URI for classification
+ * @param {string} classification - Classification name (e.g., 'Zeichnung', 'Druckgrafik')
+ * @returns {string} Getty AAT URI or empty string
+ */
+function getClassificationURI(classification) {
+  switch (classification) {
+    // Drawing
+    case 'Zeichnung':
+      return 'http://vocab.getty.edu/aat/300033973';
+    case 'Druckgrafik':
+      return 'http://vocab.getty.edu/aat/300041273';
+    default:
+      return '';
+  }
+}
+
+/**
+ * Get event data by role type (LIDO event types and Getty AAT role URIs)
+ * @param {string} roleType - Role type (e.g., 'ARTIST', 'PRINTER', 'INVENTOR')
+ * @returns {Object} Object with eventType and roleActor data
+ */
+function getEventDataByRoleType(roleType) {
+  switch (roleType) {
+    case 'ARTIST':
+      return {
+        eventType: {
+          conceptID: 'http://terminology.lido-schema.org/lido00007',
+          termDe: 'Herstellung',
+          termEn: 'Production',
+        },
+        roleActor: {
+          conceptID: 'http://vocab.getty.edu/aat/300025103',
+        },
+      };
+    case 'PRINTER':
+      return {
+        eventType: {
+          conceptID: 'http://terminology.lido-schema.org/lido01096',
+          termDe: 'Herstellung des Exemplars',
+          termEn: 'Production of the exemplar',
+        },
+        roleActor: {
+          conceptID: 'http://vocab.getty.edu/aat/300025732',
+        },
+      };
+    case 'INVENTOR':
+      return {
+        eventType: {
+          conceptID: 'http://terminology.lido-schema.org/lido00224',
+          termDe: 'Entwurf',
+          termEn: 'Design',
+        },
+        roleActor: {
+          conceptID: 'http://vocab.getty.edu/aat/300025845',
+        },
+      };
+    case 'PUBLISHER':
+      return {
+        eventType: {
+          conceptID: 'http://terminology.lido-schema.org/lido00228',
+          termDe: 'Publikation',
+          termEn: 'Publication',
+        },
+        roleActor: {
+          conceptID: 'http://vocab.getty.edu/aat/300025574',
+        },
+      };
+    case 'PRINTMAKER':
+      return {
+        eventType: {
+          conceptID: 'http://terminology.lido-schema.org/lido01089',
+          termDe: 'Herstellung der Druckform',
+          termEn: 'Production of the printing plate',
+        },
+        roleActor: {
+          conceptID: 'http://vocab.getty.edu/aat/300025165',
+        },
+      };
+    default:
+      return {
+        eventType: {
+          conceptID: '',
+          termDe: 'nicht spezifiziert',
+          termEn: 'not specified',
+        },
+        roleActor: {
+          conceptID: '',
+        },
+      };
+  }
+}
+
+/**
+ * Get materials and technique data by type (Getty AAT URIs)
+ * @param {string} materialsTechType - Materials/technique type
+ *   (e.g., 'Holzschnitt', 'Kupferstich', 'Zeichnung')
+ * @returns {Object|null} Object with conceptID, termDe, and termEn, or null if not found
+ */
+function getMaterialsTechData(materialsTechType) {
+  switch (materialsTechType) {
+    case 'Holzschnitt':
+      return {
+        conceptID: 'http://vocab.getty.edu/aat/300053296',
+        termDe: 'Holzschnitt (Druckverfahren)',
+        termEn: 'woodcut (process)',
+      };
+    case 'Kupferstich':
+      return {
+        conceptID: 'http://vocab.getty.edu/aat/300053225',
+        termDe: 'Kupferstich (Druckverfahren)',
+        termEn: 'engraving (printing process)',
+      };
+    case 'Zeichnung':
+      return {
+        conceptID: 'http://vocab.getty.edu/aat/300054196',
+        termDe: 'Zeichnung',
+        termEn: 'drawing (image-making)',
+      };
+    default:
+      return null;
+  }
+}
+
 module.exports = {
   getPersonGND,
   getRepositoryID,
+  getObjectWorkTypeURI,
+  getClassificationURI,
+  getEventDataByRoleType,
+  getMaterialsTechData,
 };
