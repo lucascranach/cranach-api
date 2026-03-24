@@ -956,13 +956,6 @@ class LidoFormatter extends BaseFormatter {
     }).ele('lido:recordInfoLink')
       .txt(`${sourceUrl}`);
 
-    recordWrap.ele('lido:recordInfoSet', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00470',
-    }).ele('lido:recordMetadataDate', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00473',
-      'lido:source': domain,
-    }).txt('TODO: Add date of last modification of the record. I don\'t know yet where to get the date from.');
-
     const resourceWrap = administrativeMetadata.ele('lido:resourceWrap');
     const resourceSet = resourceWrap.ele('lido:resourceSet');
 
