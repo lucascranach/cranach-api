@@ -101,24 +101,57 @@ function getPersonGND(personName) {
 /**
  * Get repository ID by institution name
  * @param {string} institutionName - Name of the institution (e.g., 'Albertina, Wien')
- * @returns {string} Repository ID (e.g., 'https://d-nb.info/gnd/2012512-4') or empty string if not found
+ * @returns {Object} Object with repositoryID and isil properties, or empty object if not found
  */
 function getRepositoryID(institutionName) {
   const repositoryMapping = {
-    'Albertina, Wien': 'https://d-nb.info/gnd/2012512-4',
-    'Friedrich-Alexander-Universität Erlangen-Nürnberg': 'https://lobid.org/organisations/DE-29',
-    'Germanisches Nationalmuseum Nürnberg': 'https://lobid.org/organisations/DE-MUS-105615',
-    'Herzog Anton Ulrich-Museum Braunschweig': 'https://lobid.org/organisations/DE-MUS-026819',
-    'Herzog August Bibliothek Wolfenbüttel': 'https://lobid.org/organisations/DE-MUS-162514',
-    'Kunsthalle Bremen': 'https://lobid.org/organisations/DE-MUS-027614',
-    'Kunstsammlungen der Veste Coburg': 'https://lobid.org/organisations/DE-MUS-032517',
-    'Kupferstichkabinett, Staatliche Museen zu Berlin': 'https://lobid.org/organisations/DE-MUS-018511',
-    'München, Staatliche Graphische Sammlung (München)': 'https://lobid.org/organisations/DE-2948',
-    'Staatsbibliothek Bamberg': 'https://lobid.org/organisations/DE-22',
-    'Städel Museum Frankfurt am Main': 'https://lobid.org/organisations/DE-MUS-048017',
+    'Albertina, Wien': {
+      repositoryID: 'https://d-nb.info/gnd/2012512-4',
+      isil: '2012512-4',
+    },
+    'Friedrich-Alexander-Universität Erlangen-Nürnberg': {
+      repositoryID: 'https://lobid.org/organisations/DE-29',
+      isil: 'DE-29',
+    },
+    'Germanisches Nationalmuseum Nürnberg': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-105615',
+      isil: 'DE-MUS-105615',
+    },
+    'Herzog Anton Ulrich-Museum Braunschweig': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-026819',
+      isil: 'DE-MUS-026819',
+    },
+    'Herzog August Bibliothek Wolfenbüttel': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-162514',
+      isil: 'DE-MUS-162514',
+    },
+    'Kunsthalle Bremen': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-027614',
+      isil: 'DE-MUS-027614',
+    },
+    'Kunstsammlungen der Veste Coburg': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-032517',
+      isil: 'DE-MUS-032517',
+    },
+    'Kupferstichkabinett, Staatliche Museen zu Berlin': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+    },
+    'München, Staatliche Graphische Sammlung (München)': {
+      repositoryID: 'https://lobid.org/organisations/DE-2948',
+      isil: 'DE-2948',
+    },
+    'Staatsbibliothek Bamberg': {
+      repositoryID: 'https://lobid.org/organisations/DE-22',
+      isil: 'DE-22',
+    },
+    'Städel Museum Frankfurt am Main': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-048017',
+      isil: 'DE-MUS-048017',
+    },
   };
 
-  return repositoryMapping[institutionName] || '';
+  return repositoryMapping[institutionName] || { repositoryID: 'unbekannt', isil: 'ungekannt' };
 }
 
 /**
