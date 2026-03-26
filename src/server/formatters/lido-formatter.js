@@ -892,7 +892,7 @@ class LidoFormatter extends BaseFormatter {
     //   └─ lido:creditLine
     rightsWorkSet.ele('lido:creditLine')
       .txt('gemeinfrei');
-    // └─ lido:rightsWorkWrap─────────────────────────────────────────────────┘    
+    // └─ lido:rightsWorkWrap─────────────────────────────────────────────────┘
 
     // ┌─ lido:recordWrap ──────────────────────────────────────────────────────┐
     const recordWrap = administrativeMetadata.ele('lido:recordWrap');
@@ -956,68 +956,212 @@ class LidoFormatter extends BaseFormatter {
     }).ele('lido:recordInfoLink')
       .txt(`${sourceUrl}`);
 
+    // ┌─ lido:resourceWrap ────────────────────────────────────────────────────┐
     const resourceWrap = administrativeMetadata.ele('lido:resourceWrap');
-    const resourceSet = resourceWrap.ele('lido:resourceSet');
 
-    const imageIds = this.extractImageIds(languageData.de.images);
-    console.log(imageIds);
+    // Map category keys to German descriptions
+    const categoryDescriptions = {
+      overall: 'Gesamtansicht',
+      detail: 'Detailansicht',
+      conservation: 'Restaurierungsaufnahme',
+      irr: 'Infrarotaufnahme',
+      photomicrograph: 'Mikroskopaufnahme',
+      reverse: 'Rückseitenaufnahme',
+      transmitted_light: 'Durchlichtaufnahme',
+      uv_light: 'UV-Flureszenzaufnahme',
+      other: 'Weitere Ansicht',
+    };
 
-    imageIds.forEach((imageId) => {
-
-
-      resourceSet.ele('lido:resourceID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00100',
-        'lido:source': 'https://lucascranach.org',
-      }).txt(imageId);
+    // Process all images from all categories
+    const allImagesWithCategory = [];
+    const imageCategories = languageData.de.images || {};
+    Object.keys(imageCategories).forEach((categoryKey) => {
+      const category = imageCategories[categoryKey];
+      if (category && category.images && Array.isArray(category.images)) {
+        category.images.forEach((image) => {
+          allImagesWithCategory.push({
+            ...image,
+            category: categoryKey,
+          });
+        });
+      }
     });
 
-    resourceSet.ele('lido:resourceRepresentation', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00451',
-    }).ele('lido:linkResource')
-      .txt(languageData.de.image_thumbnail);
+    // Create a resourceSet for each image
+    allImagesWithCategory.forEach((imageWithCategory) => {
+      const image = imageWithCategory;
+      //   ├─ lido:resourceSet (per image)
+      const resourceSet = resourceWrap.ele('lido:resourceSet');
 
-    resourceSet.ele('lido:resourceRepresentation', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00464',
-    }).ele('lido:linkResource')
-      .txt(languageData.de.image_highres);
+      //   │  ├─ lido:resourceID
+      resourceSet.ele('lido:resourceID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00100',
+      }).txt(image.id);
 
-    resourceSet.ele('lido:resourceSource', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00413',
-    })
-      .ele('lido:legalBodyID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      })
-      .txt('https://d-nb.info/gnd/1073160734')
-      .up()
-      .ele('lido:legalBodyName')
-      .ele('lido:appellationValue')
-      .txt('Cranach Digital Archive')
-      .up()
-      .up()
-      .ele('lido:legalBodyWeblink')
-      .txt('https://lucascranach.org');
+      //   │  ├─ lido:resourceRepresentation (thumbnail)
+      if (image.sizes.small) {
+        const thumbRepresentation = resourceSet.ele('lido:resourceRepresentation', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00451',
+        });
+        //   │  │  ├─ lido:linkResource
+        thumbRepresentation.ele('lido:linkResource', {
+          'lido:formatResource': 'image/jpeg',
+        }).txt(image.sizes.small.src);
 
-    resourceSet.ele('lido:rightsResource')
-      .ele('lido:rightsType', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00921',
-      })
-      .ele('skos:Concept', {
-        'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
-      })
-      .ele('skos:prefLabel', {
-        'xml:lang': 'de',
-      })
-      .txt('Kein Urheberrechtsschutz')
-      .up()
-      .ele('skos:prefLabel', {
-        'xml:lang': 'en',
-      })
-      .txt('No Copyright')
-      .up()
-      .up()
-      .up()
-      .ele('lido:creditLine')
-      .txt('Cranach Digital Archive');
+        //   │  │  └─ lido:resourceMeasurementsSet (width in pixels)
+        const thumbMeasurements = thumbRepresentation.ele('lido:resourceMeasurementsSet');
+        thumbMeasurements.ele('lido:measurementType')
+          .ele('skos:Concept', {
+            'rdf:about': 'http://www.wikidata.org/wiki/Q35059',
+          })
+          .ele('skos:prefLabel', {
+            'xml:lang': 'en',
+          }).txt('width')
+          .up()
+          .ele('skos:prefLabel', {
+            'xml:lang': 'de',
+          })
+          .txt('Breite')
+          .up()
+          .ele('skos:mappingRelation')
+          .txt('http://vocab.getty.edu/aat/300055647');
+
+        thumbMeasurements.ele('lido:measurementUnit')
+          .ele('skos:Concept', {
+            'rdf:about': 'http://www.wikidata.org/wiki/Q355198',
+          })
+          .ele('skos:prefLabel', {
+            'xml:lang': 'en',
+          })
+          .txt('pixel')
+          .up()
+          .ele('skos:prefLabel', {
+            'xml:lang': 'de',
+          })
+          .txt('Pixel')
+          .up()
+          .ele('skos:mappingRelation')
+          .txt('http://vocab.getty.edu/aat/300266190');
+
+        thumbMeasurements.ele('lido:measurementValue')
+          .txt(image.sizes.small.dimensions.width.toString());
+      }
+
+      //   │  ├─ lido:resourceRepresentation (high-resolution)
+      if (image.sizes.origin) {
+        const highresRepresentation = resourceSet.ele('lido:resourceRepresentation', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00464',
+        });
+        //   │  │  ├─ lido:linkResource
+        highresRepresentation.ele('lido:linkResource', {
+          'lido:formatResource': 'image/jpeg',
+        }).txt(image.sizes.origin.src);
+
+        //   │  │  └─ lido:resourceMeasurementsSet (width in pixels)
+        const highresMeasurements = highresRepresentation.ele('lido:resourceMeasurementsSet');
+        highresMeasurements.ele('lido:measurementType')
+          .ele('skos:Concept', {
+            'rdf:about': 'http://www.wikidata.org/wiki/Q35059',
+          })
+          .ele('skos:prefLabel', {
+            'xml:lang': 'en',
+          })
+          .txt('width')
+          .up()
+          .ele('skos:prefLabel', {
+            'xml:lang': 'de',
+          })
+          .txt('Breite')
+          .up()
+          .ele('skos:mappingRelation')
+          .txt('http://vocab.getty.edu/aat/300055647');
+
+        highresMeasurements.ele('lido:measurementUnit')
+          .ele('skos:Concept', {
+            'rdf:about': 'http://www.wikidata.org/wiki/Q355198',
+          })
+          .ele('skos:prefLabel', {
+            'xml:lang': 'en',
+          })
+          .txt('pixel')
+          .up()
+          .ele('skos:prefLabel', {
+            'xml:lang': 'de',
+          })
+          .txt('Pixel')
+          .up()
+          .ele('skos:mappingRelation')
+          .txt('http://vocab.getty.edu/aat/300266190');
+
+        highresMeasurements.ele('lido:measurementValue')
+          .txt(image.sizes.origin.dimensions.width.toString());
+      }
+
+      //   │  ├─ lido:resourceType (digital image)
+      resourceSet.ele('lido:resourceType')
+        .ele('skos:Concept', {
+          'rdf:about': 'http://vocab.getty.edu/aat/300215302',
+        })
+        .ele('skos:prefLabel', {
+          'xml:lang': 'en',
+        })
+        .txt('digital images')
+        .up()
+        .ele('skos:altLabel', {
+          'xml:lang': 'en',
+        })
+        .txt('digital image')
+        .up()
+        .up()
+        .ele('lido:term')
+        .txt('Digitales Bild')
+        .up()
+        .ele('lido:term', {
+          'lido:addedSearchTerm': 'yes',
+        })
+        .txt('Digitalbild');
+
+      //   │  ├─ lido:resourceDescription (category-specific description)
+      const categoryDescription = categoryDescriptions[image.category] || 'Weitere Ansicht';
+      resourceSet.ele('lido:resourceDescription')
+        .txt(categoryDescription);
+
+      //   │  └─ lido:rightsResource
+      resourceSet.ele('lido:rightsResource')
+        .ele('lido:rightsType', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00921',
+        })
+        .ele('skos:Concept', {
+          'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
+        })
+        .ele('skos:prefLabel', {
+          'xml:lang': 'de',
+        })
+        .txt('Kein Urheberrechtsschutz')
+        .up()
+        .ele('skos:prefLabel', {
+          'xml:lang': 'en',
+        })
+        .txt('No Copyright')
+        .up()
+        .up()
+        .up()
+        .ele('lido:rightsHolder')
+        .ele('lido:legalBodyID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        })
+        .txt('https://d-nb.info/gnd/1073160734')
+        .up()
+        .ele('lido:legalBodyName')
+        .ele('lido:appellationValue')
+        .txt('Cranach Digital Archive')
+        .up()
+        .up()
+        .up()
+        .ele('lido:creditLine')
+        .txt('Cranach Digital Archive');
+    });
+    // └─ lido:resourceWrap───────────────────────────────────────────────────┘
 
     return root.end({ prettyPrint: true });
   }
@@ -1150,10 +1294,10 @@ class LidoFormatter extends BaseFormatter {
 
   /**
    * Extract all image IDs from images object
-   * @param {Object} images - Images object with arbitrary section names (e.g., overall, other, etc.)
+   * @param {Object} images - Images object with arbitrary section names
    * @returns {Array<string>} Array of image IDs
    * @example
-   * // Returns: ['G_DE_KSVC_I-43-65_Overall', 'G_DE_KSVC_I-43-65_Overall-001', 'G_DE_KSVC_I-43-65_TL']
+   * // Returns: ['G_DE_KSVC_I-43-65_Overall', 'G_DE_KSVC_I-43-65_Overall-001']
    */
   extractImageIds(images) {
     const imageIds = [];
@@ -1167,7 +1311,7 @@ class LidoFormatter extends BaseFormatter {
       const section = images[sectionKey];
 
       // Check if this section has an images array
-      if (section?.images && Array.isArray(section.images)) {
+      if (section && section.images && Array.isArray(section.images)) {
         section.images.forEach((image) => {
           imageIds.push(image.id);
         });
