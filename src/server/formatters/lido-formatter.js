@@ -140,6 +140,9 @@ class LidoFormatter extends BaseFormatter {
       'xsi:schemaLocation': 'http://www.lido-schema.org https://www.lido-schema.org/schema/v1.1/lido-v1.1.xsd',
     });
 
+    const repositoryData = getRepositoryID(languageData.de.repository);
+
+
     // ── lido:lidoRecID ──
     lido.ele('lido:lidoRecID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
@@ -151,7 +154,7 @@ class LidoFormatter extends BaseFormatter {
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
-    }).txt(`gnd1073160734/object/${inventoryNumber}`);
+    }).txt(`isil::${repositoryData.isil}::${inventoryNumber.split('_').pop()}`);
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
     // ║  lido:descriptiveMetadata                                                 ║
@@ -296,7 +299,7 @@ class LidoFormatter extends BaseFormatter {
     repositorySet.ele('lido:repositoryName')
       .ele('lido:legalBodyID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt(getRepositoryID(languageData.de.repository))
+      }).txt(repositoryData.repositoryID)
       .up()
       .ele('lido:legalBodyName')
       .ele('lido:appellationValue', {
