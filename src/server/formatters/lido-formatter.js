@@ -146,17 +146,8 @@ class LidoFormatter extends BaseFormatter {
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
-    // ── lido:objectPublishedID ──
-    lido.ele('lido:objectPublishedID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      'lido:source': domain,
-    }).txt(`${sourceUrl}`);
-
-    lido.ele('lido:objectPublishedID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      'lido:source': 'https://portal.dnb.de',
-    }).txt(this.getCatalogReference(languageData.de.catalog_work_references, 'GND'));
-
+    // TODO isil::DE-MUS-032517::I-43-65
+    //      Normdatei::Organisation.::Inventarnummer​
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
