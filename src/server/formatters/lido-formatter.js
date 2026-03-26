@@ -386,6 +386,27 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       }).txt(languageData.en.provenance);
     }
+
+    // //   │  └─ objectDescriptionSet (Additional text information)
+    const additionalTextInfoDe = this.extractTextAndCitation(
+      languageData.de.additional_text_information_text[0].text,
+    );
+
+    if (languageData.de.additional_text_information_text
+      || languageData.en.additional_text_information_text) {
+      const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
+
+      if (languageData.de.additional_text_information_text) {
+        additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(additionalTextInfoDe.text);
+      }
+
+      if (additionalTextInfoDe.citation !== '') {
+        additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
+          .txt(additionalTextInfoDe.citation);
+      }
+    }
     //   └─ End: lido:objectDescriptionWrap
 
     //   ├─ lido:objectMeasurementsWrap

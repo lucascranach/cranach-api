@@ -482,9 +482,9 @@ const mappings = [
 
   // Additional text information
   {
-    display_value: 'additionalTextInformation.text',
+    display_value: 'additionalTextInformation',
     showAsFilter: false,
-    showAsResult: false,
+    showAsResult: true,
     filter_types: [],
     key: 'additional_text_information_text',
     value: 'additionalTextInformation.text',
@@ -671,6 +671,7 @@ const entityTypes = ['PAINTING', 'GRAPHIC', 'DRAWING'];
 
 // Fields to copy from referenced object (e.g., printing plate) when isVirtual = false
 const referencedFieldsToCopy = [
+  'additional_text_information_text',
   'catalog_work_references',
   'descriptive_note_value',
   'dimensions_referenced',
