@@ -607,7 +607,7 @@ const mappings = [
     key: 'markings',
   },
 
-  // LIDO catalog work references
+  // LIDO location
   {
     display_value: '',
     showAsResult: true,
@@ -633,8 +633,8 @@ const mappings = [
     filter_types: [''],
     key: 'image_thumbnail',
     aggregateResult(data) {
-      return (data.images.overall.images[0].sizes.xsmall.src)
-    }
+      return (data.images.overall.images[0].sizes.xsmall.src);
+    },
   },
 
   // LIDO Highres image
@@ -644,7 +644,7 @@ const mappings = [
     filter_types: [''],
     key: 'image_highres',
     aggregateResult(data) {
-      return (data.images.overall.images[0].sizes.origin.src)
+      return (data.images.overall.images[0].sizes.origin.src);
     },
   },
 
