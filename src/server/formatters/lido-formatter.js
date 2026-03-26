@@ -339,6 +339,52 @@ class LidoFormatter extends BaseFormatter {
       .txt(languageData.en.location.term);
     //   └─ End: lido:repositoryWrap
 
+    //   ├─ lido:displayStateEditionWrap
+    const conditionDe = this.extractTextAndCitation(languageData.de.condition);
+    const conditionEn = this.extractTextAndCitation(languageData.en.condition);
+
+    if (conditionDe.text || conditionEn.text) {
+      const displayStateEditionWrap = objectIdentificationWrap
+        .ele('lido:displayStateEditionWrap');
+
+      // Split by semicolon: "I. Zustand; Auflage a)" -> state and edition
+      const splitConditionDe = conditionDe.text.split(';').map((s) => s.trim());
+      const splitConditionEn = conditionEn.text.split(';').map((s) => s.trim());
+
+      // displayState (before semicolon)
+      if (splitConditionDe[0]) {
+        displayStateEditionWrap.ele('lido:displayState', {
+          'xml:lang': 'de',
+        }).txt(splitConditionDe[0]);
+      }
+
+      if (splitConditionEn[0]) {
+        displayStateEditionWrap.ele('lido:displayState', {
+          'xml:lang': 'en',
+        }).txt(splitConditionEn[0]);
+      }
+
+      // displayEdition (after semicolon)
+      if (splitConditionDe[1]) {
+        displayStateEditionWrap.ele('lido:displayEdition', {
+          'xml:lang': 'de',
+        }).txt(splitConditionDe[1]);
+      }
+
+      if (splitConditionEn[1]) {
+        displayStateEditionWrap.ele('lido:displayEdition', {
+          'xml:lang': 'en',
+        }).txt(splitConditionEn[1]);
+      }
+
+      // sourceStateEdition
+      if (conditionDe.citation !== '') {
+        displayStateEditionWrap.ele('lido:sourceStateEdition')
+          .txt(conditionDe.citation);
+      }
+    }
+    //   └─ End: lido:displayStateEditionWrap
+
     //   ├─ lido:objectDescriptionWrap
     const objectDescriptionWrap = objectIdentificationWrap.ele('lido:objectDescriptionWrap');
     //   │  ├─ objectDescriptionSet (general description)
