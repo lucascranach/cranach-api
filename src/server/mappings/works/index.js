@@ -520,7 +520,10 @@ const mappings = [
     showAsResult: true,
     filter_types: [],
     aggregateResult(data) {
-      return (data.filterInfos.technique[0].text);
+      if (data.filterInfos && data.filterInfos.technique && data.filterInfos.technique.length > 0) {
+        return data.filterInfos.technique[0].text;
+      }
+      return undefined;
     },
   },
 
@@ -531,7 +534,10 @@ const mappings = [
     showAsResult: true,
     filter_types: [],
     aggregateResult(data) {
-      return (data.filterInfos.technique[0].id);
+      if (data.filterInfos && data.filterInfos.technique && data.filterInfos.technique.length > 0) {
+        return data.filterInfos.technique[0].id;
+      }
+      return undefined;
     },
   },
 
@@ -614,7 +620,10 @@ const mappings = [
     filter_types: [''],
     key: 'location',
     aggregateResult(data) {
-      return (data.locations[0]);
+      if (data.locations && data.locations.length > 0) {
+        return data.locations[0];
+      }
+      return undefined;
     },
   },
 
@@ -633,7 +642,13 @@ const mappings = [
     filter_types: [''],
     key: 'image_thumbnail',
     aggregateResult(data) {
-      return (data.images.overall.images[0].sizes.xsmall.src);
+      if (data.images && data.images.overall && data.images.overall.images
+        && data.images.overall.images.length > 0
+        && data.images.overall.images[0].sizes
+        && data.images.overall.images[0].sizes.xsmall) {
+        return data.images.overall.images[0].sizes.xsmall.src;
+      }
+      return undefined;
     },
   },
 
@@ -644,7 +659,13 @@ const mappings = [
     filter_types: [''],
     key: 'image_highres',
     aggregateResult(data) {
-      return (data.images.overall.images[0].sizes.origin.src);
+      if (data.images && data.images.overall && data.images.overall.images
+        && data.images.overall.images.length > 0
+        && data.images.overall.images[0].sizes
+        && data.images.overall.images[0].sizes.origin) {
+        return data.images.overall.images[0].sizes.origin.src;
+      }
+      return undefined;
     },
   },
 
@@ -656,12 +677,20 @@ const mappings = [
     key: 'inscription',
   },
 
-  // LIDO Highres image
+  // LIDO condition
   {
     display_value: 'classification.condition',
     showAsResult: true,
     filter_types: [''],
     key: 'condition',
+  },
+
+  // LIDO relatedInContentTo
+  {
+    display_value: 'references.relatedInContentTo',
+    showAsResult: true,
+    filter_types: [''],
+    key: 'related_in_content_to',
   },
 
 ];
