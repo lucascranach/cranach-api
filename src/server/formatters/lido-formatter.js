@@ -62,7 +62,7 @@ class LidoFormatter extends BaseFormatter {
 
     // Build dynamic source URL
     const domain = 'https://lucascranach.org';
-    const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/intern/artefacts-preview';
+    const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/';
     const sourceUrl = `${baseUrl}/${primaryLanguage}/${inventoryNumber}`;
 
     // =============================================================================
@@ -923,6 +923,38 @@ class LidoFormatter extends BaseFormatter {
         .txt('is documented in');
     });
 
+    //   ├─ lido:relatedWorkSet (related in content)
+    if (languageData.de.related_in_content_to && languageData.de.related_in_content_to.length > 0) {
+      const relatedWork = languageData.de.related_in_content_to[0];
+      const relatedTitle = relatedWork.title || 'nicht vorhanden';
+
+      relatedWorksWrap.ele('lido:relatedWorkSet')
+        .ele('lido:relatedWork')
+        .ele('lido:object')
+        .ele('lido:objectWebResource')
+        .txt(`${baseUrl}${primaryLanguage}/${relatedWork.inventoryNumber}`)
+        .up()
+        .ele('lido:objectNote')
+        .txt(relatedTitle)
+        .up()
+        .up()
+        .up()
+        .ele('lido:relatedWorkRelType')
+        .ele('lido:conceptID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        })
+        .txt('http://terminology.lido-schema.org/lido00263')
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'de',
+        })
+        .txt('hat Bezug zu')
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'en',
+        })
+        .txt('is related to');
+    }
     // └─ lido:objectRelationWrap─────────────────────────────────────────┘
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗

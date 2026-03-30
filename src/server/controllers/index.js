@@ -103,7 +103,6 @@ function getSingleItem(mappings) {
             });
           }
 
-
           if (referenceIds.size > 0) {
             try {
               // Create literature mappings
@@ -129,13 +128,11 @@ function getSingleItem(mappings) {
                 sort: [],
               };
 
-
               const literatureResult = await model.getItems(
                 literatureMappings,
                 {},
                 literatureParams,
               );
-
 
               const literatureData = Aggregator.aggregateItemsResponse(
                 literatureResult.result,
@@ -178,6 +175,58 @@ function getSingleItem(mappings) {
             } catch (error) {
               // eslint-disable-next-line no-console
               console.error('Failed to fetch literature references:', error);
+              // Continue with original data if fetch fails
+            }
+          }
+        }
+
+        // Enrich related_in_content_to with title data
+        const relatedInContentTo = primaryData.related_in_content_to;
+
+        if (relatedInContentTo && relatedInContentTo.length > 0) {
+          const relatedInventoryNumber = relatedInContentTo[0].inventoryNumber;
+
+          if (relatedInventoryNumber) {
+            try {
+              // Fetch the related work for both languages
+              const relatedParams = {
+                id: relatedInventoryNumber,
+                language: params.language,
+                showDataAll: false,
+                fetchBothLanguages: true,
+              };
+
+              const relatedResult = await model.getSingleItem(mappings, relatedParams);
+              // console.log(relatedResult.body.responses[1].hits.hits);
+              const relatedData = Aggregator.aggregateSingleItemResponse(
+                relatedResult, mappings, false, true, params.language,
+              );
+
+              // Extract titles and enrich related_in_content_to in all language results
+              if (relatedData.results && relatedData.results.length > 0) {
+                data.results.forEach((languageItem) => {
+                  const matchingRelatedItem = relatedData.results.find(
+                    (item) => item.language === languageItem.language,
+                  );
+
+                  if (
+                    matchingRelatedItem
+                    && matchingRelatedItem.data.title
+                    && Array.isArray(languageItem.data.related_in_content_to)
+                    && languageItem.data.related_in_content_to.length > 0
+                    && languageItem.data.related_in_content_to[0]
+                  ) {
+                    const relatedItem = languageItem.data.related_in_content_to[0];
+                    relatedItem.title = matchingRelatedItem.data.title;
+                  }
+                });
+              }
+            } catch (error) {
+              // eslint-disable-next-line no-console
+              console.error(
+                `Failed to fetch related work ${relatedInventoryNumber}:`,
+                error,
+              );
               // Continue with original data if fetch fails
             }
           }
