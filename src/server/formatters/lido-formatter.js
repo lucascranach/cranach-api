@@ -288,16 +288,27 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:repositoryWrap
     const repositoryWrap = objectIdentificationWrap.ele('lido:repositoryWrap');
+    const repositoryType = inventoryNumber.includes('-Lost')
+      ? 'http://terminology.lido-schema.org/lido01019'
+      : 'http://terminology.lido-schema.org/lido01017';
+
     const repositorySet = repositoryWrap.ele('lido:repositorySet', {
-      'lido:type': 'http://terminology.lido-schema.org/lido01017',
+      'lido:type': repositoryType,
     });
     //   │  ├─ lido:displayRepository (Human-readable: "Institution (Location)")
-    repositorySet.ele('lido:displayRepository', {
-      'xml:lang': 'de',
-    }).txt(`${languageData.de.repository} (${languageData.de.location.term})`);
-    repositorySet.ele('lido:displayRepository', {
-      'xml:lang': 'en',
-    }).txt(`${languageData.en.repository} (${languageData.de.location.term})`);
+    if (languageData.de.location && languageData.de.location.term) {
+      repositorySet.ele('lido:displayRepository', {
+        'xml:lang': 'de',
+      }).txt(languageData.de.repository
+        ? `${languageData.de.repository} (${languageData.de.location.term})`
+        : languageData.de.location.term);
+
+      repositorySet.ele('lido:displayRepository', {
+        'xml:lang': 'en',
+      }).txt(languageData.en.repository
+        ? `${languageData.en.repository} (${languageData.de.location.term})`
+        : languageData.de.location.term);
+    }
     //   │  └─ End: lido:displayRepository
 
     //   │  ├─ lido:repositoryName (Institution with GND identifier)
