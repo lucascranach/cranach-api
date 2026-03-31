@@ -92,7 +92,8 @@ class LidoFormatter extends BaseFormatter {
     // │  │  │  └─ lido:repositoryLocation (Geographic location)
     // │  │  ├─ lido:objectDescriptionWrap
     // │  │  │  ├─ lido:objectDescriptionSet (General description)
-    // │  │  │  └─ lido:objectDescriptionSet (Provenance)
+    // │  │  │  ├─ lido:objectDescriptionSet (Provenance)
+    // │  │  │  └─ lido:objectDescriptionSet (Additional text information)
     // │  │  ├─ lido:objectMeasurementsWrap
     // │  │  │  ├─ lido:objectMeasurementsSet (Sheet measurements)
     // │  │  │  └─ lido:objectMeasurementsSet (Image measurements)
@@ -243,6 +244,7 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt(this.removeCdaTag(languageData.en.signature));
+    //   │  └─ End: lido:inscriptions (Signatures)
 
     const inscriptionTranscription = this.extractInscriptionsFromEdition(
       languageData.de.condition, languageData.de.inscription,
@@ -255,8 +257,9 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'mul',
       }).txt(inscriptionTranscription);
     }
+    //   │  └─ End: lido:inscriptionTranscription
 
-    //   │  └─ lido:inscriptions (Markings)
+    //   │  ├─ lido:inscriptions (Markings)
     const descriptiveNoteValueMarkingsDe = this.extractTextAndCitation(languageData.de.markings);
     const descriptiveNoteValueMarkingsEn = this.extractTextAndCitation(languageData.en.markings);
 
@@ -280,6 +283,7 @@ class LidoFormatter extends BaseFormatter {
       .up()
       .ele('lido:sourceDescriptiveNote')
       .txt(descriptiveNoteValueMarkingsDe.citation);
+    //   │  └─ End: lido:inscriptions (Markings)
     //   └─ End: lido:inscriptionsWrap
 
     //   ├─ lido:repositoryWrap
@@ -294,6 +298,7 @@ class LidoFormatter extends BaseFormatter {
     repositorySet.ele('lido:displayRepository', {
       'xml:lang': 'en',
     }).txt(`${languageData.en.repository} (${languageData.de.location.term})`);
+    //   │  └─ End: lido:displayRepository
 
     //   │  ├─ lido:repositoryName (Institution with GND identifier)
     repositorySet.ele('lido:repositoryName')
@@ -313,13 +318,15 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt(languageData.en.repository);
+    //   │  └─ End: lido:repositoryName
 
     //   │  ├─ lido:workID (Object identifier within repository)
     repositorySet.ele('lido:workID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00113',
     }).txt(inventoryNumber.split('_').pop());
+    //   │  └─ End: lido:workID
 
-    //   │  └─ lido:repositoryLocation (Geographic location with GND place identifier)
+    //   │  ├─ lido:repositoryLocation (Geographic location with GND place identifier)
     repositorySet.ele('lido:repositoryLocation')
       .ele('lido:placeID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -337,6 +344,7 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt(languageData.en.location.term);
+    //   │  └─ End: lido:repositoryLocation
     //   └─ End: lido:repositoryWrap
 
     //   ├─ lido:displayStateEditionWrap
@@ -387,7 +395,7 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:objectDescriptionWrap
     const objectDescriptionWrap = objectIdentificationWrap.ele('lido:objectDescriptionWrap');
-    //   │  ├─ objectDescriptionSet (general description)
+    //   │  ├─ lido:objectDescriptionSet (general description)
     const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
     // extractTextAndCitation of descriptive_note_value
@@ -416,7 +424,7 @@ class LidoFormatter extends BaseFormatter {
         .txt(descriptiveNoteValueDe.citation);
     }
 
-    //   │  └─ objectDescriptionSet (Provenance)
+    //   │  └─ lido:objectDescriptionSet (Provenance)
     const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01110',
     });
@@ -433,7 +441,7 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.provenance);
     }
 
-    // //   │  └─ objectDescriptionSet (Additional text information)
+    //   │  ├─ lido:objectDescriptionSet (Additional text information)
     const additionalTextInfoDe = this.extractTextAndCitation(
       languageData.de.additional_text_information_text[0].text,
     );
@@ -453,11 +461,12 @@ class LidoFormatter extends BaseFormatter {
           .txt(additionalTextInfoDe.citation);
       }
     }
+    //   │  └─ End: lido:objectDescriptionSet (Additional text information)
     //   └─ End: lido:objectDescriptionWrap
 
     //   ├─ lido:objectMeasurementsWrap
     const objectMeasurementsWrap = objectIdentificationWrap.ele('lido:objectMeasurementsWrap');
-    //   │  ├─ objectMeasurementsSet #1 (sheet measurements)
+    //   │  ├─ lido:objectMeasurementsSet #1 (sheet measurements)
     let objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
 
     if (languageData.de.dimensions) {
@@ -490,9 +499,9 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt('sheet');
-    //   └─ End: lido:objectMeasurements #1
+    //   │  └─ End: lido:objectMeasurementsSet #1
 
-    //   │  └─ objectMeasurementsSet #2 (image measurements)
+    //   │  ├─ lido:objectMeasurementsSet #2 (image measurements)
     objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
 
     if (languageData.de.dimensions_referenced) {
@@ -525,8 +534,7 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt('image');
-
-    //   └─ End: lido:objectMeasurements #2
+    //   │  └─ End: lido:objectMeasurementsSet #2
     //   └─ End: lido:objectMeasurementsWrap
 
     //   └─ lido:objectMaterialsTechWrap
@@ -881,8 +889,9 @@ class LidoFormatter extends BaseFormatter {
         'lido:source': `${domain}`,
       })
       .txt(`${languageData.de.inventory_number_referenced}`);
+    //   │  └─ End: lido:relatedWork
 
-    //   │  └─ lido:relatedWorkRelType
+    //   │  ├─ lido:relatedWorkRelType
     relatedWorkSet.ele('lido:relatedWorkRelType')
       .ele('skos:Concept', {
         'rdf:about': 'http://terminology.lido-schema.org/lido00627',
@@ -955,6 +964,7 @@ class LidoFormatter extends BaseFormatter {
         })
         .txt('is related to');
     }
+    //   └─ End: lido:relatedWorkSet (related in content)
     // └─ lido:objectRelationWrap─────────────────────────────────────────┘
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -981,10 +991,12 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       })
       .txt('No Copyright');
+    //   └─ End: lido:rightsType
 
-    //   └─ lido:creditLine
+    //   ├─ lido:creditLine
     rightsWorkSet.ele('lido:creditLine')
       .txt('gemeinfrei');
+    //   └─ End: lido:creditLine
     // └─ lido:rightsWorkWrap─────────────────────────────────────────────────┘
 
     // ┌─ lido:recordWrap ──────────────────────────────────────────────────────┐
@@ -994,6 +1006,7 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:recordID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
       }).txt(`${inventoryNumber}/record`);
+    //   └─ End: lido:recordID
 
     //   ├─ lido:recordType
     const recordType = recordWrap.ele('lido:recordType');
@@ -1015,8 +1028,9 @@ class LidoFormatter extends BaseFormatter {
         'xml:lang': 'en',
       }).txt(einzelobjektEn);
     }
+    //   └─ End: lido:recordType
 
-    //   └─ lido:recordSource
+    //   ├─ lido:recordSource
     const recordSource = recordWrap.ele('lido:recordSource');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
@@ -1025,6 +1039,7 @@ class LidoFormatter extends BaseFormatter {
     recordSource
       .ele('lido:legalBodyWeblink')
       .txt(`${domain}`);
+    //   └─ End: lido:recordSource
     // └─ lido:recordWrap─────────────────────────────────────────────────────┘
 
     recordWrap.ele('lido:recordRights')
