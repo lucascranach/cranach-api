@@ -338,23 +338,32 @@ class LidoFormatter extends BaseFormatter {
     //   │  └─ End: lido:workID
 
     //   │  ├─ lido:repositoryLocation (Geographic location with GND place identifier)
-    repositorySet.ele('lido:repositoryLocation')
-      .ele('lido:placeID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt(languageData.de.location.url)
-      .up()
-      .ele('lido:namePlaceSet')
-      .ele('lido:appellationValue', {
-        'lido:pref': 'http://terminology.lido-schema.org/lido00169',
-        'xml:lang': 'de',
-      })
-      .txt(languageData.de.location.term)
-      .up()
-      .ele('lido:appellationValue', {
-        'lido:pref': 'http://terminology.lido-schema.org/lido00169',
-        'xml:lang': 'en',
-      })
-      .txt(languageData.en.location.term);
+    if (languageData.de.location
+      && (languageData.de.location.url || languageData.de.location.term)) {
+      const repositoryLocation = repositorySet.ele('lido:repositoryLocation');
+
+      if (languageData.de.location.url) {
+        repositoryLocation.ele('lido:placeID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        }).txt(languageData.de.location.url);
+      }
+
+      const namePlaceSet = repositoryLocation.ele('lido:namePlaceSet');
+
+      if (languageData.de.location.term) {
+        namePlaceSet.ele('lido:appellationValue', {
+          'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+          'xml:lang': 'de',
+        }).txt(languageData.de.location.term);
+      }
+
+      if (languageData.en && languageData.en.location && languageData.en.location.term) {
+        namePlaceSet.ele('lido:appellationValue', {
+          'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+          'xml:lang': 'en',
+        }).txt(languageData.en.location.term);
+      }
+    }
     //   │  └─ End: lido:repositoryLocation
     //   └─ End: lido:repositoryWrap
 
