@@ -3,6 +3,7 @@ const Aggregator = require('../es-engine/aggregator');
 const FormatterFactory = require('../formatters/formatter-factory');
 const { Mappings, MappingType } = require('../mappings');
 const FilterParam = require('../../entities/filterparam');
+const { fetchAllImageMetadata } = require('../services/metadataExifService');
 
 function getSingleItem(mappings) {
   return async (req, res) => {
@@ -233,10 +234,27 @@ function getSingleItem(mappings) {
         }
       }
 
+      // Fetch image metadata from external API for LIDO format
+      let imageMetadataMap = {};
+      if (fetchBothLanguages && data.results && data.results.length > 0) {
+        const primaryResult = data.results[0].data;
+        try {
+          imageMetadataMap = await fetchAllImageMetadata(
+            primaryResult.images,
+            primaryResult.entity_type,
+          );
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error('Failed to fetch image metadata:', error);
+        }
+      }
+
       // Format response based on requested format
       const formatter = FormatterFactory.getFormatter(format, mappings);
 
-      const output = formatter.formatSingleItem(data, params.language);
+      const output = formatter.formatSingleItem(
+        data, params.language, { imageMetadataMap },
+      );
 
       // Send formatted output with correct content type
       res.type(formatter.getContentType()).send(output);

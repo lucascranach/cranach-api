@@ -22,10 +22,10 @@ class LidoFormatter extends BaseFormatter {
    * @param {Object} language - Language code (e.g., 'de', 'en')
    * @returns {string} LIDO XML string
    */
-  formatSingleItem(data, language = 'de') {
+  formatSingleItem(data, language = 'de', options = {}) {
     // New consistent structure: results is always array of {language, data}
     if (Array.isArray(data.results) && data.results.length > 0 && data.results[0].language) {
-      return this.buildLidoXmlMultilingual(data.results, language);
+      return this.buildLidoXmlMultilingual(data.results, language, options);
     }
     // Fallback for unexpected structure
     throw new Error('Invalid data structure for LIDO formatter');
@@ -49,7 +49,9 @@ class LidoFormatter extends BaseFormatter {
    * @param {string} primaryLanguage - Primary language code (e.g., 'de', 'en')
    * @returns {string} LIDO XML string
    */
-  buildLidoXmlMultilingual(resultsArray, primaryLanguage = 'de') {
+  buildLidoXmlMultilingual(resultsArray, primaryLanguage = 'de', options = {}) {
+    const { imageMetadataMap = {} } = options;
+
     // Extract data for each language
     const languageData = {};
     resultsArray.forEach((item) => {
@@ -1253,6 +1255,18 @@ class LidoFormatter extends BaseFormatter {
       const categoryDescription = categoryDescriptions[image.category] || 'Weitere Ansicht';
       resourceSet.ele('lido:resourceDescription')
         .txt(categoryDescription);
+
+      //   │  ├─ lido:resourceSource
+      const imageMetadata = imageMetadataMap[image.id] || {};
+      resourceSet.ele('lido:resourceSource')
+        .ele('lido:legalBodyID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        })
+        .txt('{{PLACEHOLDER_WIKIDATA_URI}}')
+        .up()
+        .ele('lido:legalBodyName')
+        .ele('lido:appellationValue')
+        .txt('{{PLACEHOLDER_INSTITUTION_NAME}}');
 
       //   │  └─ lido:rightsResource
       resourceSet.ele('lido:rightsResource')
