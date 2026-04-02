@@ -290,12 +290,10 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:repositoryWrap
     const repositoryWrap = objectIdentificationWrap.ele('lido:repositoryWrap');
-    const repositoryType = inventoryNumber.includes('-Lost')
-      ? 'http://terminology.lido-schema.org/lido01019'
-      : 'http://terminology.lido-schema.org/lido01017';
+    const isLost = inventoryNumber.includes('-Lost');
 
     const repositorySet = repositoryWrap.ele('lido:repositorySet', {
-      'lido:type': repositoryType,
+      'lido:type': 'http://terminology.lido-schema.org/lido01017',
     });
     //   │  ├─ lido:displayRepository (Human-readable: "Institution (Location)")
     if (languageData.de.location && languageData.de.location.term) {
@@ -314,12 +312,15 @@ class LidoFormatter extends BaseFormatter {
     //   │  └─ End: lido:displayRepository
 
     //   │  ├─ lido:repositoryName (Institution with GND identifier)
-    repositorySet.ele('lido:repositoryName')
-      .ele('lido:legalBodyID', {
+    const repositoryName = repositorySet.ele('lido:repositoryName');
+
+    if (!isLost) {
+      repositoryName.ele('lido:legalBodyID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt(repositoryData.repositoryID)
-      .up()
-      .ele('lido:legalBodyName')
+      }).txt(repositoryData.repositoryID);
+    }
+
+    repositoryName.ele('lido:legalBodyName')
       .ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'de',
@@ -367,6 +368,40 @@ class LidoFormatter extends BaseFormatter {
       }
     }
     //   │  └─ End: lido:repositoryLocation
+
+    //   │  ├─ lido:repositorySet (former owner, only for lost works)
+    if (isLost && languageData.de.owner) {
+      const ownerData = getRepositoryID(languageData.de.owner);
+      const ownerRepositorySet = repositoryWrap.ele('lido:repositorySet', {
+        'lido:type': 'http://terminology.lido-schema.org/lido01019',
+      });
+
+      const ownerRepositoryName = ownerRepositorySet.ele('lido:repositoryName');
+
+      if (ownerData && ownerData.repositoryID) {
+        ownerRepositoryName.ele('lido:legalBodyID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        }).txt(ownerData.repositoryID);
+      }
+
+      ownerRepositoryName.ele('lido:legalBodyName')
+        .ele('lido:appellationValue', {
+          'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+          'xml:lang': 'de',
+        })
+        .txt(languageData.de.owner)
+        .up()
+        .ele('lido:appellationValue', {
+          'lido:pref': 'http://terminology.lido-schema.org/lido00169',
+          'xml:lang': 'en',
+        })
+        .txt(languageData.en.owner || languageData.de.owner);
+
+      ownerRepositorySet.ele('lido:workID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00113',
+      }).txt(inventoryNumber.split('_').pop());
+    }
+    //   │  └─ End: lido:repositorySet (former owner)
     //   └─ End: lido:repositoryWrap
 
     //   ├─ lido:displayStateEditionWrap
