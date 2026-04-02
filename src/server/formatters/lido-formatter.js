@@ -1323,26 +1323,43 @@ class LidoFormatter extends BaseFormatter {
         .txt(sourceName);
 
       //   │  └─ lido:rightsResource
-      resourceSet.ele('lido:rightsResource')
-        .ele('lido:rightsType', {
+      const rightsResource = resourceSet.ele('lido:rightsResource');
+
+      if (imageMetadata.hasWatermark) {
+        rightsResource.ele('lido:rightsType', {
           'lido:type': 'http://terminology.lido-schema.org/lido00921',
         })
-        .ele('skos:Concept', {
-          'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
+          .ele('skos:Concept', {
+            'rdf:about': 'http://creativecommons.org/licenses/by-nc-sa/4.0/',
+          })
+          .ele('skos:prefLabel', {
+            'xml:lang': 'de',
+          })
+          .txt('Namensnennung - Nicht kommerziell - Weitergabe unter gleichen Bedingungen 4.0 international')
+          .up()
+          .ele('skos:prefLabel', {
+            'xml:lang': 'en',
+          })
+          .txt('Attribution-NonCommercial-ShareAlike 4.0 International');
+      } else {
+        rightsResource.ele('lido:rightsType', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00921',
         })
-        .ele('skos:prefLabel', {
-          'xml:lang': 'de',
-        })
-        .txt('Kein Urheberrechtsschutz')
-        .up()
-        .ele('skos:prefLabel', {
-          'xml:lang': 'en',
-        })
-        .txt('No Copyright')
-        .up()
-        .up()
-        .up()
-        .ele('lido:rightsHolder')
+          .ele('skos:Concept', {
+            'rdf:about': 'http://creativecommons.org/publicdomain/mark/1.0/',
+          })
+          .ele('skos:prefLabel', {
+            'xml:lang': 'de',
+          })
+          .txt('Kein Urheberrechtsschutz')
+          .up()
+          .ele('skos:prefLabel', {
+            'xml:lang': 'en',
+          })
+          .txt('No Copyright');
+      }
+
+      rightsResource.ele('lido:rightsHolder')
         .ele('lido:legalBodyID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
         })
