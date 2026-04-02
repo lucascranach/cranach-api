@@ -187,24 +187,26 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.objectworktype_value);
     }
 
-    //   └─ lido:classificationWrap (parent category)
-    objectClassificationWrap.ele('lido:classificationWrap')
-      .ele('lido:classification', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00853',
-      })
-      .ele('lido:conceptID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt(getClassificationURI(languageData.de.classification))
-      .up()
-      .ele('lido:term', {
-        'xml:lang': 'de',
-      })
-      .txt(languageData.de.classification)
-      .up()
-      .ele('lido:term', {
-        'xml:lang': 'en',
-      })
-      .txt(languageData.en.classification);
+    //   └─ lido:classificationWrap (parent category, skip for drawings)
+    if (languageData.de.classification !== 'Zeichnung') {
+      objectClassificationWrap.ele('lido:classificationWrap')
+        .ele('lido:classification', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00853',
+        })
+        .ele('lido:conceptID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        }).txt(getClassificationURI(languageData.de.classification))
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'de',
+        })
+        .txt(languageData.de.classification)
+        .up()
+        .ele('lido:term', {
+          'xml:lang': 'en',
+        })
+        .txt(languageData.en.classification);
+    }
     // └─ lido:objectClassificationWrap──────────────────────────────────┘
 
     // ┌─ lido:objectIdentificationWrap ────────────────────────────────────────┐
