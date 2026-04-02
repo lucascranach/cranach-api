@@ -145,18 +145,16 @@ class LidoFormatter extends BaseFormatter {
 
     const repositoryData = getRepositoryID(languageData.de.repository);
 
-
     // ── lido:lidoRecID ──
     lido.ele('lido:lidoRecID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
-    // TODO isil::DE-MUS-032517::I-43-65
-    //      Normdatei::Organisation.::Inventarnummer​
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
+    // Normdatei::Organisation.::Inventarnummer​
     }).txt(`isil::${repositoryData.isil}::${inventoryNumber.split('_').pop()}`);
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -237,7 +235,7 @@ class LidoFormatter extends BaseFormatter {
     const inscriptionsWrap = objectIdentificationWrap.ele('lido:inscriptionsWrap');
     //   │  ├─ lido:inscriptions (Signatures)
     inscriptionsWrap.ele('lido:inscriptions', {
-      'lido:type': 'http://vocab.getty.edu/aat/300028702',
+      'lido:type': 'http://vocab.getty.edu/aat/300028705',
     })
       .ele('lido:inscriptionDescription')
       .ele('lido:descriptiveNoteValue', {
