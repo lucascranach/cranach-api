@@ -610,23 +610,24 @@ class LidoFormatter extends BaseFormatter {
     const involvedPersonsDe = languageData.de.involved_persons;
     const involvedPersonsEn = languageData.en.involved_persons;
 
-    // Find first involved person with roleType "PRINTER" from involvedPersonsDe
-    const involvedPersonPrinterDe = involvedPersonsDe.find(
-      (person) => person.roleType === 'PRINTER',
-    );
-
-    const involvedPersonPrinterEn = involvedPersonsEn.find(
-      (person) => person.roleType === 'PRINTER',
-    );
-
-    // Find first involved person with roleType "PUBLISHER" from involvedPersonsDe
-    const involvedPersonPublisherDe = involvedPersonsDe.find(
-      (person) => person.roleType === 'PUBLISHER',
-    );
-
-    const involvedPersonPublisherEn = involvedPersonsEn.find(
-      (person) => person.roleType === 'PUBLISHER',
-    );
+    // Group PRINTER and PUBLISHER persons from involvedPersons (DE/EN paired by index)
+    const involvedPersonsPrinter = [];
+    const involvedPersonsPublisher = [];
+    involvedPersonsDe.forEach((person, index) => {
+      if (person.roleType === 'PRINTER') {
+        const personEn = involvedPersonsEn[index];
+        involvedPersonsPrinter.push({
+          personDe: person,
+          personEn: (personEn && personEn.roleType === 'PRINTER') ? personEn : null,
+        });
+      } else if (person.roleType === 'PUBLISHER') {
+        const personEn = involvedPersonsEn[index];
+        involvedPersonsPublisher.push({
+          personDe: person,
+          personEn: (personEn && personEn.roleType === 'PUBLISHER') ? personEn : null,
+        });
+      }
+    });
 
     // Group persons by role type (ARTIST, PRINTER, PRINTMAKER, etc.)
     const personsByRoleTypeReferenced = {};
@@ -637,25 +638,19 @@ class LidoFormatter extends BaseFormatter {
       }
       personsByRoleTypeReferenced[roleType].push({
         personDe: person,
-        personEn: involvedPersonsReferencedEn[index],
+        personEn: involvedPersonsReferencedEn[index] || null,
       });
     });
 
-    if (involvedPersonPrinterDe && involvedPersonPrinterEn) {
-      personsByRoleTypeReferenced.PRINTER = [{
-        personDe: involvedPersonPrinterDe,
-        personEn: involvedPersonPrinterEn,
-      }];
+    if (involvedPersonsPrinter.length > 0) {
+      personsByRoleTypeReferenced.PRINTER = involvedPersonsPrinter;
     } else {
       // Ensure PRINTER event exists even without persons
       personsByRoleTypeReferenced.PRINTER = [];
     }
 
-    if (involvedPersonPublisherDe && involvedPersonPublisherEn) {
-      personsByRoleTypeReferenced.PUBLISHER = [{
-        personDe: involvedPersonPublisherDe,
-        personEn: involvedPersonPublisherEn,
-      }];
+    if (involvedPersonsPublisher.length > 0) {
+      personsByRoleTypeReferenced.PUBLISHER = involvedPersonsPublisher;
     } else {
       // Ensure PUBLISHER event exists even without persons
       personsByRoleTypeReferenced.PUBLISHER = [];
@@ -708,37 +703,37 @@ class LidoFormatter extends BaseFormatter {
           }
 
           const actorInRole = eventActor.ele('lido:actorInRole');
-          actorInRole.ele('lido:actor', {
+          const actor = actorInRole.ele('lido:actor', {
             'lido:type': 'http://terminology.lido-schema.org/lido00163',
-          }).ele('lido:actorID', {
+          });
+          actor.ele('lido:actorID', {
             'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          }).txt(getPersonGND(personDe.name))
-            .up()
-            .ele('lido:nameActorSet')
-            .ele('lido:appellationValue', {
-              'xml:lang': 'de',
-            })
-            .txt(personDe.name)
-            .up()
-            .ele('lido:appellationValue', {
-              'xml:lang': 'en',
-            })
-            .txt(personEn.name);
+          }).txt(getPersonGND(personDe.name));
 
-          actorInRole.ele('lido:roleActor')
-            .ele('lido:conceptID', {
-              'lido:type': 'http://terminology.lido-schema.org/lido00099',
-            }).txt(eventData.roleActor.conceptID)
-            .up()
-            .ele('lido:term', {
-              'xml:lang': 'de',
-            })
-            .txt(personDe.role)
-            .up()
-            .ele('lido:term', {
+          const nameActorSet = actor.ele('lido:nameActorSet');
+          nameActorSet.ele('lido:appellationValue', {
+            'xml:lang': 'de',
+          }).txt(personDe.name);
+
+          if (personEn) {
+            nameActorSet.ele('lido:appellationValue', {
               'xml:lang': 'en',
-            })
-            .txt(personEn.role);
+            }).txt(personEn.name);
+          }
+
+          const roleActor = actorInRole.ele('lido:roleActor');
+          roleActor.ele('lido:conceptID', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00099',
+          }).txt(eventData.roleActor.conceptID);
+          roleActor.ele('lido:term', {
+            'xml:lang': 'de',
+          }).txt(personDe.role);
+
+          if (personEn) {
+            roleActor.ele('lido:term', {
+              'xml:lang': 'en',
+            }).txt(personEn.role);
+          }
 
           // From second person onwards: attribution qualifier "attributed to"
           if (personIndex > 0) {
