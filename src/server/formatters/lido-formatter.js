@@ -949,17 +949,6 @@ class LidoFormatter extends BaseFormatter {
     relatedWorkSet.ele('lido:relatedWork')
       .ele('lido:object')
       .ele('lido:objectID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      })
-      .txt(this.getCatalogReference(languageData.de.catalog_work_references, 'GND'))
-      .up()
-      .ele('lido:objectID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00100',
-        'lido:source': 'https://d-nb.info/gnd/4405115-3',
-      })
-      .txt(`Bartsch ${this.getCatalogReference(languageData.de.catalog_work_references, 'Bartsch')}`)
-      .up()
-      .ele('lido:objectID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
         'lido:source': `${domain}`,
       })
