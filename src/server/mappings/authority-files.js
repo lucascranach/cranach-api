@@ -173,6 +173,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-048017',
       isil: 'DE-MUS-048017',
     },
+    'The Trustees of the British Museum': {
+      repositoryID: 'http://www.wikidata.org/entity/Q6373',
+      isil: 'Q6373',
+    },
     'Universitätsbibliothek Heidelberg': {
       repositoryID: 'https://lobid.org/organisations/DE-16',
       isil: 'DE-16',
