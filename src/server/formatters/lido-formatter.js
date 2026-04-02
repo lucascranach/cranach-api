@@ -463,20 +463,20 @@ class LidoFormatter extends BaseFormatter {
       }).txt(languageData.en.provenance);
     }
 
-    //   │  ├─ lido:objectDescriptionSet (Additional text information)
-    const additionalTextInfoDe = this.extractTextAndCitation(
-      languageData.de.additional_text_information_text[0].text,
-    );
 
+    //   │  ├─ lido:objectDescriptionSet (Additional text information)
     if (languageData.de.additional_text_information_text
-      || languageData.en.additional_text_information_text) {
+      && languageData.de.additional_text_information_text[0]
+      && languageData.de.additional_text_information_text[0].text) {
+      const additionalTextInfoDe = this.extractTextAndCitation(
+        languageData.de.additional_text_information_text[0].text,
+      );
+
       const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
-      if (languageData.de.additional_text_information_text) {
-        additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
-          'xml:lang': 'de',
-        }).txt(additionalTextInfoDe.text);
-      }
+      additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'de',
+      }).txt(additionalTextInfoDe.text);
 
       if (additionalTextInfoDe.citation !== '') {
         additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
@@ -619,6 +619,15 @@ class LidoFormatter extends BaseFormatter {
       (person) => person.roleType === 'PRINTER',
     );
 
+    // Find first involved person with roleType "PUBLISHER" from involvedPersonsDe
+    const involvedPersonPublisherDe = involvedPersonsDe.find(
+      (person) => person.roleType === 'PUBLISHER',
+    );
+
+    const involvedPersonPublisherEn = involvedPersonsEn.find(
+      (person) => person.roleType === 'PUBLISHER',
+    );
+
     // Group persons by role type (ARTIST, PRINTER, PRINTMAKER, etc.)
     const personsByRoleTypeReferenced = {};
     involvedPersonsReferencedDe.forEach((person, index) => {
@@ -640,6 +649,16 @@ class LidoFormatter extends BaseFormatter {
     } else {
       // Ensure PRINTER event exists even without persons
       personsByRoleTypeReferenced.PRINTER = [];
+    }
+
+    if (involvedPersonPublisherDe && involvedPersonPublisherEn) {
+      personsByRoleTypeReferenced.PUBLISHER = [{
+        personDe: involvedPersonPublisherDe,
+        personEn: involvedPersonPublisherEn,
+      }];
+    } else {
+      // Ensure PUBLISHER event exists even without persons
+      personsByRoleTypeReferenced.PUBLISHER = [];
     }
 
     // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
