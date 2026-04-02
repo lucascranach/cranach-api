@@ -109,6 +109,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://d-nb.info/gnd/2012512-4',
       isil: '2012512-4',
     },
+    'British Museum': {
+      repositoryID: 'http://www.wikidata.org/entity/Q6373',
+      isil: 'Q6373',
+    },
     'Friedrich-Alexander-Universität Erlangen-Nürnberg': {
       repositoryID: 'https://lobid.org/organisations/DE-29',
       isil: 'DE-29',
@@ -116,6 +120,14 @@ function getRepositoryID(institutionName) {
     'Germanisches Nationalmuseum Nürnberg': {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-105615',
       isil: 'DE-MUS-105615',
+    },
+    'Graphische Sammlung ETH Zürich': {
+      repositoryID: 'https://culture.ld.admin.ch/isil/CH-000511-9',
+      isil: 'CH-000511-9',
+    },
+    'Hamburger Kunsthalle, Kupferstichkabinett': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-059210',
+      isil: 'DE-MUS-059210',
     },
     'Herzog Anton Ulrich-Museum Braunschweig': {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-026819',
@@ -129,6 +141,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-027614',
       isil: 'DE-MUS-027614',
     },
+    'Kunsthaus Zürich': {
+      repositoryID: 'https://culture.ld.admin.ch/isil/CH-001899-9',
+      isil: 'CH-001899-9',
+    },
     'Kunstsammlungen der Veste Coburg': {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-032517',
       isil: 'DE-MUS-032517',
@@ -137,9 +153,17 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-018511',
       isil: 'DE-MUS-018511',
     },
-    'München, Staatliche Graphische Sammlung (München)': {
+    'Kurpfälzisches Museum Heidelberg, Graphische Sammlung': {
+      repositoryID: 'https://lobid.org/organisations/DE-16',
+      isil: 'DE-16',
+    },
+    'Staatliche Graphische Sammlung München': {
       repositoryID: 'https://lobid.org/organisations/DE-2948',
       isil: 'DE-2948',
+    },
+    'Staatliche Kunstsammlungen Dresden': {
+      repositoryID: 'https://lobid.org/organisations/DE-MUS-845516',
+      isil: 'DE-MUS-845516',
     },
     'Staatsbibliothek Bamberg': {
       repositoryID: 'https://lobid.org/organisations/DE-22',
@@ -148,6 +172,14 @@ function getRepositoryID(institutionName) {
     'Städel Museum Frankfurt am Main': {
       repositoryID: 'https://lobid.org/organisations/DE-MUS-048017',
       isil: 'DE-MUS-048017',
+    },
+    'Universitätsbibliothek Heidelberg': {
+      repositoryID: 'https://lobid.org/organisations/DE-16',
+      isil: 'DE-16',
+    },
+    'Universitätsbibliothek Leipzig': {
+      repositoryID: 'https://lobid.org/organisations/DE-15',
+      isil: 'DE-15',
     },
   };
 
