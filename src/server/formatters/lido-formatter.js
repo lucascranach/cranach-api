@@ -1307,15 +1307,20 @@ class LidoFormatter extends BaseFormatter {
 
       //   │  ├─ lido:resourceSource
       const imageMetadata = imageMetadataMap[image.id] || {};
+      const sourceName = (imageMetadata.source?.de || '').replace(/^©\s*/, '');
+      const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '');
+      const sourceRepoData = getRepositoryID(sourceName);
+      const createdRepoData = getRepositoryID(createdName);
+
       resourceSet.ele('lido:resourceSource')
         .ele('lido:legalBodyID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
         })
-        .txt('{{PLACEHOLDER_WIKIDATA_URI}}')
+        .txt(sourceRepoData.repositoryID)
         .up()
         .ele('lido:legalBodyName')
         .ele('lido:appellationValue')
-        .txt('{{PLACEHOLDER_INSTITUTION_NAME}}');
+        .txt(sourceName);
 
       //   │  └─ lido:rightsResource
       resourceSet.ele('lido:rightsResource')
@@ -1341,16 +1346,16 @@ class LidoFormatter extends BaseFormatter {
         .ele('lido:legalBodyID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
         })
-        .txt('https://d-nb.info/gnd/1073160734')
+        .txt(createdRepoData.repositoryID)
         .up()
         .ele('lido:legalBodyName')
         .ele('lido:appellationValue')
-        .txt('Cranach Digital Archive')
+        .txt(createdName)
         .up()
         .up()
         .up()
         .ele('lido:creditLine')
-        .txt('Cranach Digital Archive');
+        .txt(sourceName);
     });
     // └─ lido:resourceWrap───────────────────────────────────────────────────┘
 
