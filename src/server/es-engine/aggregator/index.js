@@ -134,7 +134,8 @@ class Aggregator {
     const { esAggregation } = data;
 
     const currentAggregation = esAggregation.find(
-      (aggregation) => aggregation.value === value.id,
+      (aggregation) => aggregation.value === value.id
+        || aggregation.display_value === value.id,
     );
 
     if (currentAggregation) {
