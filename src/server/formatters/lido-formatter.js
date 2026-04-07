@@ -556,8 +556,8 @@ class LidoFormatter extends BaseFormatter {
         }).txt(pairEn.display);
       }
 
-      measurementsSet.ele('lido:objectMeasurements')
-        .ele('lido:measurementsSet')
+      const objectMeasurements = measurementsSet.ele('lido:objectMeasurements');
+      objectMeasurements.ele('lido:measurementsSet')
         .ele('lido:measurementType', {
           'xml:lang': 'de',
         })
@@ -572,16 +572,14 @@ class LidoFormatter extends BaseFormatter {
         .txt('mm')
         .up()
         .ele('lido:measurementValue')
-        .txt(pairDe.value)
-        .up()
-        .up()
-        .ele('lido:extentMeasurements', {
-          'xml:lang': 'de',
-        })
-        .txt(pairDe.label);
+        .txt(pairDe.value);
+
+      objectMeasurements.ele('lido:extentMeasurements', {
+        'xml:lang': 'de',
+      }).txt(pairDe.label);
 
       if (pairEn) {
-        measurementsSet.ele('lido:extentMeasurements', {
+        objectMeasurements.ele('lido:extentMeasurements', {
           'xml:lang': 'en',
         }).txt(pairEn.label);
       }
