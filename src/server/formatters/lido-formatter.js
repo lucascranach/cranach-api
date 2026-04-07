@@ -144,6 +144,7 @@ class LidoFormatter extends BaseFormatter {
     });
 
     const repositoryData = getRepositoryID(languageData.de.repository);
+    const isLost = inventoryNumber.includes('-Lost');
 
     // ── lido:lidoRecID ──
     lido.ele('lido:lidoRecID', {
@@ -151,11 +152,14 @@ class LidoFormatter extends BaseFormatter {
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     }).txt(`gnd1073160734/lido/${inventoryNumber}`);
 
+    const publishedIDSource = isLost && languageData.de.owner
+      ? getRepositoryID(languageData.de.owner)
+      : repositoryData;
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     // Normdatei::Organisation.::Inventarnummer​
-    }).txt(`isil::${repositoryData.isil}::${inventoryNumber.split('_').pop()}`);
+    }).txt(`isil::${publishedIDSource.isil}::${inventoryNumber.split('_').pop()}`);
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
     // ║  lido:descriptiveMetadata                                                 ║
@@ -290,7 +294,6 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:repositoryWrap
     const repositoryWrap = objectIdentificationWrap.ele('lido:repositoryWrap');
-    const isLost = inventoryNumber.includes('-Lost');
 
     const repositorySet = repositoryWrap.ele('lido:repositorySet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01017',
