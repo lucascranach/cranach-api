@@ -676,16 +676,10 @@ class LidoFormatter extends BaseFormatter {
 
     if (involvedPersonsPrinter.length > 0) {
       personsByRoleTypeReferenced.PRINTER = involvedPersonsPrinter;
-    } else {
-      // Ensure PRINTER event exists even without persons
-      personsByRoleTypeReferenced.PRINTER = [];
     }
 
     if (involvedPersonsPublisher.length > 0) {
       personsByRoleTypeReferenced.PUBLISHER = involvedPersonsPublisher;
-    } else {
-      // Ensure PUBLISHER event exists even without persons
-      personsByRoleTypeReferenced.PUBLISHER = [];
     }
 
     // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
@@ -787,7 +781,7 @@ class LidoFormatter extends BaseFormatter {
         });
       }
 
-      if (roleType === 'INVENTOR' || roleType === 'PRINTER') {
+      if (roleType === 'INVENTOR' || roleType === 'PRINTER' || roleType === 'ARTIST') {
         let eventDateData = {};
         if (roleType === 'INVENTOR') {
           eventDateData = {
@@ -802,6 +796,13 @@ class LidoFormatter extends BaseFormatter {
             datedEn: languageData.en.dating,
             begin: languageData.en.dating_begin,
             end: languageData.en.dating_end,
+          };
+        } else if (roleType === 'ARTIST') {
+          eventDateData = {
+            datedDe: languageData.de.date_referenced.dated,
+            datedEn: languageData.en.date_referenced.dated,
+            begin: languageData.en.date_referenced.begin,
+            end: languageData.en.date_referenced.end,
           };
         }
 
