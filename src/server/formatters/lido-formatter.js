@@ -97,8 +97,7 @@ class LidoFormatter extends BaseFormatter {
     // │  │  │  ├─ lido:objectDescriptionSet (Provenance)
     // │  │  │  └─ lido:objectDescriptionSet (Additional text information)
     // │  │  ├─ lido:objectMeasurementsWrap
-    // │  │  │  ├─ lido:objectMeasurementsSet (Sheet measurements)
-    // │  │  │  └─ lido:objectMeasurementsSet (Image measurements)
+    // │  │  │  └─ lido:objectMeasurementsSet (per dimension pair)
     // │  │  └─ lido:objectMaterialsTechWrap (Material and technique)
     // │  │
     // │  ├─ lido:eventWrap (Events)
@@ -526,75 +525,68 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:objectMeasurementsWrap
     const objectMeasurementsWrap = objectIdentificationWrap.ele('lido:objectMeasurementsWrap');
-    //   │  ├─ lido:objectMeasurementsSet #1 (sheet measurements)
-    let objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
 
-    if (languageData.de.dimensions) {
-      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
+    // Extract all dimension pairs from dimensions and dimensions_referenced
+    const dimensionPairsDe = this.extractAllDimensionPairs(languageData.de.dimensions);
+    const dimensionPairsEn = this.extractAllDimensionPairs(languageData.en.dimensions);
+    const dimensionPairsRefDe = this.extractAllDimensionPairs(languageData.de.dimensions_referenced);
+    const dimensionPairsRefEn = this.extractAllDimensionPairs(languageData.en.dimensions_referenced);
+
+    // Combine all pairs: first from dimensions, then unique pairs from dimensions_referenced
+    const existingLabels = new Set(dimensionPairsDe.map((p) => p.label));
+    const uniqueRefPairsDe = dimensionPairsRefDe.filter((p) => !existingLabels.has(p.label));
+    const uniqueRefLabels = new Set(uniqueRefPairsDe.map((p) => p.label));
+    const uniqueRefPairsEn = dimensionPairsRefEn.filter((p) => uniqueRefLabels.has(p.label));
+
+    const allPairsDe = [...dimensionPairsDe, ...uniqueRefPairsDe];
+    const allPairsEn = [...dimensionPairsEn, ...uniqueRefPairsEn];
+
+    //   │  ├─ lido:objectMeasurementsSet (per dimension pair)
+    allPairsDe.forEach((pairDe, index) => {
+      const pairEn = allPairsEn[index];
+      const measurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
+
+      measurementsSet.ele('lido:displayObjectMeasurements', {
         'xml:lang': 'de',
-      }).txt(this.extractTextAndCitation(languageData.de.dimensions).text);
-      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
-        'xml:lang': 'en',
-      }).txt(this.extractTextAndCitation(languageData.en.dimensions).text);
-    }
+      }).txt(pairDe.display);
 
-    objectMeasurementsSet.ele('lido:objectMeasurements')
-      .ele('lido:measurementsSet')
-      .ele('lido:measurementType')
-      .txt('Höhe x Breite')
-      .up()
-      .ele('lido:measurementUnit')
-      .txt('mm')
-      .up()
-      .ele('lido:measurementValue')
-      .txt(this.extractDimensions(languageData.de.dimensions))
-      .up()
-      .up()
-      .ele('lido:extentMeasurements', {
-        'xml:lang': 'de',
-      })
-      .txt('Blatt')
-      .up()
-      .ele('lido:extentMeasurements', {
-        'xml:lang': 'en',
-      })
-      .txt('sheet');
-    //   │  └─ End: lido:objectMeasurementsSet #1
+      if (pairEn) {
+        measurementsSet.ele('lido:displayObjectMeasurements', {
+          'xml:lang': 'en',
+        }).txt(pairEn.display);
+      }
 
-    //   │  ├─ lido:objectMeasurementsSet #2 (image measurements)
-    objectMeasurementsSet = objectMeasurementsWrap.ele('lido:objectMeasurementsSet');
+      measurementsSet.ele('lido:objectMeasurements')
+        .ele('lido:measurementsSet')
+        .ele('lido:measurementType', {
+          'xml:lang': 'de',
+        })
+        .txt('Höhe x Breite')
+        .up()
+        .ele('lido:measurementType', {
+          'xml:lang': 'en',
+        })
+        .txt('height x width')
+        .up()
+        .ele('lido:measurementUnit')
+        .txt('mm')
+        .up()
+        .ele('lido:measurementValue')
+        .txt(pairDe.value)
+        .up()
+        .up()
+        .ele('lido:extentMeasurements', {
+          'xml:lang': 'de',
+        })
+        .txt(pairDe.label);
 
-    if (languageData.de.dimensions_referenced) {
-      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
-        'xml:lang': 'de',
-      }).txt(this.extractTextAndCitation(languageData.de.dimensions_referenced).text);
-      objectMeasurementsSet.ele('lido:displayObjectMeasurements', {
-        'xml:lang': 'en',
-      }).txt(this.extractTextAndCitation(languageData.en.dimensions_referenced).text);
-    }
-
-    objectMeasurementsSet.ele('lido:objectMeasurements')
-      .ele('lido:measurementsSet')
-      .ele('lido:measurementType')
-      .txt('Höhe x Breite')
-      .up()
-      .ele('lido:measurementUnit')
-      .txt('mm')
-      .up()
-      .ele('lido:measurementValue')
-      .txt(this.extractDimensions(languageData.de.dimensions_referenced))
-      .up()
-      .up()
-      .ele('lido:extentMeasurements', {
-        'xml:lang': 'de',
-      })
-      .txt('Darstellung')
-      .up()
-      .ele('lido:extentMeasurements', {
-        'xml:lang': 'en',
-      })
-      .txt('image');
-    //   │  └─ End: lido:objectMeasurementsSet #2
+      if (pairEn) {
+        measurementsSet.ele('lido:extentMeasurements', {
+          'xml:lang': 'en',
+        }).txt(pairEn.label);
+      }
+    });
+    //   │  └─ End: lido:objectMeasurementsSet (per dimension pair)
     //   └─ End: lido:objectMeasurementsWrap
 
     //   └─ lido:objectMaterialsTechWrap
@@ -1392,16 +1384,32 @@ class LidoFormatter extends BaseFormatter {
   }
 
   /**
-   * Extract dimensions from a string starting with any word followed by a colon
-   * @param {string} text - The input string
-   *   (e.g., "Blatt: 277 x 190 mm, Darstellung: 282-284 x 194-202 mm")
-   * @returns {string} The extracted dimensions without unit
-   *   (e.g., "277 x 190" or "282-284 x 194-202")
+   * Extract all label:measurement pairs from a dimensions string.
+   * @param {string} text - The dimensions string
+   *   (e.g., "Blatt: 210 × 165 mm\nPassepartout: 230 × 171 mm\n[citation](url)")
+   * @returns {Array<{label: string, value: string, display: string}>}
+   *   Array of objects with label, numeric value, and full display text
+   * @example
+   * // Input: "Sheet: 210 × 165 mm\nMount: 230 × 171 mm\n[citation](url)"
+   * // Output: [
+   * //   { label: 'Sheet', value: '210 × 165', display: 'Sheet: 210 × 165 mm' },
+   * //   { label: 'Mount', value: '230 × 171', display: 'Mount: 230 × 171 mm' },
+   * // ]
    */
-  extractDimensions(text) {
-    if (!text) return '';
-    const match = text.match(/\w+:\s*([\d-]+\s*x\s*[\d-]+)/i);
-    return match ? match[1] : '';
+  extractAllDimensionPairs(text) {
+    if (!text) return [];
+    const pairs = [];
+    const regex = /^([^:\n\][]+):\s*([\d-]+\s*[x×]\s*[\d-]+)\s*mm/gmi;
+    let match = regex.exec(text);
+    while (match) {
+      pairs.push({
+        label: match[1].trim(),
+        value: match[2],
+        display: `${match[1].trim()}: ${match[2]} mm`,
+      });
+      match = regex.exec(text);
+    }
+    return pairs;
   }
 
   /**
