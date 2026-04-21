@@ -1310,7 +1310,9 @@ class LidoFormatter extends BaseFormatter {
       //   │  └─ lido:rightsResource
       const rightsResource = resourceSet.ele('lido:rightsResource');
 
+      // Choose rights metadata based on whether the delivered image carries a watermark.
       if (imageMetadata.hasWatermark) {
+        // Watermarked derivatives are exposed under a restrictive CC BY-NC-SA license.
         rightsResource.ele('lido:rightsType', {
           'lido:type': 'http://terminology.lido-schema.org/lido00921',
         })
@@ -1327,6 +1329,7 @@ class LidoFormatter extends BaseFormatter {
           })
           .txt('Attribution-NonCommercial-ShareAlike 4.0 International');
       } else {
+        // Unwatermarked resources are exposed as Public Domain Mark (no copyright restrictions).
         rightsResource.ele('lido:rightsType', {
           'lido:type': 'http://terminology.lido-schema.org/lido00921',
         })
