@@ -591,18 +591,16 @@ class LidoFormatter extends BaseFormatter {
     const objectMaterialsTechWrap = objectIdentificationWrap.ele('lido:objectMaterialsTechWrap');
     const objectMaterialsTechSet = objectMaterialsTechWrap.ele('lido:objectMaterialsTechSet');
 
-    if (languageData.de.medium) {
-      const mediumDe = languageData.de.medium.replace(/\n?\[.*?\]\(.*?\)\s*$/s, '').replace(/\n/g, '; ');
+    if (languageData.de.objectworktype_value) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'de',
-      }).txt(mediumDe);
+      }).txt(languageData.de.objectworktype_value);
     }
 
-    if (languageData.en.medium) {
-      const mediumEn = languageData.en.medium.replace(/\n?\[.*?\]\(.*?\)\s*$/s, '').replace(/\n/g, '; ');
+    if (languageData.en.objectworktype_value) {
       objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
         'xml:lang': 'en',
-      }).txt(mediumEn);
+      }).txt(languageData.en.objectworktype_value);
     }
 
     // Add lido:materialsTech based on objectworktype_value
