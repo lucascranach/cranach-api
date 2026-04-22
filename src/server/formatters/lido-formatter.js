@@ -339,9 +339,19 @@ class LidoFormatter extends BaseFormatter {
     //   │  └─ End: lido:repositoryName
 
     //   │  ├─ lido:workID (Object identifier within repository)
+    const lostArtUrl = isLost
+      ? this.extractLostArtUrlFromProvenance(languageData.de.provenance)
+      : '';
+    const repositoryWorkIdType = isLost
+      ? 'Lost Art ID'
+      : 'http://terminology.lido-schema.org/lido00113';
+    const repositoryWorkIdValue = (isLost && lostArtUrl)
+      ? lostArtUrl
+      : inventoryNumber.split('_').pop();
+
     repositorySet.ele('lido:workID', {
-      'lido:type': 'http://terminology.lido-schema.org/lido00113',
-    }).txt(inventoryNumber.split('_').pop());
+      'lido:type': repositoryWorkIdType,
+    }).txt(repositoryWorkIdValue);
     //   │  └─ End: lido:workID
 
     //   │  ├─ lido:repositoryLocation (Geographic location with GND place identifier)
@@ -491,6 +501,8 @@ class LidoFormatter extends BaseFormatter {
     const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01110',
     });
+
+    console.log(languageData.de.provenance);
 
     if (languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
@@ -1433,6 +1445,32 @@ class LidoFormatter extends BaseFormatter {
       return '';
     }
     return `${catalogWorkReference.referenceNumber}`;
+  }
+
+  /**
+   * Extract LostArt URL from markdown provenance text.
+   * Expected pattern: [label](https://www.lostart...)
+   * @param {string} provenance - Provenance text
+   * @returns {string} LostArt URL or empty string if not found/invalid
+   */
+  extractLostArtUrlFromProvenance(provenance) {
+    if (!provenance || typeof provenance !== 'string') return '';
+
+    const markdownLinkMatch = provenance.match(/\[[^\]]+\]\((https?:\/\/[^\s)]+)\)/i);
+    if (!markdownLinkMatch) return '';
+
+    const candidateUrl = markdownLinkMatch[1];
+
+    try {
+      const parsedUrl = new URL(candidateUrl);
+      if (parsedUrl.hostname.toLowerCase().includes('lostart')) {
+        return candidateUrl;
+      }
+    } catch (error) {
+      return '';
+    }
+
+    return '';
   }
 
   /**
