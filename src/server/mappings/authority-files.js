@@ -101,93 +101,94 @@ function getPersonGND(personName) {
 /**
  * Get repository ID by institution name
  * @param {string} institutionName - Name of the institution (e.g., 'Albertina, Wien')
- * @returns {Object} Object with repositoryID and isil properties, or empty object if not found
+ * @returns {Object} Object with repositoryID and either isil or gnd properties,
+ *   or default object if not found
  */
 function getRepositoryID(institutionName) {
   const repositoryMapping = {
     'Albertina, Wien': {
       repositoryID: 'https://d-nb.info/gnd/2012512-4',
-      isil: '2012512-4',
+      gnd: '2012512-4',
     },
     'British Museum': {
-      repositoryID: 'http://www.wikidata.org/entity/Q6373',
-      isil: 'Q6373',
+      repositoryID: 'https://d-nb.info/gnd/38379-X',
+      gnd: '38379-X',
     },
-    'Friedrich-Alexander-Universität Erlangen-Nürnberg': {
-      repositoryID: 'https://lobid.org/organisations/DE-29',
-      isil: 'DE-29',
-    },
-    'Germanisches Nationalmuseum Nürnberg': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-105615',
-      isil: 'DE-MUS-105615',
-    },
-    'Graphische Sammlung ETH Zürich': {
+    'Eidgenössische Technische Hochschule Zürich': {
       repositoryID: 'https://culture.ld.admin.ch/isil/CH-000511-9',
       isil: 'CH-000511-9',
     },
-    'Hamburger Kunsthalle, Kupferstichkabinett': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-059210',
+    'Germanisches Nationalmuseum, Nürnberg': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-105615',
+      isil: 'DE-MUS-105615',
+    },
+    'Hamburger Kunsthalle': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-059210',
       isil: 'DE-MUS-059210',
     },
-    'Herzog Anton Ulrich-Museum Braunschweig': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-026819',
+    'Herzog Anton Ulrich-Museum, Braunschweig': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-026819',
       isil: 'DE-MUS-026819',
     },
     'Herzog August Bibliothek Wolfenbüttel': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-162514',
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
       isil: 'DE-MUS-162514',
     },
-    'Kunsthalle Bremen': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-027614',
+    'Kunsthalle Bremen - Der Kunstverein in Bremen': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-027614',
       isil: 'DE-MUS-027614',
     },
     'Kunsthaus Zürich': {
       repositoryID: 'https://culture.ld.admin.ch/isil/CH-001899-9',
       isil: 'CH-001899-9',
     },
-    'Kunstsammlungen der Veste Coburg': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-032517',
-      isil: 'DE-MUS-032517',
-    },
-    'Kupferstichkabinett, Staatliche Museen zu Berlin': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-018511',
-      isil: 'DE-MUS-018511',
-    },
-    'Kurpfälzisches Museum Heidelberg, Graphische Sammlung': {
-      repositoryID: 'https://lobid.org/organisations/DE-16',
-      isil: 'DE-16',
-    },
-    'Staatliche Graphische Sammlung München': {
-      repositoryID: 'https://lobid.org/organisations/DE-2948',
-      isil: 'DE-2948',
-    },
-    'Staatliche Kunstsammlungen Dresden': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-845516',
+    'Kupferstich-Kabinett, Staatliche Kunstsammlungen Dresden': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-845516',
       isil: 'DE-MUS-845516',
     },
+    'Kurpfälzisches Museum Heidelberg': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-204113',
+      isil: 'DE-MUS-204113',
+    },
+    'Museum of Fine Arts, Houston': {
+      repositoryID: 'https://d-nb.info/gnd/50293-5',
+      gnd: '50293-5',
+    },
+    'Staatliche Graphische Sammlung München': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
+      isil: 'DE-2948',
+    },
     'Staatsbibliothek Bamberg': {
-      repositoryID: 'https://lobid.org/organisations/DE-22',
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-22',
       isil: 'DE-22',
     },
-    'Städel Museum Frankfurt am Main': {
-      repositoryID: 'https://lobid.org/organisations/DE-MUS-048017',
+    'Staatliche Museen zu Berlin - Preußischer Kulturbesitz, Kupferstichkabinett': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+    },
+    'Städel Museum Frankfurt a.M.': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-048017',
       isil: 'DE-MUS-048017',
     },
-    'The Trustees of the British Museum': {
-      repositoryID: 'http://www.wikidata.org/entity/Q6373',
-      isil: 'Q6373',
+    'Universitätsbibliothek Erlangen-Nürnberg': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-29',
+      isil: 'DE-29',
     },
     'Universitätsbibliothek Heidelberg': {
-      repositoryID: 'https://lobid.org/organisations/DE-16',
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-16',
       isil: 'DE-16',
     },
     'Universitätsbibliothek Leipzig': {
-      repositoryID: 'https://lobid.org/organisations/DE-15',
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-15',
       isil: 'DE-15',
+    },
+    'Veste Coburg Kunstsammlungen': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-032517',
+      isil: 'DE-MUS-032517',
     },
   };
 
-  return repositoryMapping[institutionName] || { repositoryID: 'unbekannt', isil: 'ungekannt' };
+  return repositoryMapping[institutionName] || { repositoryID: 'unbekannt', isil: 'unbekannt' };
 }
 
 /**

@@ -154,11 +154,13 @@ class LidoFormatter extends BaseFormatter {
     const publishedIDSource = isLost && languageData.de.owner
       ? getRepositoryID(languageData.de.owner)
       : repositoryData;
+    const publishedIDValue = publishedIDSource.gnd || publishedIDSource.isil || 'unbekannt';
+    const publishedIDType = publishedIDSource.gnd ? 'gnd' : 'isil';
     lido.ele('lido:objectPublishedID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     // Normdatei::Organisation.::Inventarnummer​
-    }).txt(`isil::${publishedIDSource.isil}::${inventoryNumber.split('_').pop()}`);
+    }).txt(`${publishedIDType}::${publishedIDValue}::${inventoryNumber.split('_').pop()}`);
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
     // ║  lido:descriptiveMetadata                                                 ║
@@ -374,6 +376,7 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ lido:repositorySet (former owner, only for lost works)
     if (isLost && languageData.de.owner) {
       const ownerData = getRepositoryID(languageData.de.owner);
+      console.log(ownerData);
       const ownerRepositorySet = repositoryWrap.ele('lido:repositorySet', {
         'lido:type': 'http://terminology.lido-schema.org/lido01019',
       });
@@ -483,6 +486,7 @@ class LidoFormatter extends BaseFormatter {
         .txt(descriptiveNoteValueDe.citation);
     }
 
+    
     //   │  └─ lido:objectDescriptionSet (Provenance)
     const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01110',
@@ -637,6 +641,8 @@ class LidoFormatter extends BaseFormatter {
 
     const involvedPersonsDe = languageData.de.involved_persons;
     const involvedPersonsEn = languageData.en.involved_persons;
+
+    //  console.log(involvedPersonsEn);
 
     // Group PRINTER and PUBLISHER persons from involvedPersons (DE/EN paired by index)
     const involvedPersonsPrinter = [];
