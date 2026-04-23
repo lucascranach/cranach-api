@@ -266,30 +266,35 @@ class LidoFormatter extends BaseFormatter {
     }
     //   │  └─ End: lido:inscriptionTranscription
 
-    //   │  ├─ lido:inscriptions (Markings)
-    const descriptiveNoteValueMarkingsDe = this.extractTextAndCitation(languageData.de.markings);
-    const descriptiveNoteValueMarkingsEn = this.extractTextAndCitation(languageData.en.markings);
+    //   │  ├─ lido:inscriptions (Markings - one element per collector's mark)
+    const markingsEntries = this.parseMarkingsEntries(
+      languageData.de.markings,
+      languageData.en.markings,
+    );
 
-    inscriptionsWrap.ele('lido:inscriptions', {
-      'lido:type': 'http://vocab.getty.edu/aat/300028760',
-    })
-      .ele('lido:inscriptionDescription')
-      .ele('lido:descriptiveNoteID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00099',
-      }).txt('http://www.marquesdecollections.fr/detail.cfm/marque/8918')
-      .up()
-      .ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'de',
-      })
-      .txt(descriptiveNoteValueMarkingsDe.text)
-      .up()
-      .ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'en',
-      })
-      .txt(descriptiveNoteValueMarkingsEn.text)
-      .up()
-      .ele('lido:sourceDescriptiveNote')
-      .txt(descriptiveNoteValueMarkingsDe.citation);
+    markingsEntries.forEach((entry) => {
+      const inscriptionDescription = inscriptionsWrap.ele('lido:inscriptions', {
+        'lido:type': 'http://vocab.getty.edu/aat/300028760',
+      }).ele('lido:inscriptionDescription');
+
+      if (entry.url) {
+        inscriptionDescription.ele('lido:descriptiveNoteID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        }).txt(entry.url);
+      }
+
+      if (entry.textDe) {
+        inscriptionDescription.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(entry.textDe);
+      }
+
+      if (entry.textEn) {
+        inscriptionDescription.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'en',
+        }).txt(entry.textEn);
+      }
+    });
     //   │  └─ End: lido:inscriptions (Markings)
     //   └─ End: lido:inscriptionsWrap
 
@@ -484,7 +489,6 @@ class LidoFormatter extends BaseFormatter {
       }).txt(descriptiveNoteValueDe.text);
     }
 
-    console.log(languageData.de.descriptive_note_value);
 
     if (languageData.en.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
@@ -653,8 +657,6 @@ class LidoFormatter extends BaseFormatter {
 
     const involvedPersonsDe = languageData.de.involved_persons;
     const involvedPersonsEn = languageData.en.involved_persons;
-
-    //  console.log(involvedPersonsEn);
 
     // Group PRINTER and PUBLISHER persons from involvedPersons (DE/EN paired by index)
     const involvedPersonsPrinter = [];
@@ -1476,6 +1478,82 @@ class LidoFormatter extends BaseFormatter {
     }
 
     return '';
+  }
+
+  /**
+   * Extract text and citation from a string
+   * @param {string} deMarkings - DE markings string with markdown links
+   * @param {string} enMarkings - EN markings string with markdown links
+   * @returns {Array<{url: string, textDe: string, textEn: string, citation: string}>}
+   */
+  parseMarkingsEntries(deMarkings, enMarkings) {
+    if (!deMarkings) return [];
+
+    const enText = enMarkings || '';
+    const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+
+    const extractEntries = (text) => {
+      const linkMatches = [];
+      let match;
+      linkPattern.lastIndex = 0;
+      // eslint-disable-next-line no-cond-assign
+      while ((match = linkPattern.exec(text)) !== null) {
+        linkMatches.push({
+          label: match[1],
+          url: match[2],
+          fullMatch: match[0],
+          endIndex: match.index + match[0].length,
+        });
+      }
+
+      const entries = linkMatches.map((m, i) => {
+        const segStart = i === 0 ? 0 : linkMatches[i - 1].endIndex;
+        const segment = text
+          .substring(segStart, m.endIndex)
+          .replace(m.fullMatch, `[${m.label}]`)
+          .replace(/^[\s;,]+/, '')
+          .trim();
+        return { url: m.url, label: m.label, text: segment };
+      });
+
+      // Plain [label] entries without a URL become separate entries
+      const afterLastLink = linkMatches.length > 0
+        ? text.substring(linkMatches[linkMatches.length - 1].endIndex)
+        : text;
+      const plainPattern = /\[([^\]]+)\]/g;
+      plainPattern.lastIndex = 0;
+      // eslint-disable-next-line no-cond-assign
+      while ((match = plainPattern.exec(afterLastLink)) !== null) {
+        entries.push({ url: '', label: match[1], text: match[1] });
+      }
+
+      return entries;
+    };
+
+    const deEntries = extractEntries(deMarkings);
+    const enEntries = extractEntries(enText);
+
+    if (deEntries.length === 0) {
+      if (!deMarkings.trim()) return [];
+      return [{ url: '', textDe: deMarkings.trim(), textEn: enText.trim() }];
+    }
+
+    const plainEnEntries = enEntries.filter((e) => !e.url);
+    let plainEnIndex = 0;
+
+    return deEntries.map((deEntry) => {
+      let enEntry;
+      if (deEntry.url) {
+        enEntry = enEntries.find((e) => e.url === deEntry.url);
+      } else {
+        enEntry = plainEnEntries[plainEnIndex++];
+      }
+      return {
+        url: deEntry.url,
+        textDe: deEntry.text,
+        textEn: enEntry ? enEntry.text : deEntry.text,
+      };
+    });
   }
 
   /**
