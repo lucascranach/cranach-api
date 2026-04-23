@@ -1106,9 +1106,10 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:recordSource
     const recordSource = recordWrap.ele('lido:recordSource');
+    const recordSourceRepoData = getRepositoryID('Cranach Digital Archive');
     recordSource.ele('lido:legalBodyID', {
       'lido:type': 'http://terminology.lido-schema.org/lido00099',
-    }).txt('https://d-nb.info/gnd/1073160734');
+    }).txt(recordSourceRepoData.repositoryID);
     recordSource.ele('lido:legalBodyName').ele('lido:appellationValue').txt('Cranach Digital Archive');
     recordSource
       .ele('lido:legalBodyWeblink')
@@ -1311,7 +1312,7 @@ class LidoFormatter extends BaseFormatter {
       //   │  ├─ lido:resourceSource
       const imageMetadata = imageMetadataMap[image.id] || {};
       const sourceName = (imageMetadata.source?.de || '').replace(/^©\s*/, '');
-      const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '');
+      const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '') || 'Cranach Digital Archive';
       const sourceRepoData = getRepositoryID(sourceName);
       const createdRepoData = getRepositoryID(createdName);
 

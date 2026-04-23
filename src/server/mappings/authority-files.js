@@ -186,6 +186,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-032517',
       isil: 'DE-MUS-032517',
     },
+    'Cranach Digital Archive': {
+      repositoryID: 'https://d-nb.info/gnd/1073160734',
+      gnd: '1073160734',
+    },
   };
 
   return repositoryMapping[institutionName] || { repositoryID: 'unbekannt', isil: 'unbekannt' };
