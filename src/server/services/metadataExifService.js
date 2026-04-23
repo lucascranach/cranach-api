@@ -74,7 +74,6 @@ async function fetchAllImageMetadata(images, entityType) {
         const parsed = parseImageUrl(originSrc);
         if (!parsed) return;
 
-
         const promise = fetchImageMetadata({
           type: apiType,
           ...parsed,

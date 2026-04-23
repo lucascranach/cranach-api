@@ -386,7 +386,6 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ lido:repositorySet (former owner, only for lost works)
     if (isLost && languageData.de.owner) {
       const ownerData = getRepositoryID(languageData.de.owner);
-      console.log(ownerData);
       const ownerRepositorySet = repositoryWrap.ele('lido:repositorySet', {
         'lido:type': 'http://terminology.lido-schema.org/lido01019',
       });
@@ -502,7 +501,6 @@ class LidoFormatter extends BaseFormatter {
       'lido:type': 'http://terminology.lido-schema.org/lido01110',
     });
 
-    console.log(languageData.de.provenance);
 
     if (languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
