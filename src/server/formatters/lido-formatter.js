@@ -484,6 +484,8 @@ class LidoFormatter extends BaseFormatter {
       }).txt(descriptiveNoteValueDe.text);
     }
 
+    console.log(languageData.de.descriptive_note_value);
+
     if (languageData.en.descriptive_note_value) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
@@ -1361,20 +1363,25 @@ class LidoFormatter extends BaseFormatter {
           .txt('No Copyright');
       }
 
-      rightsResource.ele('lido:rightsHolder')
-        .ele('lido:legalBodyID', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00099',
-        })
-        .txt(createdRepoData.repositoryID)
-        .up()
-        .ele('lido:legalBodyName')
-        .ele('lido:appellationValue')
-        .txt(createdName)
-        .up()
-        .up()
-        .up()
-        .ele('lido:creditLine')
-        .txt(sourceName);
+      if (imageMetadata.hasWatermark) {
+        rightsResource.ele('lido:rightsHolder')
+          .ele('lido:legalBodyID', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00099',
+          })
+          .txt(createdRepoData.repositoryID)
+          .up()
+          .ele('lido:legalBodyName')
+          .ele('lido:appellationValue')
+          .txt(createdName)
+          .up()
+          .up()
+          .up()
+          .ele('lido:creditLine')
+          .txt(sourceName);
+      } else {
+        rightsResource.ele('lido:creditLine')
+          .txt(sourceName);
+      }
     });
     // └─ lido:resourceWrap───────────────────────────────────────────────────┘
 
