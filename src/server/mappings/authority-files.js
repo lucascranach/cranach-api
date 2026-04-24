@@ -182,6 +182,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-15',
       isil: 'DE-15',
     },
+    'Kunstsammlungen der Veste Coburg': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-032517',
+      isil: 'DE-MUS-032517',
+    },
     'Veste Coburg Kunstsammlungen': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-032517',
       isil: 'DE-MUS-032517',

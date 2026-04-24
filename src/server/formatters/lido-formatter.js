@@ -294,6 +294,10 @@ class LidoFormatter extends BaseFormatter {
           'xml:lang': 'en',
         }).txt(entry.textEn);
       }
+
+      if (entry.citation) {
+        inscriptionDescription.ele('lido:sourceDescriptiveNote').txt(entry.citation);
+      }
     });
     //   │  └─ End: lido:inscriptions (Markings)
     //   └─ End: lido:inscriptionsWrap
@@ -508,16 +512,24 @@ class LidoFormatter extends BaseFormatter {
     });
 
 
+    const provenanceDe = this.extractTextAndCitation(languageData.de.provenance);
+    const provenanceEn = this.extractTextAndCitation(languageData.en.provenance);
+
     if (languageData.de.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(languageData.de.provenance.replace(/^- /, ''));
+      }).txt(provenanceDe.text.replace(/^- /, ''));
     }
 
     if (languageData.en.provenance) {
       provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(languageData.en.provenance);
+      }).txt(provenanceEn.text);
+    }
+
+    if (provenanceDe.citation !== '') {
+      provenanceDescriptionSet.ele('lido:sourceDescriptiveNote')
+        .txt(provenanceDe.citation);
     }
 
 
@@ -608,42 +620,44 @@ class LidoFormatter extends BaseFormatter {
     //   └─ End: lido:objectMeasurementsWrap
 
     //   └─ lido:objectMaterialsTechWrap
-    const objectMaterialsTechWrap = objectIdentificationWrap.ele('lido:objectMaterialsTechWrap');
-    const objectMaterialsTechSet = objectMaterialsTechWrap.ele('lido:objectMaterialsTechSet');
+    if (languageData.de.objectworktype_value || languageData.en.objectworktype_value) {
+      const objectMaterialsTechWrap = objectIdentificationWrap.ele('lido:objectMaterialsTechWrap');
+      const objectMaterialsTechSet = objectMaterialsTechWrap.ele('lido:objectMaterialsTechSet');
 
-    if (languageData.de.objectworktype_value) {
-      objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
-        'xml:lang': 'de',
-      }).txt(languageData.de.objectworktype_value);
-    }
-
-    if (languageData.en.objectworktype_value) {
-      objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
-        'xml:lang': 'en',
-      }).txt(languageData.en.objectworktype_value);
-    }
-
-    // Add lido:materialsTech based on objectworktype_value
-    const materialsTechData = getMaterialsTechData(languageData.de.objectworktype_value);
-    if (materialsTechData) {
-      objectMaterialsTechSet.ele('lido:materialsTech')
-        .ele('lido:termMaterialsTech', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00131',
-        })
-        .ele('lido:conceptID', {
-          'lido:type': 'http://terminology.lido-schema.org/lido0009',
-        })
-        .txt(materialsTechData.conceptID)
-        .up()
-        .ele('lido:term', {
+      if (languageData.de.objectworktype_value) {
+        objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
           'xml:lang': 'de',
-        })
-        .txt(materialsTechData.termDe)
-        .up()
-        .ele('lido:term', {
+        }).txt(languageData.de.objectworktype_value);
+      }
+
+      if (languageData.en.objectworktype_value) {
+        objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
           'xml:lang': 'en',
-        })
-        .txt(materialsTechData.termEn);
+        }).txt(languageData.en.objectworktype_value);
+      }
+
+      // Add lido:materialsTech based on objectworktype_value
+      const materialsTechData = getMaterialsTechData(languageData.de.objectworktype_value);
+      if (materialsTechData) {
+        objectMaterialsTechSet.ele('lido:materialsTech')
+          .ele('lido:termMaterialsTech', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00131',
+          })
+          .ele('lido:conceptID', {
+            'lido:type': 'http://terminology.lido-schema.org/lido0009',
+          })
+          .txt(materialsTechData.conceptID)
+          .up()
+          .ele('lido:term', {
+            'xml:lang': 'de',
+          })
+          .txt(materialsTechData.termDe)
+          .up()
+          .ele('lido:term', {
+            'xml:lang': 'en',
+          })
+          .txt(materialsTechData.termEn);
+      }
     }
     //   └─ End: lido:objectMaterialsTechWrap
     // └─ lido:objectIdentificationWrap──────────────────────────────────┘
@@ -1490,7 +1504,14 @@ class LidoFormatter extends BaseFormatter {
   parseMarkingsEntries(deMarkings, enMarkings) {
     if (!deMarkings) return [];
 
-    const enText = enMarkings || '';
+    const stripQuotes = (text) => {
+      if (!text) return text;
+      const t = text.trim();
+      return t.startsWith("'") && t.endsWith("'") ? t.slice(1, -1) : t;
+    };
+
+    const deText = stripQuotes(deMarkings);
+    const enText = stripQuotes(enMarkings) || '';
     const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
 
     const extractEntries = (text) => {
@@ -1517,26 +1538,22 @@ class LidoFormatter extends BaseFormatter {
         return { url: m.url, label: m.label, text: segment };
       });
 
-      // Plain [label] entries without a URL become separate entries
-      const afterLastLink = linkMatches.length > 0
-        ? text.substring(linkMatches[linkMatches.length - 1].endIndex)
-        : text;
-      const plainPattern = /\[([^\]]+)\]/g;
-      plainPattern.lastIndex = 0;
-      // eslint-disable-next-line no-cond-assign
-      while ((match = plainPattern.exec(afterLastLink)) !== null) {
-        entries.push({ url: '', label: match[1], text: match[1] });
-      }
-
       return entries;
     };
 
-    const deEntries = extractEntries(deMarkings);
+    const deEntries = extractEntries(deText);
     const enEntries = extractEntries(enText);
 
     if (deEntries.length === 0) {
-      if (!deMarkings.trim()) return [];
-      return [{ url: '', textDe: deMarkings.trim(), textEn: enText.trim() }];
+      if (!deText.trim()) return [];
+      const deParsed = this.extractTextAndCitation(deText.trim());
+      const enParsed = this.extractTextAndCitation(enText.trim());
+      return [{
+        url: '',
+        textDe: deParsed.text,
+        textEn: enParsed.text,
+        citation: deParsed.citation || enParsed.citation,
+      }];
     }
 
     const plainEnEntries = enEntries.filter((e) => !e.url);
@@ -1549,10 +1566,13 @@ class LidoFormatter extends BaseFormatter {
       } else {
         enEntry = plainEnEntries[plainEnIndex++];
       }
+      const deParsed = this.extractTextAndCitation(deEntry.text);
+      const enParsed = this.extractTextAndCitation(enEntry ? enEntry.text : deEntry.text);
       return {
         url: deEntry.url,
-        textDe: deEntry.text,
-        textEn: enEntry ? enEntry.text : deEntry.text,
+        textDe: deParsed.text,
+        textEn: enParsed.text,
+        citation: deParsed.citation || enParsed.citation,
       };
     });
   }
