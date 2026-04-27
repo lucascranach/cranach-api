@@ -22,6 +22,7 @@ function cacheGZipMiddleware(req, res, next) {
   // Check if the client accepts gzip compression
   const acceptsGzip = req.headers['accept-encoding'] && req.headers['accept-encoding'].includes('gzip');
 
+
   // Use the full URL as the cache key and append gzip support information
   const cacheKey = `${req.originalUrl}-${acceptsGzip ? 'gzip' : 'nogzip'}`;
 
@@ -39,10 +40,10 @@ function cacheGZipMiddleware(req, res, next) {
 
   // Save the original res.send function
   const originalSend = res.send.bind(res);
-
   // Override res.send to store the response in the cache
   res.send = (body) => {
 
+  
     // if the response is not successful, do not cache it
     if (res.statusCode !== 200) {
       return originalSend(body);
