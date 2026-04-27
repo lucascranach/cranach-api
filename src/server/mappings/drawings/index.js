@@ -40,12 +40,12 @@ const mappings = [
 
   // Zuschreibung
   {
-    display_value: 'filterInfos.attribution.id.keyword',
+    display_value: 'filterInfos.attribution.id',
     showAsFilter: true,
     showAsResult: true,
     filter_types: ['equals', 'notequals'],
     key: 'attribution',
-    value: 'filterInfos.attribution.id.keyword',
+    value: 'filterInfos.attribution.id',
     nestedPath: 'filterInfos.attribution',
     sortBy: 'filterInfos.attribution.order',
     filterInfos: true,
@@ -95,11 +95,11 @@ const mappings = [
 
   // Sammlung / Standort
   {
-    display_value: 'filterInfos.collection_repository.id.keyword',
+    display_value: 'filterInfos.collection_repository.id',
     key: 'collection_repository',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.collection_repository.id.keyword',
+    value: 'filterInfos.collection_repository.id',
     nestedPath: 'filterInfos.collection_repository',
     filter_types: ['equals', 'notequals', 'similar'],
     filterInfos: true,
@@ -119,11 +119,11 @@ const mappings = [
 
   // Katalog
   {
-    display_value: 'filterInfos.catalog.id.keyword',
+    display_value: 'filterInfos.catalog.id',
     key: 'catalog',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.catalog.id.keyword',
+    value: 'filterInfos.catalog.id',
     nestedPath: 'filterInfos.catalog',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
@@ -354,11 +354,11 @@ const mappings = [
 
   // Inhalt
   {
-    display_value: 'filterInfos.subject.id.keyword',
+    display_value: 'filterInfos.subject.id',
     key: 'subject',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.subject.id.keyword',
+    value: 'filterInfos.subject.id',
     nestedPath: 'filterInfos.subject',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,

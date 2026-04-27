@@ -28,7 +28,7 @@ class Mappings {
   static defaultFilterType = 'eq';
   static defaultSortFieldKeys = ['search_sorting_number'];
   static defaultResponseSize = 100;
-  static excludedInvenoryNumbers = ['PRIVATE_NONE-P402'];
+  static excludedInvenoryNumbers = ['PRIVATE_NONE-P402', 'UK_BM_1896-0511-1', 'UK_BM_SL-5218-19'];
 
   static availableSortTypes = {
     asc: 'ascending',

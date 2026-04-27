@@ -372,6 +372,28 @@ class Querybuilder {
     this.termsAggregationParams[aggregationObject.key] = currentAggs;
   }
 
+  sumArrayLengthAggregation(key, field) {
+    // Use Painless script to count array length from _source
+    const fieldParts = field.split('.');
+
+    this.termsAggregationParams[key] = {
+      sum: {
+        script: {
+          source: `
+            if (params._source.containsKey('${fieldParts[0]}') && 
+                params._source.${fieldParts[0]} != null &&
+                params._source.${fieldParts[0]}.containsKey('${fieldParts[1]}') &&
+                params._source.${fieldParts[0]}.${fieldParts[1]} != null) {
+              return params._source.${fieldParts[0]}.${fieldParts[1]}.length;
+            }
+            return 0;
+          `,
+          lang: 'painless',
+        },
+      },
+    };
+  }
+
   filterAggregation(filterObject) {
     let param = {
       terms: {

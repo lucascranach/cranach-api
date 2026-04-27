@@ -28,6 +28,7 @@ function cacheGZipMiddleware(req, res, next) {
 
   // Check if the response is present in the cache
   const cachedResponse = cache.get(cacheKey);
+
   if (cachedResponse) {
     // If the response is found in the cache and the client accepts gzip, set the Content-Encoding header
     if (acceptsGzip) {
@@ -42,12 +43,12 @@ function cacheGZipMiddleware(req, res, next) {
   // Override res.send to store the response in the cache
   res.send = (body) => {
 
-    // If the response status code is not 200, do not cache the response
+  
+    // if the response is not successful, do not cache it
     if (res.statusCode !== 200) {
-      console.log('Response status code is not 200, not caching');
       return originalSend(body);
     }
-  
+
     // If gzip is accepted, compress the response and store it in the cache
     if (acceptsGzip) {
       zlib.gzip(body, (err, compressedBody) => {
