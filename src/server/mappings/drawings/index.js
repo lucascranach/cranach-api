@@ -107,11 +107,11 @@ const mappings = [
 
   // Untersuchungstechniken
   {
-    display_value: 'filterInfos.examination_analysis.id.keyword',
+    display_value: 'filterInfos.examination_analysis.id',
     key: 'examination_analysis',
     showAsFilter: true,
     showAsResult: false,
-    value: 'filterInfos.examination_analysis.id.keyword',
+    value: 'filterInfos.examination_analysis.id',
     nestedPath: 'filterInfos.examination_analysis',
     filter_types: ['equals', 'notequals'],
     filterInfos: true,
