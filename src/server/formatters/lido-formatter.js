@@ -747,17 +747,20 @@ class LidoFormatter extends BaseFormatter {
       //   │  ├─ lido:eventActor (for all persons of this role type, if any)
       if (persons.length > 0) {
         persons.forEach(({ personDe, personEn }, personIndex) => {
-          if (!personDe.name) return;
+          const actorNameDe = personDe.name || personDe.suffix;
+          if (!actorNameDe) return;
+
+          const actorNameEn = personEn && (personEn.name || personEn.suffix);
 
           const eventActor = event.ele('lido:eventActor');
           eventActor.ele('lido:displayActorInRole', {
             'xml:lang': 'de',
-          }).txt(personDe.name);
+          }).txt(actorNameDe);
 
-          if (personEn) {
+          if (actorNameEn) {
             eventActor.ele('lido:displayActorInRole', {
               'xml:lang': 'en',
-            }).txt(personEn.name);
+            }).txt(actorNameEn);
           }
 
           const actorInRole = eventActor.ele('lido:actorInRole');
@@ -766,17 +769,17 @@ class LidoFormatter extends BaseFormatter {
           });
           actor.ele('lido:actorID', {
             'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          }).txt(getPersonGND(personDe.name));
+          }).txt(getPersonGND(actorNameDe));
 
           const nameActorSet = actor.ele('lido:nameActorSet');
           nameActorSet.ele('lido:appellationValue', {
             'xml:lang': 'de',
-          }).txt(personDe.name);
+          }).txt(actorNameDe);
 
-          if (personEn) {
+          if (actorNameEn) {
             nameActorSet.ele('lido:appellationValue', {
               'xml:lang': 'en',
-            }).txt(personEn.name);
+            }).txt(actorNameEn);
           }
 
           const roleActor = actorInRole.ele('lido:roleActor');
