@@ -1335,38 +1335,24 @@ class LidoFormatter extends BaseFormatter {
           .txt('No Copyright');
       }
 
-      if (imageMetadata.hasWatermark) {
-        rightsResource.ele('lido:rightsHolder')
-          .ele('lido:legalBodyID', {
-            'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          })
-          .txt(createdRepoData.repositoryID)
-          .up()
-          .ele('lido:legalBodyName')
-          .ele('lido:appellationValue')
-          .txt(createdName)
-          .up()
-          .up()
-          .up()
-          .ele('lido:creditLine')
-          .txt(sourceName);
-      } else {
-        const cdaRepoData = getRepositoryID('Cranach Digital Archive');
-        rightsResource.ele('lido:rightsHolder')
-          .ele('lido:legalBodyID', {
-            'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          })
-          .txt(cdaRepoData.repositoryID)
-          .up()
-          .ele('lido:legalBodyName')
-          .ele('lido:appellationValue')
-          .txt('Cranach Digital Archive (cda_)')
-          .up()
-          .up()
-          .up()
-          .ele('lido:creditLine')
-          .txt('Cranach Digital Archive');
-      }
+      const rightsHolderRepoData = sourceRepoData.repositoryID !== 'unbekannt'
+        ? sourceRepoData
+        : getRepositoryID('Technische Hochschule Köln');
+      const rightsHolderName = sourceName || 'Technische Hochschule Köln';
+
+      rightsResource.ele('lido:rightsHolder')
+        .ele('lido:legalBodyID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        })
+        .txt(rightsHolderRepoData.repositoryID)
+        .up()
+        .ele('lido:legalBodyName')
+        .ele('lido:appellationValue')
+        .txt(rightsHolderName);
+
+      const creditLineParts = [sourceName, createdName].filter(Boolean);
+      rightsResource.ele('lido:creditLine')
+        .txt(creditLineParts.length > 0 ? creditLineParts.join(', ') : 'Lucas Cranach Digital Archive, Thomas Klinke');
     });
     // └─ lido:resourceWrap───────────────────────────────────────────────────┘
 

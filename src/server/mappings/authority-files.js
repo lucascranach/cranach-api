@@ -194,6 +194,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://d-nb.info/gnd/1073160734',
       gnd: '1073160734',
     },
+    'Technische Hochschule Köln': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-832',
+      isil: 'DE-832',
+    },
   };
 
   return repositoryMapping[institutionName] || { repositoryID: 'unbekannt', isil: 'unbekannt' };
