@@ -971,33 +971,35 @@ class LidoFormatter extends BaseFormatter {
     const relatedWorksWrap = descriptiveMetadata.ele('lido:objectRelationWrap')
       .ele('lido:relatedWorksWrap');
 
-    //   ├─ lido:relatedWorkSet
-    const relatedWorkSet = relatedWorksWrap.ele('lido:relatedWorkSet');
+    //   ├─ lido:relatedWorkSet (skip for drawings)
+    if (languageData.de.classification !== 'Zeichnung') {
+      const relatedWorkSet = relatedWorksWrap.ele('lido:relatedWorkSet');
 
-    //   │  ├─ lido:relatedWork
-    relatedWorkSet.ele('lido:relatedWork')
-      .ele('lido:object')
-      .ele('lido:objectID', {
-        'lido:type': 'http://terminology.lido-schema.org/lido00100',
-        'lido:source': `${domain}`,
-      })
-      .txt(`${languageData.de.inventory_number_referenced}`);
-    //   │  └─ End: lido:relatedWork
+      //   │  ├─ lido:relatedWork
+      relatedWorkSet.ele('lido:relatedWork')
+        .ele('lido:object')
+        .ele('lido:objectID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00100',
+          'lido:source': `${domain}`,
+        })
+        .txt(`${languageData.de.inventory_number_referenced}`);
+      //   │  └─ End: lido:relatedWork
 
-    //   │  ├─ lido:relatedWorkRelType
-    relatedWorkSet.ele('lido:relatedWorkRelType')
-      .ele('skos:Concept', {
-        'rdf:about': 'http://terminology.lido-schema.org/lido00627',
-      })
-      .ele('skos:prefLabel', {
-        'xml:lang': 'de',
-      })
-      .txt('ist Exemplar von')
-      .up()
-      .ele('skos:prefLabel', {
-        'xml:lang': 'en',
-      })
-      .txt('is example of');
+      //   │  ├─ lido:relatedWorkRelType
+      relatedWorkSet.ele('lido:relatedWorkRelType')
+        .ele('skos:Concept', {
+          'rdf:about': 'http://terminology.lido-schema.org/lido00627',
+        })
+        .ele('skos:prefLabel', {
+          'xml:lang': 'de',
+        })
+        .txt('ist Exemplar von')
+        .up()
+        .ele('skos:prefLabel', {
+          'xml:lang': 'en',
+        })
+        .txt('is example of');
+    }
 
     languageData.de.publications.forEach((publication) => {
       relatedWorksWrap.ele('lido:relatedWorkSet')
