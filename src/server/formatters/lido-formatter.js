@@ -747,6 +747,8 @@ class LidoFormatter extends BaseFormatter {
       //   │  ├─ lido:eventActor (for all persons of this role type, if any)
       if (persons.length > 0) {
         persons.forEach(({ personDe, personEn }, personIndex) => {
+          if (!personDe.name) return;
+
           const eventActor = event.ele('lido:eventActor');
           eventActor.ele('lido:displayActorInRole', {
             'xml:lang': 'de',
