@@ -1327,18 +1327,17 @@ class LidoFormatter extends BaseFormatter {
       const imageMetadata = imageMetadataMap[image.id] || {};
       const sourceName = (imageMetadata.source?.de || '').replace(/^©\s*/, '');
       const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '') || 'Cranach Digital Archive';
-      const sourceRepoData = getRepositoryID(sourceName);
       const createdRepoData = getRepositoryID(createdName);
 
       resourceSet.ele('lido:resourceSource')
         .ele('lido:legalBodyID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
         })
-        .txt(sourceRepoData.repositoryID)
+        .txt('https://d-nb.info/gnd/1073160734')
         .up()
         .ele('lido:legalBodyName')
         .ele('lido:appellationValue')
-        .txt(sourceName);
+        .txt('Technische Hochschule Köln');
 
       //   │  └─ lido:rightsResource
       const rightsResource = resourceSet.ele('lido:rightsResource');
