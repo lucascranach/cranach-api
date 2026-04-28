@@ -1398,8 +1398,21 @@ class LidoFormatter extends BaseFormatter {
           .ele('lido:creditLine')
           .txt(sourceName);
       } else {
-        rightsResource.ele('lido:creditLine')
-          .txt(sourceName);
+        const cdaRepoData = getRepositoryID('Cranach Digital Archive');
+        rightsResource.ele('lido:rightsHolder')
+          .ele('lido:legalBodyID', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00099',
+          })
+          .txt(cdaRepoData.repositoryID)
+          .up()
+          .ele('lido:legalBodyName')
+          .ele('lido:appellationValue')
+          .txt('Cranach Digital Archive (cda_)')
+          .up()
+          .up()
+          .up()
+          .ele('lido:creditLine')
+          .txt('Cranach Digital Archive');
       }
     });
     // └─ lido:resourceWrap───────────────────────────────────────────────────┘
