@@ -1268,12 +1268,15 @@ class LidoFormatter extends BaseFormatter {
         .txt('Digitalbild');
 
       //   │  ├─ lido:resourceDescription (category-specific description)
+      const imageMetadata = imageMetadataMap[image.id] || {};
       const categoryDescription = categoryDescriptions[image.category] || 'Weitere Ansicht';
-      resourceSet.ele('lido:resourceDescription')
-        .txt(categoryDescription);
+      const resourceDescriptionAttrs = imageMetadata.isDownloadable === false
+        ? { 'lido:type': 'download' }
+        : {};
+      resourceSet.ele('lido:resourceDescription', resourceDescriptionAttrs)
+        .txt(imageMetadata.isDownloadable === false ? 'deaktiviert' : categoryDescription);
 
       //   │  ├─ lido:resourceSource
-      const imageMetadata = imageMetadataMap[image.id] || {};
       const sourceName = (imageMetadata.source?.de || '').replace(/^©\s*/, '');
       const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '') || 'Cranach Digital Archive';
       const sourceRepoData = getRepositoryID(sourceName);      
