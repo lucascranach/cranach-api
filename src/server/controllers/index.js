@@ -41,6 +41,15 @@ function getSingleItem(mappings) {
       if (fetchBothLanguages && data.results && data.results.length > 0) {
         const primaryData = data.results[0].data;
         const isVirtual = primaryData.is_virtual;
+
+        if (isVirtual === true) {
+          res.status(422).json({
+            error: 'LIDO export is only available for physical artifacts',
+            message: `The requested record (${id}) is a virtual artifact and cannot be exported as LIDO.`,
+          });
+          return;
+        }
+
         const hasReferences = primaryData.references_reprints
           && primaryData.references_reprints.length > 0;
 
