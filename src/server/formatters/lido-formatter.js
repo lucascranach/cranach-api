@@ -974,16 +974,27 @@ class LidoFormatter extends BaseFormatter {
     //   ├─ lido:relatedWorkSet (skip for drawings)
     if (languageData.de.classification !== 'Zeichnung') {
       const relatedWorkSet = relatedWorksWrap.ele('lido:relatedWorkSet');
+      const relatedObject = relatedWorkSet.ele('lido:relatedWork').ele('lido:object');
 
-      //   │  ├─ lido:relatedWork
-      relatedWorkSet.ele('lido:relatedWork')
-        .ele('lido:object')
-        .ele('lido:objectID', {
+      const gndReference = this.getCatalogReference(languageData.de.catalog_work_references, 'GND');
+      if (gndReference) {
+        relatedObject.ele('lido:objectID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        }).txt(gndReference);
+      }
+
+      relatedObject.ele('lido:objectID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00100',
+        'lido:source': `${domain}`,
+      }).txt(`${languageData.de.inventory_number_referenced}`);
+
+      const bartschNumber = this.getCatalogReference(languageData.de.catalog_work_references, 'Bartsch');
+      if (bartschNumber) {
+        relatedObject.ele('lido:objectID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00100',
-          'lido:source': `${domain}`,
-        })
-        .txt(`${languageData.de.inventory_number_referenced}`);
-      //   │  └─ End: lido:relatedWork
+          'lido:source': 'http://d-nb.info/gnd/4405115-3',
+        }).txt(`Bartsch ${bartschNumber}`);
+      }
 
       //   │  ├─ lido:relatedWorkRelType
       relatedWorkSet.ele('lido:relatedWorkRelType')
