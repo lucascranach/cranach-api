@@ -1197,103 +1197,50 @@ class LidoFormatter extends BaseFormatter {
         'lido:type': 'http://terminology.lido-schema.org/lido00100',
       }).txt(image.id);
 
-      //   │  ├─ lido:resourceRepresentation (thumbnail)
-      if (image.sizes.small) {
-        const thumbRepresentation = resourceSet.ele('lido:resourceRepresentation', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00451',
+      const addRepresentation = (sizeData, type) => {
+        const rep = resourceSet.ele('lido:resourceRepresentation', {
+          'lido:type': type,
         });
-        //   │  │  ├─ lido:linkResource
-        thumbRepresentation.ele('lido:linkResource', {
+        rep.ele('lido:linkResource', {
           'lido:formatResource': 'image/jpeg',
-        }).txt(image.sizes.small.src);
+        }).txt(sizeData.src);
 
-        //   │  │  └─ lido:resourceMeasurementsSet (width in pixels)
-        const thumbMeasurements = thumbRepresentation.ele('lido:resourceMeasurementsSet');
-        thumbMeasurements.ele('lido:measurementType')
+        const measurements = rep.ele('lido:resourceMeasurementsSet');
+        measurements.ele('lido:measurementType')
           .ele('skos:Concept', {
             'rdf:about': 'http://www.wikidata.org/wiki/Q35059',
           })
-          .ele('skos:prefLabel', {
-            'xml:lang': 'en',
-          }).txt('width')
+          .ele('skos:prefLabel', { 'xml:lang': 'en' }).txt('width')
           .up()
-          .ele('skos:prefLabel', {
-            'xml:lang': 'de',
-          })
-          .txt('Breite')
+          .ele('skos:prefLabel', { 'xml:lang': 'de' }).txt('Breite')
           .up()
-          .ele('skos:mappingRelation')
-          .txt('http://vocab.getty.edu/aat/300055647');
-
-        thumbMeasurements.ele('lido:measurementUnit')
+          .ele('skos:mappingRelation').txt('http://vocab.getty.edu/aat/300055647');
+        measurements.ele('lido:measurementUnit')
           .ele('skos:Concept', {
             'rdf:about': 'http://www.wikidata.org/wiki/Q355198',
           })
-          .ele('skos:prefLabel', {
-            'xml:lang': 'en',
-          })
-          .txt('pixel')
+          .ele('skos:prefLabel', { 'xml:lang': 'en' }).txt('pixel')
           .up()
-          .ele('skos:prefLabel', {
-            'xml:lang': 'de',
-          })
-          .txt('Pixel')
+          .ele('skos:prefLabel', { 'xml:lang': 'de' }).txt('Pixel')
           .up()
-          .ele('skos:mappingRelation')
-          .txt('http://vocab.getty.edu/aat/300266190');
+          .ele('skos:mappingRelation').txt('http://vocab.getty.edu/aat/300266190');
+        measurements.ele('lido:measurementValue')
+          .txt(sizeData.dimensions.width.toString());
+      };
 
-        thumbMeasurements.ele('lido:measurementValue')
-          .txt(image.sizes.small.dimensions.width.toString());
+      //   │  ├─ lido:resourceRepresentation (thumbnail small — lido00451)
+      if (image.sizes.small) {
+        addRepresentation(image.sizes.small, 'http://terminology.lido-schema.org/lido00451');
       }
 
-      //   │  ├─ lido:resourceRepresentation (high-resolution)
+      //   │  ├─ lido:resourceRepresentation (thumbnail medium — lido00451)
+      if (image.sizes.medium) {
+        addRepresentation(image.sizes.medium, 'http://terminology.lido-schema.org/lido00451');
+      }
+
+      //   │  ├─ lido:resourceRepresentation (high-resolution — lido00464)
       if (image.sizes.origin) {
-        const highresRepresentation = resourceSet.ele('lido:resourceRepresentation', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00464',
-        });
-        //   │  │  ├─ lido:linkResource
-        highresRepresentation.ele('lido:linkResource', {
-          'lido:formatResource': 'image/jpeg',
-        }).txt(image.sizes.origin.src);
-
-        //   │  │  └─ lido:resourceMeasurementsSet (width in pixels)
-        const highresMeasurements = highresRepresentation.ele('lido:resourceMeasurementsSet');
-        highresMeasurements.ele('lido:measurementType')
-          .ele('skos:Concept', {
-            'rdf:about': 'http://www.wikidata.org/wiki/Q35059',
-          })
-          .ele('skos:prefLabel', {
-            'xml:lang': 'en',
-          })
-          .txt('width')
-          .up()
-          .ele('skos:prefLabel', {
-            'xml:lang': 'de',
-          })
-          .txt('Breite')
-          .up()
-          .ele('skos:mappingRelation')
-          .txt('http://vocab.getty.edu/aat/300055647');
-
-        highresMeasurements.ele('lido:measurementUnit')
-          .ele('skos:Concept', {
-            'rdf:about': 'http://www.wikidata.org/wiki/Q355198',
-          })
-          .ele('skos:prefLabel', {
-            'xml:lang': 'en',
-          })
-          .txt('pixel')
-          .up()
-          .ele('skos:prefLabel', {
-            'xml:lang': 'de',
-          })
-          .txt('Pixel')
-          .up()
-          .ele('skos:mappingRelation')
-          .txt('http://vocab.getty.edu/aat/300266190');
-
-        highresMeasurements.ele('lido:measurementValue')
-          .txt(image.sizes.origin.dimensions.width.toString());
+        addRepresentation(image.sizes.origin, 'http://terminology.lido-schema.org/lido00464');
       }
 
       //   │  ├─ lido:resourceType (digital image)
