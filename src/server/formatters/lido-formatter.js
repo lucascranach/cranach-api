@@ -266,7 +266,7 @@ class LidoFormatter extends BaseFormatter {
     }
     //   │  └─ End: lido:inscriptionTranscription
 
-    //   │  ├─ lido:inscriptions (Markings - one element per collector's mark)
+    //   │  ├─ lido:inscriptions (Markings - one element per collector's mark)    
     const markingsEntries = this.parseMarkingsEntries(
       languageData.de.markings,
       languageData.en.markings,
@@ -752,15 +752,16 @@ class LidoFormatter extends BaseFormatter {
 
           const actorNameEn = personEn && (personEn.name || personEn.suffix);
 
+          const hasAttribution = personIndex > 0;
           const eventActor = event.ele('lido:eventActor');
           eventActor.ele('lido:displayActorInRole', {
             'xml:lang': 'de',
-          }).txt(actorNameDe);
+          }).txt(hasAttribution ? `zugeschrieben an ${actorNameDe}` : actorNameDe);
 
           if (actorNameEn) {
             eventActor.ele('lido:displayActorInRole', {
               'xml:lang': 'en',
-            }).txt(actorNameEn);
+            }).txt(hasAttribution ? `attributed to ${actorNameEn}` : actorNameEn);
           }
 
           const actorInRole = eventActor.ele('lido:actorInRole');
@@ -797,7 +798,7 @@ class LidoFormatter extends BaseFormatter {
           }
 
           // From second person onwards: attribution qualifier "attributed to"
-          if (personIndex > 0) {
+          if (hasAttribution) {
             actorInRole.ele('lido:attributionQualifierActor')
               .ele('lido:conceptID', {
                 'lido:type': 'http://terminology.lido-schema.org/lido00099',
