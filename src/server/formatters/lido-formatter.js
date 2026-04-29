@@ -1295,18 +1295,26 @@ class LidoFormatter extends BaseFormatter {
       //   │  ├─ lido:resourceSource
       const sourceName = (imageMetadata.source?.de || '').replace(/^©\s*/, '');
       const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '') || 'Cranach Digital Archive';
-      const sourceRepoData = getRepositoryID(sourceName);      
-      const createdRepoData = getRepositoryID(createdName);
+      const sourceRepoData = getRepositoryID(sourceName);
+
+      // resourceSource and rightsHolder must always refer to the same institution.
+      // Use sourceName only when it resolves to a known repository; otherwise fall back to TH Köln.
+      const rightsHolderRepoData = sourceRepoData.repositoryID !== 'unbekannt'
+        ? sourceRepoData
+        : getRepositoryID('Technische Hochschule Köln');
+      const rightsHolderName = sourceRepoData.repositoryID !== 'unbekannt'
+        ? sourceName
+        : 'Technische Hochschule Köln';
 
       resourceSet.ele('lido:resourceSource')
         .ele('lido:legalBodyID', {
           'lido:type': 'http://terminology.lido-schema.org/lido00099',
         })
-        .txt(sourceRepoData.repositoryID)
+        .txt(rightsHolderRepoData.repositoryID)
         .up()
         .ele('lido:legalBodyName')
         .ele('lido:appellationValue')
-        .txt(sourceName);
+        .txt(rightsHolderName);
 
       //   │  └─ lido:rightsResource
       const rightsResource = resourceSet.ele('lido:rightsResource');
@@ -1348,24 +1356,23 @@ class LidoFormatter extends BaseFormatter {
           .txt('No Copyright');
       }
 
-      const rightsHolderRepoData = sourceRepoData.repositoryID !== 'unbekannt'
-        ? sourceRepoData
-        : getRepositoryID('Technische Hochschule Köln');
-      const rightsHolderName = sourceName || 'Technische Hochschule Köln';
+      if (imageMetadata.hasWatermark) {
+        rightsResource.ele('lido:rightsHolder')
+          .ele('lido:legalBodyID', {
+            'lido:type': 'http://terminology.lido-schema.org/lido00099',
+          })
+          .txt(rightsHolderRepoData.repositoryID)
+          .up()
+          .ele('lido:legalBodyName')
+          .ele('lido:appellationValue')
+          .txt(rightsHolderName);
+      }
 
-      rightsResource.ele('lido:rightsHolder')
-        .ele('lido:legalBodyID', {
-          'lido:type': 'http://terminology.lido-schema.org/lido00099',
-        })
-        .txt(rightsHolderRepoData.repositoryID)
-        .up()
-        .ele('lido:legalBodyName')
-        .ele('lido:appellationValue')
-        .txt(rightsHolderName);
-
-      const creditLineParts = [sourceName, createdName].filter(Boolean);
+      const creditLine = rightsHolderName === 'Technische Hochschule Köln'
+        ? 'Lucas Cranach Digital Archive'
+        : [rightsHolderName, createdName].filter(Boolean).join(', ') || 'Lucas Cranach Digital Archive';
       rightsResource.ele('lido:creditLine')
-        .txt(creditLineParts.length > 0 ? creditLineParts.join(', ') : ['Lucas Cranach Digital Archive  (cda_)', createdName].filter(Boolean).join(', '));
+        .txt(creditLine);
     });
     // └─ lido:resourceWrap───────────────────────────────────────────────────┘
 
