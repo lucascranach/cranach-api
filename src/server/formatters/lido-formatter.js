@@ -1357,17 +1357,15 @@ class LidoFormatter extends BaseFormatter {
           .txt('No Copyright');
       }
 
-      if (imageMetadata.hasWatermark) {
-        rightsResource.ele('lido:rightsHolder')
-          .ele('lido:legalBodyID', {
-            'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          })
-          .txt(rightsHolderRepoData.repositoryID)
-          .up()
-          .ele('lido:legalBodyName')
-          .ele('lido:appellationValue')
-          .txt(rightsHolderName);
-      }
+      rightsResource.ele('lido:rightsHolder')
+        .ele('lido:legalBodyID', {
+          'lido:type': 'http://terminology.lido-schema.org/lido00099',
+        })
+        .txt(rightsHolderRepoData.repositoryID)
+        .up()
+        .ele('lido:legalBodyName')
+        .ele('lido:appellationValue')
+        .txt(rightsHolderName);
 
       const creditLine = rightsHolderName === 'Technische Hochschule Köln'
         ? 'Lucas Cranach Digital Archive'
