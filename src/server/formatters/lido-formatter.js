@@ -1367,9 +1367,10 @@ class LidoFormatter extends BaseFormatter {
         .ele('lido:appellationValue')
         .txt(rightsHolderName);
 
+      const createdNameForCreditLine = (imageMetadata.created?.de || '').replace(/^©\s*/, '');
       const creditLine = rightsHolderName === 'Technische Hochschule Köln'
         ? 'Lucas Cranach Digital Archive'
-        : [rightsHolderName, createdName].filter(Boolean).join(', ') || 'Lucas Cranach Digital Archive';
+        : [rightsHolderName, createdNameForCreditLine].filter(Boolean).join(', ') || 'Lucas Cranach Digital Archive';
       rightsResource.ele('lido:creditLine')
         .txt(creditLine);
     });
