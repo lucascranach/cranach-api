@@ -1365,7 +1365,7 @@ class LidoFormatter extends BaseFormatter {
 
       const creditLineParts = [sourceName, createdName].filter(Boolean);
       rightsResource.ele('lido:creditLine')
-        .txt(creditLineParts.length > 0 ? creditLineParts.join(', ') : 'Lucas Cranach Digital Archive, Thomas Klinke');
+        .txt(creditLineParts.length > 0 ? creditLineParts.join(', ') : ['Lucas Cranach Digital Archive', createdName].filter(Boolean).join(', '));
     });
     // └─ lido:resourceWrap───────────────────────────────────────────────────┘
 
