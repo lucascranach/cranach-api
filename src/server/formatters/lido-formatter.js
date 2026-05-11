@@ -1188,20 +1188,18 @@ class LidoFormatter extends BaseFormatter {
       other: 'Weitere Ansicht',
     };
 
-    // Process all images from all categories
+    // Process only images from the 'overall' category
     const allImagesWithCategory = [];
     const imageCategories = languageData.de.images || {};
-    Object.keys(imageCategories).forEach((categoryKey) => {
-      const category = imageCategories[categoryKey];
-      if (category && category.images && Array.isArray(category.images)) {
-        category.images.forEach((image) => {
-          allImagesWithCategory.push({
-            ...image,
-            category: categoryKey,
-          });
+    const overallCategory = imageCategories.overall;
+    if (overallCategory && overallCategory.images && Array.isArray(overallCategory.images)) {
+      overallCategory.images.forEach((image) => {
+        allImagesWithCategory.push({
+          ...image,
+          category: 'overall',
         });
-      }
-    });
+      });
+    }
 
     // Create a resourceSet for each image
     allImagesWithCategory.forEach((imageWithCategory) => {
@@ -1369,8 +1367,8 @@ class LidoFormatter extends BaseFormatter {
 
       const createdNameForCreditLine = (imageMetadata.created?.de || '').replace(/^©\s*/, '');
       const creditLine = rightsHolderName === 'Technische Hochschule Köln'
-        ? 'Lucas Cranach Digital Archive'
-        : [rightsHolderName, createdNameForCreditLine].filter(Boolean).join(', ') || 'Lucas Cranach Digital Archive';
+        ? 'Cranach Digital Archive'
+        : [rightsHolderName, createdNameForCreditLine].filter(Boolean).join(', ') || 'Cranach Digital Archive';
       rightsResource.ele('lido:creditLine')
         .txt(creditLine);
     });
