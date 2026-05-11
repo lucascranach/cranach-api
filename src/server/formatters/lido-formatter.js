@@ -94,6 +94,8 @@ class LidoFormatter extends BaseFormatter {
     // │  │  │  └─ lido:repositoryLocation (Geographic location)
     // │  │  ├─ lido:objectDescriptionWrap
     // │  │  │  ├─ lido:objectDescriptionSet (General description)
+    // │  │  │  ├─ lido:objectDescriptionSet (Footnotes, lido:type="Anmerkung")
+    // │  │  │  ├─ lido:objectDescriptionSet (Sources, lido:type="Quellen")
     // │  │  │  ├─ lido:objectDescriptionSet (Provenance)
     // │  │  │  └─ lido:objectDescriptionSet (Additional text information)
     // │  │  ├─ lido:objectMeasurementsWrap
@@ -487,17 +489,19 @@ class LidoFormatter extends BaseFormatter {
       languageData.en.descriptive_note_value,
     );
 
-    if (languageData.de.descriptive_note_value) {
+    const splitDe = this.splitDescriptiveNote(descriptiveNoteValueDe.text);
+    const splitEn = this.splitDescriptiveNote(descriptiveNoteValueEn.text);
+
+    if (splitDe.description) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'de',
-      }).txt(descriptiveNoteValueDe.text);
+      }).txt(splitDe.description);
     }
 
-
-    if (languageData.en.descriptive_note_value) {
+    if (splitEn.description) {
       objectDescriptionSet.ele('lido:descriptiveNoteValue', {
         'xml:lang': 'en',
-      }).txt(descriptiveNoteValueEn.text);
+      }).txt(splitEn.description);
     }
 
     if (descriptiveNoteValueDe.citation !== '') {
@@ -505,7 +509,45 @@ class LidoFormatter extends BaseFormatter {
         .txt(descriptiveNoteValueDe.citation);
     }
 
-    
+    //   │  ├─ lido:objectDescriptionSet (Footnotes / Anmerkungen)
+    if (splitDe.footnotes || splitEn.footnotes) {
+      const footnotesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+        'lido:type': 'Anmerkung',
+      });
+
+      if (splitDe.footnotes) {
+        footnotesDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(splitDe.footnotes);
+      }
+
+      if (splitEn.footnotes) {
+        footnotesDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'en',
+        }).txt(splitEn.footnotes);
+      }
+    }
+
+    //   │  ├─ lido:objectDescriptionSet (Sources / Quellen)
+    if (splitDe.sources || splitEn.sources) {
+      const sourcesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+        'lido:type': 'Quellen',
+      });
+
+      if (splitDe.sources) {
+        sourcesDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(splitDe.sources);
+      }
+
+      if (splitEn.sources) {
+        sourcesDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'en',
+        }).txt(splitEn.sources);
+      }
+    }
+
+
     //   │  └─ lido:objectDescriptionSet (Provenance)
     const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido01110',
@@ -1574,6 +1616,58 @@ class LidoFormatter extends BaseFormatter {
     return {
       text: text.trim(),
       citation: '',
+    };
+  }
+
+  /**
+   * Split a long descriptive_note_value into description, footnotes and sources.
+   *
+   * Markers (matched in order):
+   *   - Footnote block: separated by a line of 3+ underscores
+   *   - Sources block: introduced by "Quellen / Publikationen:" (DE) or
+   *     "Sources / Publications:" / "Bibliography:" / "References:" (EN)
+   *
+   * Each block is optional. If no marker is found, the entire text is
+   * returned as `description`.
+   *
+   * @param {string} text - Already trimmed text (e.g. output of extractTextAndCitation)
+   * @returns {{description: string, footnotes: string, sources: string}}
+   */
+  splitDescriptiveNote(text) {
+    if (!text) return { description: '', footnotes: '', sources: '' };
+
+    const sourcesMarker = /\n+\s*(?:Quellen(?:\s*\/\s*Publikationen)?|Literatur|Bibliografie|Bibliographie|Sources(?:\s*\/\s*Publications)?|Publications|Bibliography|References)\s*:\s*\n?/i;
+    const footnoteSeparator = /\n\s*_{3,}\s*\n/;
+
+    let description = text;
+    let footnotes = '';
+    let sources = '';
+
+    const footnoteParts = description.split(footnoteSeparator);
+    if (footnoteParts.length >= 2) {
+      description = footnoteParts[0];
+      const rest = footnoteParts.slice(1).join('\n________________\n');
+
+      const sourcesIndex = rest.search(sourcesMarker);
+      if (sourcesIndex !== -1) {
+        footnotes = rest.slice(0, sourcesIndex);
+        sources = rest.slice(sourcesIndex).replace(sourcesMarker, '');
+      } else {
+        footnotes = rest;
+      }
+    } else {
+      const sourcesIndex = description.search(sourcesMarker);
+      if (sourcesIndex !== -1) {
+        const before = description.slice(0, sourcesIndex);
+        sources = description.slice(sourcesIndex).replace(sourcesMarker, '');
+        description = before;
+      }
+    }
+
+    return {
+      description: description.trim(),
+      footnotes: footnotes.trim(),
+      sources: sources.trim(),
     };
   }
 
