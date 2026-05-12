@@ -353,16 +353,19 @@ class LidoFormatter extends BaseFormatter {
     const lostArtUrl = isLost
       ? this.extractLostArtUrlFromProvenance(languageData.de.provenance)
       : '';
-    const repositoryWorkIdType = isLost
-      ? 'Lost Art ID'
-      : 'http://terminology.lido-schema.org/lido00113';
-    const repositoryWorkIdValue = (isLost && lostArtUrl)
-      ? lostArtUrl
-      : inventoryNumber.split('_').pop();
 
-    repositorySet.ele('lido:workID', {
-      'lido:type': repositoryWorkIdType,
-    }).txt(repositoryWorkIdValue);
+    if (!isLost || lostArtUrl) {
+      const repositoryWorkIdType = isLost
+        ? 'Lost Art ID'
+        : 'http://terminology.lido-schema.org/lido00113';
+      const repositoryWorkIdValue = isLost
+        ? lostArtUrl
+        : inventoryNumber.split('_').pop();
+
+      repositorySet.ele('lido:workID', {
+        'lido:type': repositoryWorkIdType,
+      }).txt(repositoryWorkIdValue);
+    }
     //   │  └─ End: lido:workID
 
     //   │  ├─ lido:repositoryLocation (Geographic location with GND place identifier)
