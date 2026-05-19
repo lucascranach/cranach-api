@@ -169,10 +169,10 @@ function getSingleItem(mappings) {
                           if (literatureItem) {
                             return {
                               ...publication,
+                              title: literatureItem.title,
                               authors: literatureItem.authors,
                               publish_location: literatureItem.publish_location,
                               publish_date: literatureItem.publish_date,
-
                             };
                           }
                         }

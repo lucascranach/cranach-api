@@ -1081,7 +1081,17 @@ class LidoFormatter extends BaseFormatter {
         .ele('lido:relatedWork')
         .ele('lido:object')
         .ele('lido:objectNote')
-        .txt(`${publication.authors}, ${publication.title}, ${publication.publish_location}, ${publication.publish_date}, S. ${publication.pageNumber}`)
+        .txt((() => {
+          const stripHtml = (str) => (str ? str.replace(/<[^>]+>/g, '') : str);
+          const parts = [
+            publication.authors,
+            stripHtml(publication.title),
+            publication.publish_location,
+            publication.publish_date,
+          ].filter(Boolean);
+          const pageStr = publication.pageNumber ? `, S. ${publication.pageNumber}` : '';
+          return parts.join(', ') + pageStr;
+        })())
         .up()
         .up()
         .up()
