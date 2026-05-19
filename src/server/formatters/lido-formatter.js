@@ -590,29 +590,30 @@ class LidoFormatter extends BaseFormatter {
 
 
     //   │  └─ lido:objectDescriptionSet (Provenance)
-    const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-      'lido:type': 'http://terminology.lido-schema.org/lido01110',
-    });
-
-
     const provenanceDe = this.extractTextAndCitation(languageData.de.provenance);
     const provenanceEn = this.extractTextAndCitation(languageData.en.provenance);
 
-    if (languageData.de.provenance) {
-      provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'de',
-      }).txt(provenanceDe.text.replace(/^- /, ''));
-    }
+    if (languageData.de.provenance || languageData.en.provenance || provenanceDe.citation !== '') {
+      const provenanceDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+        'lido:type': 'http://terminology.lido-schema.org/lido01110',
+      });
 
-    if (languageData.en.provenance) {
-      provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'en',
-      }).txt(provenanceEn.text);
-    }
+      if (languageData.de.provenance) {
+        provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(provenanceDe.text.replace(/^- /, ''));
+      }
 
-    if (provenanceDe.citation !== '') {
-      provenanceDescriptionSet.ele('lido:sourceDescriptiveNote')
-        .txt(provenanceDe.citation);
+      if (languageData.en.provenance) {
+        provenanceDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'en',
+        }).txt(provenanceEn.text);
+      }
+
+      if (provenanceDe.citation !== '') {
+        provenanceDescriptionSet.ele('lido:sourceDescriptiveNote')
+          .txt(provenanceDe.citation);
+      }
     }
 
 
