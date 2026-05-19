@@ -514,20 +514,38 @@ class LidoFormatter extends BaseFormatter {
 
     //   │  ├─ lido:objectDescriptionSet (Footnotes / Anmerkungen)
     if (splitDe.footnotes || splitEn.footnotes) {
-      const footnotesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-        'lido:type': 'Anmerkung',
-      });
+      const deAnnotations = this.parseAnnotations(splitDe.footnotes);
+      const enAnnotations = this.parseAnnotations(splitEn.footnotes);
 
-      if (splitDe.footnotes) {
-        footnotesDescriptionSet.ele('lido:descriptiveNoteValue', {
-          'xml:lang': 'de',
-        }).txt(splitDe.footnotes);
-      }
+      if (deAnnotations.length > 0 || enAnnotations.length > 0) {
+        const deMap = new Map(deAnnotations.map(a => [a.number, a.text]));
+        const enMap = new Map(enAnnotations.map(a => [a.number, a.text]));
+        const allNumbers = [...new Set([...deMap.keys(), ...enMap.keys()])].sort((a, b) => a - b);
 
-      if (splitEn.footnotes) {
-        footnotesDescriptionSet.ele('lido:descriptiveNoteValue', {
-          'xml:lang': 'en',
-        }).txt(splitEn.footnotes);
+        for (const num of allNumbers) {
+          const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+            'lido:type': 'Anmerkung',
+            'lido:sortedSetOrder': num,
+          });
+
+          if (deMap.has(num)) {
+            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deMap.get(num));
+          }
+          if (enMap.has(num)) {
+            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enMap.get(num));
+          }
+        }
+      } else {
+        const footnotesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+          'lido:type': 'Anmerkung',
+        });
+
+        if (splitDe.footnotes) {
+          footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(splitDe.footnotes);
+        }
+        if (splitEn.footnotes) {
+          footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(splitEn.footnotes);
+        }
       }
     }
 
@@ -1620,6 +1638,25 @@ class LidoFormatter extends BaseFormatter {
       text: text.trim(),
       citation: '',
     };
+  }
+
+  /**
+   * Split a footnotes string into individual numbered annotations.
+   * Recognises entries starting with [n] at the beginning of a line.
+   * Returns an empty array when no numbered entries are found.
+   *
+   * @param {string} text - The footnotes block (already trimmed)
+   * @returns {Array<{number: number, text: string}>}
+   */
+  parseAnnotations(text) {
+    if (!text) return [];
+    const parts = text.split(/(?=^\[\d+\])/m);
+    const annotations = parts.map(part => {
+      const match = part.match(/^\[(\d+)\]\s*([\s\S]*)/);
+      if (!match) return null;
+      return { number: parseInt(match[1], 10), text: match[2].trim() };
+    }).filter(Boolean);
+    return annotations;
   }
 
   /**
