@@ -105,3 +105,5 @@ dist
 
 # macOS DS_Store file
 .DS_Store
+
+generated-xml-files
