@@ -1634,9 +1634,17 @@ class LidoFormatter extends BaseFormatter {
   extractTextAndCitation(text) {
     if (!text) return { text: '', citation: '' };
 
-    // Match optional newline/whitespace, then [content] at the end
-    const match = text.match(/^(.*?)\s*\n?\s*\[([^\]]+)\]\s*$/s);
+    // Match [label](url) markdown link at end
+    const markdownMatch = text.match(/^(.*?)\s*\n?\s*(\[[^\]]+\]\([^)]+\))\s*$/s);
+    if (markdownMatch) {
+      return {
+        text: markdownMatch[1].trim(),
+        citation: markdownMatch[2].trim(),
+      };
+    }
 
+    // Match [label] at end (no URL)
+    const match = text.match(/^(.*?)\s*\n?\s*\[([^\]]+)\]\s*$/s);
     if (match) {
       return {
         text: match[1].trim(),

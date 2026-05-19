@@ -220,12 +220,13 @@ function getObjectWorkTypeURI(id) {
 
     // Woodcut
     case '010505':
-      return 'http://vocab.getty.edu/aat/300041410';
+      return 'http://vocab.getty.edu/aat/300041405';
 
     default:
       return '';
   }
 }
+
 
 /**
  * Get Getty AAT URI for classification

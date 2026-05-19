@@ -709,6 +709,7 @@ const referencedFieldsToCopy = [
   'involved_persons_referenced',
   'inscription',
   'objectworktype_id',
+  'objectworktype_value',
   'signature',
   'title',
 
