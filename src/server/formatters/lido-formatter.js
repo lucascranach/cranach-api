@@ -820,12 +820,12 @@ class LidoFormatter extends BaseFormatter {
           const eventActor = event.ele('lido:eventActor');
           eventActor.ele('lido:displayActorInRole', {
             'xml:lang': 'de',
-          }).txt(hasAttribution ? `zugeschrieben an ${actorNameDe}` : actorNameDe);
+          }).txt(hasAttribution ? `${actorNameDe}, zugeschrieben an` : actorNameDe);
 
           if (actorNameEn) {
             eventActor.ele('lido:displayActorInRole', {
               'xml:lang': 'en',
-            }).txt(hasAttribution ? `attributed to ${actorNameEn}` : actorNameEn);
+            }).txt(hasAttribution ? `${actorNameEn}, attributed to` : actorNameEn);
           }
 
           const actorInRole = eventActor.ele('lido:actorInRole');
