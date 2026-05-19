@@ -517,34 +517,21 @@ class LidoFormatter extends BaseFormatter {
       const deAnnotations = this.parseAnnotations(splitDe.footnotes);
       const enAnnotations = this.parseAnnotations(splitEn.footnotes);
 
-      if (deAnnotations.length > 0 || enAnnotations.length > 0) {
-        const deMap = new Map(deAnnotations.map(a => [a.number, a.text]));
-        const enMap = new Map(enAnnotations.map(a => [a.number, a.text]));
-        const allNumbers = [...new Set([...deMap.keys(), ...enMap.keys()])].sort((a, b) => a - b);
+      const deMap = new Map(deAnnotations.map(a => [a.number, a.text]));
+      const enMap = new Map(enAnnotations.map(a => [a.number, a.text]));
+      const allNumbers = [...new Set([...deMap.keys(), ...enMap.keys()])].sort((a, b) => a - b);
 
-        for (const num of allNumbers) {
-          const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-            'lido:type': 'Anmerkung',
-            'lido:sortedSetOrder': num,
-          });
-
-          if (deMap.has(num)) {
-            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deMap.get(num));
-          }
-          if (enMap.has(num)) {
-            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enMap.get(num));
-          }
-        }
-      } else {
-        const footnotesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-          'lido:type': 'Anmerkung',
+      for (const num of allNumbers) {
+        const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+          'lido:type': 'Forschungsgeschichte',
+          'lido:sortedSetOrder': num,
         });
 
-        if (splitDe.footnotes) {
-          footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(splitDe.footnotes);
+        if (deMap.has(num)) {
+          annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deMap.get(num));
         }
-        if (splitEn.footnotes) {
-          footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(splitEn.footnotes);
+        if (enMap.has(num)) {
+          annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enMap.get(num));
         }
       }
     }
