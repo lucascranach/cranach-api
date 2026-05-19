@@ -1322,14 +1322,12 @@ class LidoFormatter extends BaseFormatter {
         addRepresentation(image.sizes.small, 'http://terminology.lido-schema.org/lido00451');
       }
 
-      //   │  ├─ lido:resourceRepresentation (thumbnail medium — lido00451)
-      if (image.sizes.medium) {
+      //   │  ├─ lido:resourceRepresentation (thumbnail medium — lido00451 / high-resolution fallback — lido00464)
+      if (image.sizes.large) {
         addRepresentation(image.sizes.medium, 'http://terminology.lido-schema.org/lido00451');
-      }
-
-      //   │  ├─ lido:resourceRepresentation (high-resolution — lido00464)
-      if (image.sizes.origin) {
         addRepresentation(image.sizes.large, 'http://terminology.lido-schema.org/lido00464');
+      } else if (image.sizes.medium) {
+        addRepresentation(image.sizes.medium, 'http://terminology.lido-schema.org/lido00464');
       }
 
       //   │  ├─ lido:resourceType (digital image)
