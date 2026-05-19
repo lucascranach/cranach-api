@@ -1329,7 +1329,7 @@ class LidoFormatter extends BaseFormatter {
 
       //   │  ├─ lido:resourceRepresentation (high-resolution — lido00464)
       if (image.sizes.origin) {
-        addRepresentation(image.sizes.origin, 'http://terminology.lido-schema.org/lido00464');
+        addRepresentation(image.sizes.large, 'http://terminology.lido-schema.org/lido00464');
       }
 
       //   │  ├─ lido:resourceType (digital image)
