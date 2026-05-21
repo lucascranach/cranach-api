@@ -512,26 +512,6 @@ class LidoFormatter extends BaseFormatter {
         .txt(descriptiveNoteValueDe.citation);
     }
 
-    //   │  ├─ lido:objectDescriptionSet (Additional text information)
-    if (languageData.de.additional_text_information_text
-      && languageData.de.additional_text_information_text[0]
-      && languageData.de.additional_text_information_text[0].text) {
-      const additionalTextInfoDe = this.extractTextAndCitation(
-        languageData.de.additional_text_information_text[0].text,
-      );
-
-      const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
-
-      additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'de',
-      }).txt(additionalTextInfoDe.text);
-
-      if (additionalTextInfoDe.citation !== '') {
-        additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
-          .txt(additionalTextInfoDe.citation);
-      }
-    }
-
     //   │  ├─ lido:objectDescriptionSet (Footnotes / Anmerkungen)
     if (splitDe.footnotes || splitEn.footnotes) {
       const deAnnotations = this.parseAnnotations(splitDe.footnotes);
@@ -545,7 +525,6 @@ class LidoFormatter extends BaseFormatter {
         for (const num of allNumbers) {
           const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
             'lido:type': 'Forschungsgeschichte',
-            'lido:sortedSetOrder': num,
           });
 
           if (deMap.has(num)) {
@@ -566,6 +545,28 @@ class LidoFormatter extends BaseFormatter {
         if (splitEn.footnotes) {
           footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(splitEn.footnotes);
         }
+      }
+    }
+
+    //   │  ├─ lido:objectDescriptionSet (Additional text information / Forschungsgeschichte)
+    if (languageData.de.additional_text_information_text
+      && languageData.de.additional_text_information_text[0]
+      && languageData.de.additional_text_information_text[0].text) {
+      const additionalTextInfoDe = this.extractTextAndCitation(
+        languageData.de.additional_text_information_text[0].text,
+      );
+
+      const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+        'lido:type': 'Forschungsgeschichte',
+      });
+
+      additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
+        'xml:lang': 'de',
+      }).txt(additionalTextInfoDe.text);
+
+      if (additionalTextInfoDe.citation !== '') {
+        additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
+          .txt(additionalTextInfoDe.citation);
       }
     }
 
