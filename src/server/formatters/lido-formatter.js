@@ -524,7 +524,7 @@ class LidoFormatter extends BaseFormatter {
       if (allNumbers.length > 0) {
         for (const num of allNumbers) {
           const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-            'lido:type': 'Forschungsgeschichte',
+            'lido:type': 'Anmerkung',
           });
 
           if (deMap.has(num)) {
@@ -550,24 +550,25 @@ class LidoFormatter extends BaseFormatter {
 
     //   │  ├─ lido:objectDescriptionSet (Additional text information / Forschungsgeschichte)
     if (languageData.de.additional_text_information_text
-      && languageData.de.additional_text_information_text[0]
-      && languageData.de.additional_text_information_text[0].text) {
-      const additionalTextInfoDe = this.extractTextAndCitation(
-        languageData.de.additional_text_information_text[0].text,
-      );
+      && languageData.de.additional_text_information_text.length > 0) {
+      languageData.de.additional_text_information_text.forEach((item) => {
+        if (!item.text) return;
 
-      const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-        'lido:type': 'Forschungsgeschichte',
+        const additionalTextInfoDe = this.extractTextAndCitation(item.text);
+
+        const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+          'lido:type': 'Forschungsgeschichte',
+        });
+
+        additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(additionalTextInfoDe.text);
+
+        if (additionalTextInfoDe.citation !== '') {
+          additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
+            .txt(additionalTextInfoDe.citation);
+        }
       });
-
-      additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'de',
-      }).txt(additionalTextInfoDe.text);
-
-      if (additionalTextInfoDe.citation !== '') {
-        additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
-          .txt(additionalTextInfoDe.citation);
-      }
     }
 
     //   │  ├─ lido:objectDescriptionSet (Sources / Quellen)
