@@ -107,3 +107,4 @@ dist
 .DS_Store
 
 generated-xml-files
+elasticsearch-import-json-files
