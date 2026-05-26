@@ -53,6 +53,11 @@ class Aggregator {
       }
       const { buckets } = currentAggregation;
 
+      // Skip aggregations that don't have buckets (e.g., sum, value_count, etc.)
+      if (!buckets) {
+        return;
+      }
+
       // Filter out empty buckets
       let currentFilter = buckets.filter((bucket) => {
         if (bucket[aggregationKey].buckets.length > 0) {
@@ -129,7 +134,8 @@ class Aggregator {
     const { esAggregation } = data;
 
     const currentAggregation = esAggregation.find(
-      (aggregation) => aggregation.value === value.id,
+      (aggregation) => aggregation.value === value.id
+        || aggregation.display_value === value.id,
     );
 
     if (currentAggregation) {
