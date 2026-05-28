@@ -480,8 +480,6 @@ class LidoFormatter extends BaseFormatter {
 
     //   ├─ lido:objectDescriptionWrap
     const objectDescriptionWrap = objectIdentificationWrap.ele('lido:objectDescriptionWrap');
-    //   │  ├─ lido:objectDescriptionSet (general description)
-    const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
 
     // extractTextAndCitation of descriptive_note_value
 
@@ -495,21 +493,35 @@ class LidoFormatter extends BaseFormatter {
     const splitDe = this.splitDescriptiveNote(descriptiveNoteValueDe.text);
     const splitEn = this.splitDescriptiveNote(descriptiveNoteValueEn.text);
 
-    if (splitDe.description) {
-      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'de',
-      }).txt(splitDe.description);
-    }
+    //   │  ├─ lido:objectDescriptionSet (general description - one per paragraph)
+    const deParagraphs = splitDe.description
+      ? splitDe.description.split(/\n\n+/).map(p => p.trim()).filter(p => p)
+      : [];
+    const enParagraphs = splitEn.description
+      ? splitEn.description.split(/\n\n+/).map(p => p.trim()).filter(p => p)
+      : [];
 
-    if (splitEn.description) {
-      objectDescriptionSet.ele('lido:descriptiveNoteValue', {
-        'xml:lang': 'en',
-      }).txt(splitEn.description);
-    }
+    const paragraphCount = Math.max(deParagraphs.length, enParagraphs.length, 1);
 
-    if (descriptiveNoteValueDe.citation !== '') {
-      objectDescriptionSet.ele('lido:sourceDescriptiveNote')
-        .txt(descriptiveNoteValueDe.citation);
+    for (let i = 0; i < paragraphCount; i++) {
+      const objectDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet');
+
+      if (deParagraphs[i]) {
+        objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'de',
+        }).txt(deParagraphs[i]);
+      }
+
+      if (enParagraphs[i]) {
+        objectDescriptionSet.ele('lido:descriptiveNoteValue', {
+          'xml:lang': 'en',
+        }).txt(enParagraphs[i]);
+      }
+
+      if (i === 0 && descriptiveNoteValueDe.citation !== '') {
+        objectDescriptionSet.ele('lido:sourceDescriptiveNote')
+          .txt(descriptiveNoteValueDe.citation);
+      }
     }
 
     //   │  ├─ lido:objectDescriptionSet (Footnotes / Anmerkungen)
