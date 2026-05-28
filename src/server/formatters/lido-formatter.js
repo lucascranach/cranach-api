@@ -162,7 +162,7 @@ class LidoFormatter extends BaseFormatter {
       'lido:type': 'http://terminology.lido-schema.org/lido00100',
       'lido:source': 'https://d-nb.info/gnd/1073160734',
     // Normdatei::Organisation.::Inventarnummer​
-    }).txt(`${publishedIDType}::${publishedIDValue}::${inventoryNumber.split('_').pop()}`);
+    }).txt(`${publishedIDType}::${publishedIDValue}::${inventoryNumber.split('_').slice(2).join('_')}`);
 
     // ╔═══════════════════════════════════════════════════════════════════════════╗
     // ║  lido:descriptiveMetadata                                                 ║
@@ -360,7 +360,7 @@ class LidoFormatter extends BaseFormatter {
         : 'http://terminology.lido-schema.org/lido00113';
       const repositoryWorkIdValue = isLost
         ? lostArtUrl
-        : inventoryNumber.split('_').pop();
+        : inventoryNumber.split('_').slice(2).join('_');
 
       repositorySet.ele('lido:workID', {
         'lido:type': repositoryWorkIdType,
@@ -427,7 +427,7 @@ class LidoFormatter extends BaseFormatter {
 
       ownerRepositorySet.ele('lido:workID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00113',
-      }).txt(inventoryNumber.split('_').pop());
+      }).txt(inventoryNumber.split('_').slice(2).join('_'));
     }
     //   │  └─ End: lido:repositorySet (former owner)
     //   └─ End: lido:repositoryWrap
