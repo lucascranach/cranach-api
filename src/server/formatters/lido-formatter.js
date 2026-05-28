@@ -517,21 +517,27 @@ class LidoFormatter extends BaseFormatter {
       const deAnnotations = this.parseAnnotations(splitDe.footnotes);
       const enAnnotations = this.parseAnnotations(splitEn.footnotes);
 
-      const deMap = new Map(deAnnotations.map(a => [a.number, a.text]));
-      const enMap = new Map(enAnnotations.map(a => [a.number, a.text]));
+      const deMap = new Map(deAnnotations.map(a => [a.number, a]));
+      const enMap = new Map(enAnnotations.map(a => [a.number, a]));
       const allNumbers = [...new Set([...deMap.keys(), ...enMap.keys()])].sort((a, b) => a - b);
 
       if (allNumbers.length > 0) {
         for (const num of allNumbers) {
+          const deAnnotation = deMap.get(num);
+          const enAnnotation = enMap.get(num);
+          const rawText = (deAnnotation || enAnnotation).rawText;
+          const numMatch = rawText.match(/^\[(\d+)\]/);
+          const typeLabel = numMatch ? `Anm. ${numMatch[1]}` : 'Anmerkung';
+
           const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-            'lido:type': 'Anmerkung',
+            'lido:type': typeLabel,
           });
 
-          if (deMap.has(num)) {
-            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deMap.get(num));
+          if (deAnnotation) {
+            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deAnnotation.text);
           }
-          if (enMap.has(num)) {
-            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enMap.get(num));
+          if (enAnnotation) {
+            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enAnnotation.text);
           }
         }
       } else {
@@ -1673,7 +1679,7 @@ class LidoFormatter extends BaseFormatter {
     const annotations = parts.map(part => {
       const match = part.match(/^\[(\d+)\]\s*([\s\S]*)/);
       if (!match) return null;
-      return { number: parseInt(match[1], 10), text: match[2].trim() };
+      return { number: parseInt(match[1], 10), rawText: part.trim(), text: match[2].trim() };
     }).filter(Boolean);
     return annotations;
   }
