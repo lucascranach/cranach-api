@@ -10,6 +10,7 @@ const {
   getObjectWorkTypeURI,
   getClassificationURI,
 } = require('../mappings/authority-files');
+const { logUnknownSource, logKnownSource } = require('../utils/unknownSourcesLogger');
 
 /**
  * LIDO XML formatter for cultural heritage objects
@@ -1389,6 +1390,9 @@ class LidoFormatter extends BaseFormatter {
       const sourceName = (imageMetadata.source?.de || '').replace(/^©\s*/, '');
       const createdName = (imageMetadata.created?.de || '').replace(/^©\s*/, '') || 'Cranach Digital Archive';
       const sourceRepoData = getRepositoryID(sourceName);
+
+      if (sourceRepoData.repositoryID === 'unbekannt') logUnknownSource(sourceName, inventoryNumber);
+      else logKnownSource(sourceName, inventoryNumber);
 
       // resourceSource and rightsHolder must always refer to the same institution.
       // Use sourceName only when it resolves to a known repository; otherwise fall back to TH Köln.
