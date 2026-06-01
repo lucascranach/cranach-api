@@ -711,16 +711,16 @@ class LidoFormatter extends BaseFormatter {
       // Resolve materialsTechData first so its terms can be used in displayMaterialsTech
       const materialsTechData = getMaterialsTechData(languageData.de.objectworktype_value);
 
-      if (languageData.de.objectworktype_value) {
+      if (languageData.de.display_materials_tech) {
         objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
           'xml:lang': 'de',
-        }).txt(materialsTechData ? materialsTechData.termDe : languageData.de.objectworktype_value);
+        }).txt(languageData.de.display_materials_tech);
       }
 
-      if (languageData.en.objectworktype_value) {
+      if (languageData.en.display_materials_tech) {
         objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
           'xml:lang': 'en',
-        }).txt(materialsTechData ? materialsTechData.termEn : languageData.en.objectworktype_value);
+        }).txt(languageData.en.display_materials_tech);
       }
 
       // Add lido:materialsTech based on objectworktype_value
