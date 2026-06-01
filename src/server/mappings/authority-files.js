@@ -118,6 +118,10 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://culture.ld.admin.ch/isil/CH-000511-9',
       isil: 'CH-000511-9',
     },
+    'Frick Art Reference Library, New York': {
+      repositoryID: 'https://d-nb.info/gnd/5124895-5',
+      gnd: '5124895-5',
+    },
     'Germanisches Nationalmuseum, Nürnberg': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-105615',
       isil: 'DE-MUS-105615',
@@ -153,6 +157,14 @@ function getRepositoryID(institutionName) {
     'Museum of Fine Arts, Houston': {
       repositoryID: 'https://d-nb.info/gnd/50293-5',
       gnd: '50293-5',
+    },
+    'The Museum of Fine Arts, Houston': {
+      repositoryID: 'https://d-nb.info/gnd/50293-5',
+      gnd: '50293-5',
+    },
+    'Palais des Beaux-Arts, Lille': {
+      repositoryID: 'https://d-nb.info/gnd/108328665X',
+      gnd: '108328665X',
     },
     'Staatliche Graphische Sammlung München': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
@@ -191,6 +203,10 @@ function getRepositoryID(institutionName) {
       isil: 'DE-MUS-032517',
     },
     'Cranach Digital Archive': {
+      repositoryID: 'https://d-nb.info/gnd/1073160734',
+      gnd: '1073160734',
+    },
+    'Cranach Digital Archive (cda_)': {
       repositoryID: 'https://d-nb.info/gnd/1073160734',
       gnd: '1073160734',
     },
