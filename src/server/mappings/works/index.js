@@ -310,9 +310,9 @@ const mappings = [
   // Besitzer
   {
     display_value: 'repository.keyword',
-    showAsFilter: false,
+    showAsFilter: true,
     showAsResult: true,
-    filter_types: [],
+    filter_types: ['equals', 'notequals', 'similar'],
     key: 'repository',
     value: 'repository.keyword',
     searchTermField: true,
