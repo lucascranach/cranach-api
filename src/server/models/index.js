@@ -135,6 +135,18 @@ async function getItems(mappings, req, params) {
     }
   });
 
+  // On non-geodata routes exclude real graphics, on geodata routes include both
+  if (!params.geoData) {
+    queryBuilder.mustNotQueryParams.push({
+      bool: {
+        must: [
+          { terms: { 'metadata.entityType.keyword': ['GRAPHIC'] } }, // only applies to graphics, not to paintings or drawings
+          { term: { isVirtual: false } },
+        ],
+      },
+    });
+  }
+
   // Exclude certain inventory numbers
   const excludedInventoryNumbers = Mappings.excludedInvenoryNumbers;
   const mappingInventoryNumber = mappings.getMappingByKey('inventory_number');
