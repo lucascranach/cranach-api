@@ -114,10 +114,10 @@ function validateFilterParams(req, res, mappings) {
     }
     let filterValues = [];
 
-    // Multi-value filters are separated by ',' by default. Only LIDO requests
-    // (req.api.format === 'lido') use '|' as separator, because filter values
-    // for LIDO (e.g. repository names) may themselves contain commas.
-    const multiValueSeparator = req.api.format === 'lido' ? '|' : ',';
+    // Multi-value filters are separated by ',' by default. The 'repository'
+    // filter uses '|' as separator instead, because repository names may
+    // themselves contain commas.
+    const multiValueSeparator = filterKey === 'repository' ? '|' : ',';
 
     // Ranges and Wildcard search allows only one filter value
     if ((filterTypeGroup === 'range') || (filterTypeGroup === 'notrange') || (filterTypeGroup === 'differ')) {
