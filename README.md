@@ -90,6 +90,13 @@ If searching by wildcard or ranges, only one value is possible.
 
 https://mivs02.gm.fh-koeln.de/?entity_type:neq=PAINTING,GRAPHIC
 
+#### Separator for LIDO requests
+When LIDO data is requested (`format=lido` or `Accept: application/lido+xml`),
+the values must be separated by a pipe `|` instead of a comma. This is required
+because LIDO filter values (e.g. repository names) may themselves contain commas.
+
+https://mivs02.gm.fh-koeln.de/?format=lido&repository:eq=Staatliche Museen, Berlin|Kunstmuseum Basel
+
 ## Items sorted by a certain field
 Returns a list of items sorted by certain field ascending or descending.
 
