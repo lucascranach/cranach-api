@@ -135,17 +135,15 @@ async function getItems(mappings, req, params) {
     }
   });
 
-  // On non-geodata routes exclude real graphics, on geodata routes include both
-  if (!params.geoData) {
-    queryBuilder.mustNotQueryParams.push({
-      bool: {
-        must: [
-          { terms: { 'metadata.entityType.keyword': ['GRAPHIC'] } }, // only applies to graphics, not to paintings or drawings
-          { term: { isVirtual: false } },
-        ],
-      },
-    });
-  }
+  // Geodata routes show only real graphics, standard routes show only virtual graphics
+  queryBuilder.mustNotQueryParams.push({
+    bool: {
+      must: [
+        { terms: { 'metadata.entityType.keyword': ['GRAPHIC'] } }, // only applies to graphics, not to paintings or drawings
+        { term: { isVirtual: params.geoData ? true : false } },
+      ],
+    },
+  });
 
   // Exclude certain inventory numbers
   const excludedInventoryNumbers = Mappings.excludedInvenoryNumbers;
