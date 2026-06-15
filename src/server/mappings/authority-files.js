@@ -103,6 +103,14 @@ function getPersonGND(personName) {
  * @param {string} institutionName - Name of the institution (e.g., 'Albertina, Wien')
  * @returns {Object} Object with repositoryID and either isil or gnd properties,
  *   or default object if not found
+ *
+ * Optionally an entry may carry `displayNameDe` and/or `displayNameEn`. These
+ * hold the institution name that should ultimately be written into the LIDO
+ * files and deliberately decouple the LIDO output from the institution name
+ * delivered via the EXIF data, which contains inconsistencies and errors (e.g.
+ * 'Cranach Digital Archive (cda_)' should be written as the corrected
+ * 'Cranach Digital Archive (cda)'). When a field is absent, the lido-formatter
+ * falls back to the EXIF value. These fields are maintained manually.
  */
 function getRepositoryID(institutionName) {
   const repositoryMapping = {
@@ -110,9 +118,29 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://d-nb.info/gnd/2012512-4',
       gnd: '2012512-4',
     },
+    'Albertina, Wien;': {
+      repositoryID: 'https://d-nb.info/gnd/2012512-4',
+      gnd: '2012512-4',
+      dipsplayNameDe: 'Albertina, Wien',
+      displayNameEn: 'Albertina, Wien',
+    },
     'British Museum': {
       repositoryID: 'https://d-nb.info/gnd/38379-X',
       gnd: '38379-X',
+      dipsplayNameDe: 'British Museum, London',
+      displayNameEn: 'British Museum, London',
+    },
+    'The Trustees of the British Museum': {
+      repositoryID: 'https://d-nb.info/gnd/38379-X',
+      gnd: '38379-X',
+      dipsplayNameDe: 'British Museum, London',
+      displayNameEn: 'British Museum, London',
+    },
+    'The Trustees of the British Museum. Shared under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0) licence.': {
+      repositoryID: 'https://d-nb.info/gnd/38379-X',
+      gnd: '38379-X',
+      dipsplayNameDe: 'British Museum, London',
+      displayNameEn: 'British Museum, London',
     },
     'Eidgenössische Technische Hochschule Zürich': {
       repositoryID: 'https://culture.ld.admin.ch/isil/CH-000511-9',
@@ -126,9 +154,21 @@ function getRepositoryID(institutionName) {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-105615',
       isil: 'DE-MUS-105615',
     },
+    'Germanisches Nationalmuseum, Mp 14682': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-105615',
+      isil: 'DE-MUS-105615',
+      displayNameDe: 'Germanisches Nationalmuseum, Nürnberg',
+      displayNameEn: 'Germanisches Nationalmuseum, Nürnberg',
+    },
     'Hamburger Kunsthalle': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-059210',
       isil: 'DE-MUS-059210',
+    },
+    'Hamburger Kunsthalle / bpk': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-059210',
+      isil: 'DE-MUS-059210',
+      dipslayNameDe: 'Hamburger Kunsthalle',
+      displayNameEn: 'Hamburger Kunsthalle',
     },
     'Herzog Anton Ulrich-Museum, Braunschweig': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-026819',
@@ -138,9 +178,50 @@ function getRepositoryID(institutionName) {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
       isil: 'DE-MUS-162514',
     },
+    'Herzog Augugst Bibliothek, Wolfenbüttel': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
+      isil: 'DE-MUS-162514',
+      displayNameDe: 'Herzog August Bibliothek Wolfenbüttel',
+      displayNameEn: 'Herzog August Bibliothek Wolfenbüttel',
+
+    },
+    'Herzog August Bibliothek Wolfenbüttel;': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
+      isil: 'DE-MUS-162514',
+      displayNameDe: 'Herzog August Bibliothek Wolfenbüttel',
+      displayNameEn: 'Herzog August Bibliothek Wolfenbüttel',
+
+    },
+    'Herzog Augugst Bibliothek Wolfenbüttel': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
+      isil: 'DE-MUS-162514',
+      displayNameDe: 'Herzog August Bibliothek Wolfenbüttel',
+      displayNameEn: 'Herzog August Bibliothek Wolfenbüttel',
+
+    },
+    'Herzog Augugst Bibliothek, Wolfenbüttel;': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
+      isil: 'DE-MUS-162514',
+      displayNameDe: 'Herzog August Bibliothek Wolfenbüttel',
+      displayNameEn: 'Herzog August Bibliothek Wolfenbüttel',
+
+    },
+    'Herzog Augugst Bibliothek, Wolfenbüttel;': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-162514',
+      isil: 'DE-MUS-162514',
+      displayNameDe: 'Herzog August Bibliothek Wolfenbüttel',
+      displayNameEn: 'Herzog August Bibliothek Wolfenbüttel',
+
+    },
     'Kunsthalle Bremen - Der Kunstverein in Bremen': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-027614',
       isil: 'DE-MUS-027614',
+    },
+    'Kunsthalle Bremen - Der Kunstverein in Bremen, Kupferstichkabinett': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-027614',
+      isil: 'DE-MUS-027614',
+      dipsplayNameDe: 'Kunsthalle Bremen - Der Kunstverein in Bremen',
+      displayNameEn: 'Kunsthalle Bremen - Der Kunstverein in Bremen',
     },
     'Kunsthaus Zürich': {
       repositoryID: 'https://culture.ld.admin.ch/isil/CH-001899-9',
@@ -154,6 +235,18 @@ function getRepositoryID(institutionName) {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-204113',
       isil: 'DE-MUS-204113',
     },
+    'Kurpfälzisches Museum Heidelberg, Foto: Knut Gattner': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-204113',
+      isil: 'DE-MUS-204113',
+      dipsplayNameDe: 'Kurpfälzisches Museum Heidelberg',
+      displayNameEn: 'Kurpfälzisches Museum Heidelberg',
+    },
+    'Kurpfälzisches Museum Heidelberg, Foto: Kurt Gattner': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-204113',
+      isil: 'DE-MUS-204113',
+      dipsplayNameDe: 'Kurpfälzisches Museum Heidelberg',
+      displayNameEn: 'Kurpfälzisches Museum Heidelberg',
+    },
     'Museum of Fine Arts, Houston': {
       repositoryID: 'https://d-nb.info/gnd/50293-5',
       gnd: '50293-5',
@@ -166,18 +259,85 @@ function getRepositoryID(institutionName) {
       repositoryID: 'https://d-nb.info/gnd/108328665X',
       gnd: '108328665X',
     },
+    'Lille, Palais des Beaux-Arts': {
+      repositoryID: 'https://d-nb.info/gnd/108328665X',
+      gnd: '108328665X',
+      displayNameDe: 'Palais des Beaux-Arts, Lille',
+      displayNameEn: 'Palais des Beaux-Arts, Lille',
+    },
     'Staatliche Graphische Sammlung München': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
       isil: 'DE-2948',
+    },
+    München: {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
+      isil: 'DE-2948',
+      displayNameDe: 'Staatliche Graphische Sammlung München',
+      displayNameEn: 'Staatliche Graphische Sammlung München',
+    },
+    'Copyright (C) Staatliche Graphische Sammlung München': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
+      isil: 'DE-2948',
+      displayNameDe: 'Staatliche Graphische Sammlung München',
+      displayNameEn: 'Staatliche Graphische Sammlung München',
+    },
+    'München; Staatliche graphische Sammlung': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
+      isil: 'DE-2948',
+      displayNameDe: 'Staatliche Graphische Sammlung München',
+      displayNameEn: 'Staatliche Graphische Sammlung München',
+    },
+    'Blauel/Gnamm/ARTOTHEK': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-2948',
+      isil: 'DE-2948',
+      displayNameDe: 'Staatliche Graphische Sammlung München',
+      displayNameEn: 'Staatliche Graphische Sammlung München',
     },
     'Staatsbibliothek Bamberg': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-22',
       isil: 'DE-22',
     },
-    'Staatliche Museen zu Berlin - Preußischer Kulturbesitz, Kupferstichkabinett': {
+    'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
       isil: 'DE-MUS-018511',
     },
+    'Staatliche Museen zu Berlin - Preußischer Kulturbesitz, Kupferstichkabinett': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+      dipsplayNameDe: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+      displayNameEn: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    },
+    'Staatliche Museen zu Berlin': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+      dipsplayNameDe: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+      displayNameEn: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    },
+    'Staatliche Museen zu Berlin;': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+      dipsplayNameDe: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+      displayNameEn: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    },
+    'Staatliche Museen zu Berlin - Kupferstichkabinett': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+      dipsplayNameDe: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+      displayNameEn: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    },
+    'Staatliche Museen zu Berlin - Kupferstichkabinett.Fotograf: Dietmar Katz': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+      dipsplayNameDe: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+      displayNameEn: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    },
+    'Staatliche Museen zu Berlin, Kupferstichkabinett': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-018511',
+      isil: 'DE-MUS-018511',
+      dipsplayNameDe: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+      displayNameEn: 'Kupferstichkabinett, Staatliche Museen zu Berlin, Stiftung Preußischer Kulturbesitz',
+    },
+
     'Städel Museum Frankfurt a.M.': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-048017',
       isil: 'DE-MUS-048017',
@@ -194,6 +354,18 @@ function getRepositoryID(institutionName) {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-15',
       isil: 'DE-15',
     },
+    'Public Domain Mark 1.0 Universal': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-15',
+      isil: 'DE-15',
+      displayNameDe: 'Universitätsbibliothek Leipzig',
+      displayNameEn: 'Universitätsbibliothek Leipzig',
+    },
+    'Universitätsbibliothek Leipzig;': {
+      repositoryID: 'ld.zdb-services.de/resource/organisations/DE-15',
+      isil: 'DE-15',
+      displayNameDe: 'Universitätsbibliothek Leipzig',
+      displayNameEn: 'Universitätsbibliothek Leipzig',
+    },
     'Kunstsammlungen der Veste Coburg': {
       repositoryID: 'ld.zdb-services.de/resource/organisations/DE-MUS-032517',
       isil: 'DE-MUS-032517',
@@ -205,8 +377,30 @@ function getRepositoryID(institutionName) {
     'Cranach Digital Archive': {
       repositoryID: 'https://d-nb.info/gnd/1073160734',
       gnd: '1073160734',
+      displayNameDe: 'Cranach Digital Archive (cda)',
+      displayNameEn: 'Cranach Digital Archive (cda)',
+    },
+    'cda_ Cranach Digital Archive': {
+      repositoryID: 'https://d-nb.info/gnd/1073160734',
+      gnd: '1073160734',
+      displayNameDe: 'Cranach Digital Archive (cda)',
+      displayNameEn: 'Cranach Digital Archive (cda)',
     },
     'Cranach Digital Archive (cda_)': {
+      repositoryID: 'https://d-nb.info/gnd/1073160734',
+      gnd: '1073160734',
+      displayNameDe: 'Cranach Digital Archive (cda)',
+      displayNameEn: 'Cranach Digital Archive (cda)',
+
+    },
+    'Kritischer Katalog der Luther-Bildnisse (1519-1530)': {
+      repositoryID: 'https://d-nb.info/gnd/1073160734',
+      gnd: '1073160734',
+      displayNameDe: 'Cranach Digital Archive (cda)',
+      displayNameEn: 'Cranach Digital Archive (cda)',
+
+    },
+    'Cranach Digital Archive (cda)': {
       repositoryID: 'https://d-nb.info/gnd/1073160734',
       gnd: '1073160734',
     },

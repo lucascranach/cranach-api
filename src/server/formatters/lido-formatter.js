@@ -146,6 +146,11 @@ class LidoFormatter extends BaseFormatter {
     });
 
     const repositoryData = getRepositoryID(languageData.de.repository);
+    // Use the corrected mapping value for the LIDO output instead of the raw
+    // EXIF repository name (which may contain inconsistencies or errors).
+    // When the mapping has no curated name, fall back to the EXIF value.
+    const repositoryDisplayNameDe = repositoryData.displayNameDe || languageData.de.repository;
+    const repositoryDisplayNameEn = repositoryData.displayNameEn || languageData.en.repository;
     const isLost = inventoryNumber.includes('-Lost');
 
     // ── lido:lidoRecID ──
@@ -316,13 +321,13 @@ class LidoFormatter extends BaseFormatter {
       repositorySet.ele('lido:displayRepository', {
         'xml:lang': 'de',
       }).txt(languageData.de.repository
-        ? `${languageData.de.repository} (${languageData.de.location.term})`
+        ? `${repositoryDisplayNameDe} (${languageData.de.location.term})`
         : languageData.de.location.term);
 
       repositorySet.ele('lido:displayRepository', {
         'xml:lang': 'en',
       }).txt(languageData.en.repository
-        ? `${languageData.en.repository} (${languageData.de.location.term})`
+        ? `${repositoryDisplayNameEn} (${languageData.de.location.term})`
         : languageData.de.location.term);
     }
     //   │  └─ End: lido:displayRepository
@@ -341,13 +346,13 @@ class LidoFormatter extends BaseFormatter {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'de',
       })
-      .txt(languageData.de.repository)
+      .txt(repositoryDisplayNameDe)
       .up()
       .ele('lido:appellationValue', {
         'lido:pref': 'http://terminology.lido-schema.org/lido00169',
         'xml:lang': 'en',
       })
-      .txt(languageData.en.repository);
+      .txt(repositoryDisplayNameEn);
     //   │  └─ End: lido:repositoryName
 
     //   │  ├─ lido:workID (Object identifier within repository)
@@ -401,6 +406,9 @@ class LidoFormatter extends BaseFormatter {
     //   │  ├─ lido:repositorySet (former owner, only for lost works)
     if (isLost && languageData.de.owner) {
       const ownerData = getRepositoryID(languageData.de.owner);
+      const ownerDisplayNameDe = ownerData.displayNameDe || languageData.de.owner;
+      const ownerDisplayNameEn = ownerData.displayNameEn
+        || languageData.en.owner || languageData.de.owner;
       const ownerRepositorySet = repositoryWrap.ele('lido:repositorySet', {
         'lido:type': 'http://terminology.lido-schema.org/lido01019',
       });
@@ -418,13 +426,13 @@ class LidoFormatter extends BaseFormatter {
           'lido:pref': 'http://terminology.lido-schema.org/lido00169',
           'xml:lang': 'de',
         })
-        .txt(languageData.de.owner)
+        .txt(ownerDisplayNameDe)
         .up()
         .ele('lido:appellationValue', {
           'lido:pref': 'http://terminology.lido-schema.org/lido00169',
           'xml:lang': 'en',
         })
-        .txt(languageData.en.owner || languageData.de.owner);
+        .txt(ownerDisplayNameEn);
 
       ownerRepositorySet.ele('lido:workID', {
         'lido:type': 'http://terminology.lido-schema.org/lido00113',
@@ -1400,7 +1408,7 @@ class LidoFormatter extends BaseFormatter {
         ? sourceRepoData
         : getRepositoryID('Technische Hochschule Köln');
       const rightsHolderName = sourceRepoData.repositoryID !== 'unbekannt'
-        ? sourceName
+        ? (sourceRepoData.displayNameDe || sourceName)
         : 'Technische Hochschule Köln';
 
       resourceSet.ele('lido:resourceSource')
