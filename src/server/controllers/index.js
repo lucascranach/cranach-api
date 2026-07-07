@@ -81,10 +81,33 @@ function getSingleItem(mappings) {
                   );
                   if (matchingItem) {
                     fieldsToCopy.forEach((field) => {
-                      if (referencedItem.data[field] !== undefined
-                        && referencedItem.data[field] !== null
-                        && referencedItem.data[field] !== '') {
-                        matchingItem.data[field] = referencedItem.data[field];
+                      const referencedValue = referencedItem.data[field];
+                      if (referencedValue === undefined
+                        || referencedValue === null
+                        || referencedValue === '') {
+                        return;
+                      }
+
+                      const ownValue = matchingItem.data[field];
+
+                      // List-type fields (e.g. publications) are merged rather than
+                      // overwritten: the printed exemplar (Abzug) may have entries of
+                      // its own in addition to the ones already present on the
+                      // referenced object (Werknormdatensatz), so both need to end up
+                      // in the output. All other fields (e.g. single text or number
+                      // values) keep the previous behaviour of being overwritten by
+                      // the referenced object's value.
+                      if (Array.isArray(referencedValue)
+                        && Array.isArray(ownValue) && ownValue.length > 0) {
+                        const existingEntries = new Set(
+                          ownValue.map((entry) => JSON.stringify(entry)),
+                        );
+                        const additionalEntries = referencedValue.filter(
+                          (entry) => !existingEntries.has(JSON.stringify(entry)),
+                        );
+                        matchingItem.data[field] = [...ownValue, ...additionalEntries];
+                      } else {
+                        matchingItem.data[field] = referencedValue;
                       }
                     });
                   }

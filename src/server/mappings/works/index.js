@@ -710,6 +710,7 @@ const referencedFieldsToCopy = [
   'inscription',
   'objectworktype_id',
   'objectworktype_value',
+  'publications',
   'signature',
   'title',
 
