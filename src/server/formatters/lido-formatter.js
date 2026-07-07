@@ -261,16 +261,20 @@ class LidoFormatter extends BaseFormatter {
       .txt(this.removeCdaTag(languageData.en.signature));
     //   │  └─ End: lido:inscriptions (Signatures)
 
-    const inscriptionTranscription = this.extractInscriptionsFromEdition(
-      languageData.de.condition, languageData.de.inscription,
-    );
+    // Inscription transcriptions are only kept for drawings. For prints
+    // (Druckgrafik) they are derived from the WNDs and should be omitted here.
+    if (languageData.de.classification === 'Zeichnung') {
+      const inscriptionTranscription = this.extractInscriptionsFromEdition(
+        languageData.de.condition, languageData.de.inscription,
+      );
 
-    if (inscriptionTranscription) {
-      inscriptionsWrap.ele('lido:inscriptions', {
-        'lido:type': 'http://vocab.getty.edu/aat/300028702',
-      }).ele('lido:inscriptionTranscription', {
-        'xml:lang': 'mul',
-      }).txt(inscriptionTranscription);
+      if (inscriptionTranscription) {
+        inscriptionsWrap.ele('lido:inscriptions', {
+          'lido:type': 'http://vocab.getty.edu/aat/300028702',
+        }).ele('lido:inscriptionTranscription', {
+          'xml:lang': 'mul',
+        }).txt(inscriptionTranscription);
+      }
     }
     //   │  └─ End: lido:inscriptionTranscription
 
