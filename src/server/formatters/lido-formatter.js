@@ -576,27 +576,28 @@ class LidoFormatter extends BaseFormatter {
     }
 
     //   │  ├─ lido:objectDescriptionSet (Additional text information / Forschungsgeschichte)
-    if (languageData.de.additional_text_information_text
-      && languageData.de.additional_text_information_text.length > 0) {
-      languageData.de.additional_text_information_text.forEach((item) => {
-        if (!item.text) return;
-
-        const additionalTextInfoDe = this.extractTextAndCitation(item.text);
-
-        const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-          'lido:type': 'Forschungsgeschichte',
-        });
-
-        additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
-          'xml:lang': 'de',
-        }).txt(additionalTextInfoDe.text);
-
-        if (additionalTextInfoDe.citation !== '') {
-          additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
-            .txt(additionalTextInfoDe.citation);
-        }
-      });
-    }
+    // Currently disabled - uncomment to re-enable this description set.
+    // if (languageData.de.additional_text_information_text
+    //   && languageData.de.additional_text_information_text.length > 0) {
+    //   languageData.de.additional_text_information_text.forEach((item) => {
+    //     if (!item.text) return;
+    //
+    //     const additionalTextInfoDe = this.extractTextAndCitation(item.text);
+    //
+    //     const additionalTextDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+    //       'lido:type': 'Forschungsgeschichte',
+    //     });
+    //
+    //     additionalTextDescriptionSet.ele('lido:descriptiveNoteValue', {
+    //       'xml:lang': 'de',
+    //     }).txt(additionalTextInfoDe.text);
+    //
+    //     if (additionalTextInfoDe.citation !== '') {
+    //       additionalTextDescriptionSet.ele('lido:sourceDescriptiveNote')
+    //         .txt(additionalTextInfoDe.citation);
+    //     }
+    //   });
+    // }
 
     //   │  ├─ lido:objectDescriptionSet (Sources / Quellen)
     if (splitDe.sources || splitEn.sources) {
