@@ -573,14 +573,6 @@ const mappings = [
     filter_types: [],
   },
 
-  // LIDO dimensions referenced printing plate
-  {
-    display_value: 'dimensions',
-    showAsResult: true,
-    filter_types: [],
-    key: 'dimensions_referenced',
-  },
-
   // Inventarnummer
   {
     display_value: 'inventoryNumber.keyword',
@@ -703,7 +695,6 @@ const referencedFieldsToCopy = [
   'additional_text_information_text',
   'catalog_work_references',
   'descriptive_note_value',
-  'dimensions_referenced',
   'inventory_number_referenced',
   'date_referenced',
   'involved_persons_referenced',

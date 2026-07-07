@@ -656,20 +656,12 @@ class LidoFormatter extends BaseFormatter {
     //   ├─ lido:objectMeasurementsWrap
     const objectMeasurementsWrap = objectIdentificationWrap.ele('lido:objectMeasurementsWrap');
 
-    // Extract all dimension pairs from dimensions and dimensions_referenced
-    const dimensionPairsDe = this.extractAllDimensionPairs(languageData.de.dimensions);
-    const dimensionPairsEn = this.extractAllDimensionPairs(languageData.en.dimensions);
-    const dimensionPairsRefDe = this.extractAllDimensionPairs(languageData.de.dimensions_referenced);
-    const dimensionPairsRefEn = this.extractAllDimensionPairs(languageData.en.dimensions_referenced);
-
-    // Combine all pairs: first from dimensions, then unique pairs from dimensions_referenced
-    const existingLabels = new Set(dimensionPairsDe.map((p) => p.label));
-    const uniqueRefPairsDe = dimensionPairsRefDe.filter((p) => !existingLabels.has(p.label));
-    const uniqueRefLabels = new Set(uniqueRefPairsDe.map((p) => p.label));
-    const uniqueRefPairsEn = dimensionPairsRefEn.filter((p) => uniqueRefLabels.has(p.label));
-
-    const allPairsDe = [...dimensionPairsDe, ...uniqueRefPairsDe];
-    const allPairsEn = [...dimensionPairsEn, ...uniqueRefPairsEn];
+    // Dimensions are taken exclusively from the Abzug's own data. The referenced
+    // object (Werknormdatensatz) only holds the min-max range across all of its
+    // Abzüge, so falling back to it here would misrepresent this exemplar's
+    // actual measurements.
+    const allPairsDe = this.extractAllDimensionPairs(languageData.de.dimensions);
+    const allPairsEn = this.extractAllDimensionPairs(languageData.en.dimensions);
 
     //   │  ├─ lido:objectMeasurementsSet (per dimension pair)
     allPairsDe.forEach((pairDe, index) => {
