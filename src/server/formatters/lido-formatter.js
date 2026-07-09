@@ -264,16 +264,29 @@ class LidoFormatter extends BaseFormatter {
     // Inscription transcriptions are only kept for drawings. For prints
     // (Druckgrafik) they are derived from the WNDs and should be omitted here.
     if (languageData.de.classification === 'Zeichnung') {
-      const inscriptionTranscription = this.extractInscriptionsFromEdition(
+      const inscriptionTranscriptionDe = this.extractInscriptionsFromEdition(
         languageData.de.condition, languageData.de.inscription,
       );
+      const inscriptionTranscriptionEn = this.extractInscriptionsFromEdition(
+        languageData.en.condition, languageData.en.inscription,
+      );
 
-      if (inscriptionTranscription) {
-        inscriptionsWrap.ele('lido:inscriptions', {
+      if (inscriptionTranscriptionDe || inscriptionTranscriptionEn) {
+        const inscriptionTranscription = inscriptionsWrap.ele('lido:inscriptions', {
           'lido:type': 'http://vocab.getty.edu/aat/300028702',
-        }).ele('lido:inscriptionTranscription', {
-          'xml:lang': 'mul',
-        }).txt(inscriptionTranscription);
+        });
+
+        if (inscriptionTranscriptionDe) {
+          inscriptionTranscription.ele('lido:inscriptionTranscription', {
+            'xml:lang': 'de',
+          }).txt(inscriptionTranscriptionDe);
+        }
+
+        if (inscriptionTranscriptionEn) {
+          inscriptionTranscription.ele('lido:inscriptionTranscription', {
+            'xml:lang': 'en',
+          }).txt(inscriptionTranscriptionEn);
+        }
       }
     }
     //   │  └─ End: lido:inscriptionTranscription
@@ -1761,28 +1774,36 @@ class LidoFormatter extends BaseFormatter {
   }
 
   /**
-   * Extract inscriptions up to and including the specified edition
-   * @param {string} condition - Condition string (e.g., "I. Zustand; Auflage e)")
+   * Extract inscriptions up to and including the specified edition.
+   * Recognises both the German marker word "Auflage" and its English
+   * translation "Edition" (case-insensitive), optionally prefixed with a
+   * dash and/or suffixed with a colon (e.g. "Auflage d)", "- Edition a):").
+   * @param {string} condition - Condition string (e.g., "I. Zustand; Auflage e)"
+   *   or "Only state; edition e)")
    * @param {string} inscription - Inscription string with multiple editions
    * @returns {string} All inscriptions from the beginning up to and including the specified edition
    * @example
    * // condition: "I. Zustand; Auflage e)"
    * // inscription: "Auflage d)\n...\n\nAuflage e)\n...\n\nAuflage g)\n..."
    * // Returns: "Auflage d)\n...\n\nAuflage e)\n..."
+   * @example
+   * // condition: "Only state; edition e)"
+   * // inscription: "Edition d)\n...\n\nEdition e)\n...\n\nEdition g)\n..."
+   * // Returns: "Edition d)\n...\n\nEdition e)\n..."
    */
   extractInscriptionsFromEdition(condition, inscription) {
     if (!condition || !inscription) return inscription || '';
 
-    // Extract edition letter from condition (e.g., "e" from "Auflage e)")
-    const conditionMatch = condition.match(/Auflage ([a-z])\)/i);
+    // Extract edition letter from condition (e.g., "e" from "Auflage e)" or "edition e)")
+    const conditionMatch = condition.match(/\b(?:Auflage|Edition)\s+([a-z])\)/i);
     if (!conditionMatch) {
       return inscription; // No edition found in condition, return full inscription
     }
 
     const conditionLetter = conditionMatch[1].toLowerCase();
 
-    // Find all editions in the inscription text
-    const editionPattern = /\bAuflage ([a-z])\)/gi;
+    // Find all editions in the inscription text (heading lines only, German or English)
+    const editionPattern = /^-?\s*(?:Auflage|Edition)\s+([a-z])\)/gim;
     let match;
     let firstExcludedEditionIndex = -1;
 
@@ -1804,8 +1825,8 @@ class LidoFormatter extends BaseFormatter {
       result = inscription.substring(0, firstExcludedEditionIndex).trim();
     }
 
-    // Remove all "Auflage x)" lines from the result
-    result = result.replace(/^Auflage [a-z]\)\s*\n?/gim, '');
+    // Remove all "Auflage x)" / "Edition x)" heading lines from the result
+    result = result.replace(/^-?\s*(?:Auflage|Edition)\s+[a-z]\)\s*:?\s*\n?/gim, '');
 
     return result.trim();
   }
