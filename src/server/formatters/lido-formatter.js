@@ -519,6 +519,16 @@ class LidoFormatter extends BaseFormatter {
     const splitDe = this.splitDescriptiveNote(descriptiveNoteValueDe.text);
     const splitEn = this.splitDescriptiveNote(descriptiveNoteValueEn.text);
 
+    // Drawing descriptions may run longer than print descriptions before
+    // they need to be shortened for LIDO export.
+    const descriptionMaxLength = languageData.de.classification === 'Zeichnung' ? 1100 : 500;
+    splitDe.description = this.truncateAtSentenceBoundary(
+      splitDe.description, descriptionMaxLength,
+    );
+    splitEn.description = this.truncateAtSentenceBoundary(
+      splitEn.description, descriptionMaxLength,
+    );
+
     //   │  ├─ lido:objectDescriptionSet (general description - one per paragraph)
     const deParagraphs = splitDe.description
       ? splitDe.description.split(/\n\n+/).map(p => p.trim()).filter(p => p)
@@ -1771,6 +1781,35 @@ class LidoFormatter extends BaseFormatter {
       footnotes: footnotes.trim(),
       sources: sources.trim(),
     };
+  }
+
+  /**
+   * Truncate text to at most maxLength characters, cutting only at the end
+   * of a sentence (after '.', '!' or '?') so descriptions are never broken
+   * off mid-sentence. Falls back to a word boundary if no sentence ending
+   * is found within the limit.
+   *
+   * @param {string} text
+   * @param {number} maxLength
+   * @returns {string}
+   */
+  truncateAtSentenceBoundary(text, maxLength) {
+    if (!text || text.length <= maxLength) return text;
+
+    const truncated = text.slice(0, maxLength);
+
+    const sentenceEndings = [...truncated.matchAll(/[.!?](?=\s|$)/g)];
+    if (sentenceEndings.length > 0) {
+      const lastEnding = sentenceEndings[sentenceEndings.length - 1];
+      return text.slice(0, lastEnding.index + 1).trim();
+    }
+
+    const lastSpace = truncated.lastIndexOf(' ');
+    if (lastSpace > 0) {
+      return text.slice(0, lastSpace).trim();
+    }
+
+    return truncated.trim();
   }
 
   /**
