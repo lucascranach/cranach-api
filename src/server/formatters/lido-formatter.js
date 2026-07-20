@@ -829,17 +829,6 @@ class LidoFormatter extends BaseFormatter {
       personsByRoleTypeReferenced.PUBLISHER = involvedPersonsPublisher;
     }
 
-    // Determine role type for event date (PRINTER > PRINTMAKER > ARTIST)
-
-    // ** BO Old procedure
-    // let eventDateRoleTypeArtist = 'ARTIST';
-    // if (personsByRoleTypeReferenced.PRINTER) {
-    //   eventDateRoleTypeArtist = 'PRINTER';
-    // } else if (personsByRoleTypeReferenced.PRINTMAKER) {
-    //   eventDateRoleTypeArtist = 'PRINTMAKER';
-    // }
-    // ** EO Old procedure
-
     // Create a separate lido:event element per role type
     // UNKNOWN role types are placeholder entries (no id/name) and don't map to a
     // meaningful LIDO event type, so they're skipped instead of emitting
@@ -987,107 +976,6 @@ class LidoFormatter extends BaseFormatter {
       }
 
       //   │  └─ lido:eventDate (only for the designated role type)
-
-      /* BO Old procedure */
-      // if (roleType === eventDateRoleTypeArtist) {
-      //   const eventDateDe = languageData.de.date_referenced;
-      //   const eventDateEn = languageData.en.date_referenced;
-
-      //   if (eventDateDe) {
-      //     // Collect all begin and end dates (incl. historic events)
-      //     const beginDates = [eventDateDe.begin];
-      //     const endDates = [eventDateDe.end];
-
-      //     const historicEvents = eventDateDe.historicEventInformations;
-      //     if (Array.isArray(historicEvents)) {
-      //       historicEvents.forEach((info) => {
-      //         if (info.begin) beginDates.push(info.begin);
-      //         if (info.end) endDates.push(info.end);
-      //       });
-      //     }
-
-      //     // Determine earliest and latest date
-      //     const validBeginDates = beginDates.filter((d) => d != null && !Number.isNaN(d));
-      //     const validEndDates = endDates.filter((d) => d != null && !Number.isNaN(d));
-      //     const earliestDate = validBeginDates.length > 0 ? Math.min(...validBeginDates) : null;
-      //     const latestDate = validEndDates.length > 0 ? Math.max(...validEndDates) : null;
-
-      //     // Build displayDate string (German)
-      //     let displayDateDe = '';
-      //     if (eventDateDe.dated) {
-      //       displayDateDe = eventDateDe.dated;
-      //       if (eventDateDe.remarks) {
-      //         displayDateDe += ` ${eventDateDe.remarks}`;
-      //       }
-      //     }
-
-      //     if (Array.isArray(historicEvents)) {
-      //       historicEvents.forEach((info) => {
-      //         if (info.text) {
-      //           if (displayDateDe) displayDateDe += ', ';
-      //           displayDateDe += info.text;
-      //           if (info.remarks) {
-      //             displayDateDe += ` ${info.remarks}`;
-      //           }
-      //         }
-      //       });
-      //     }
-
-      //     // Build displayDate string (English)
-      //     let displayDateEn = '';
-      //     if (eventDateEn.dated) {
-      //       displayDateEn = eventDateEn.dated;
-      //       if (eventDateEn.remarks) {
-      //         displayDateEn += ` ${eventDateEn.remarks}`;
-      //       }
-      //     }
-
-      //     if (Array.isArray(eventDateEn.historicEventInformations)) {
-      //       eventDateEn.historicEventInformations.forEach((info) => {
-      //         if (info.text) {
-      //           if (displayDateEn) displayDateEn += ', ';
-      //           displayDateEn += info.text;
-      //           if (info.remarks) {
-      //             displayDateEn += ` ${info.remarks}`;
-      //           }
-      //         }
-      //       });
-      //     }
-
-      //     const eventDate = event.ele('lido:eventDate');
-
-      //     if (displayDateDe) {
-      //       eventDate.ele('lido:displayDate', {
-      //         'xml:lang': 'de',
-      //       }).txt(displayDateDe);
-      //     }
-
-      //     if (displayDateEn) {
-      //       eventDate.ele('lido:displayDate', {
-      //         'xml:lang': 'en',
-      //       }).txt(displayDateEn);
-      //     }
-
-      //     // Structured date with earliestDate/latestDate
-      //     if (earliestDate !== null || latestDate !== null) {
-      //       const date = eventDate.ele('lido:date');
-
-      //       if (earliestDate !== null) {
-      //         date.ele('lido:earliestDate', {
-      //           'lido:type': 'http://terminology.lido-schema.org/lido00529',
-      //         }).txt(earliestDate.toString());
-      //       }
-
-      //       if (latestDate !== null) {
-      //         date.ele('lido:latestDate', {
-      //           'lido:type': 'http://terminology.lido-schema.org/lido00529',
-      //         }).txt(latestDate.toString());
-      //       }
-      //     }
-      //   }
-      // }
-
-      /* EO Old procedure */
     });
     // └─ lido:eventWrap─────────────────────────────────────────────────┘
 
