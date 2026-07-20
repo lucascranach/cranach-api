@@ -520,13 +520,15 @@ class LidoFormatter extends BaseFormatter {
     const splitEn = this.splitDescriptiveNote(descriptiveNoteValueEn.text);
 
     // Drawing descriptions may run longer than print descriptions before
-    // they need to be shortened for LIDO export.
+    // they need to be shortened for LIDO export. When a description is
+    // shortened, a "[...]" marker and the language-specific CDA work link are
+    // appended so readers can continue with the full text on lucascranach.org.
     const descriptionMaxLength = languageData.de.classification === 'Zeichnung' ? 1100 : 500;
-    splitDe.description = this.truncateAtSentenceBoundary(
-      splitDe.description, descriptionMaxLength,
+    splitDe.description = this.truncateWithCdaLink(
+      splitDe.description, descriptionMaxLength, `${baseUrl}/de/${inventoryNumber}`,
     );
-    splitEn.description = this.truncateAtSentenceBoundary(
-      splitEn.description, descriptionMaxLength,
+    splitEn.description = this.truncateWithCdaLink(
+      splitEn.description, descriptionMaxLength, `${baseUrl}/en/${inventoryNumber}`,
     );
 
     //   │  ├─ lido:objectDescriptionSet (general description - one per paragraph)
@@ -1780,6 +1782,24 @@ class LidoFormatter extends BaseFormatter {
       footnotes: footnotes.trim(),
       sources: sources.trim(),
     };
+  }
+
+  /**
+   * Truncate a description and, when it was actually shortened, append a
+   * "[...]" marker followed by the CDA work link so readers can continue
+   * with the full text on lucascranach.org. Since lido:descriptiveNoteValue
+   * is plain-text content (no markup allowed by the schema), the link is
+   * emitted as a bare URL. Returns the text unchanged when it fits.
+   *
+   * @param {string} text
+   * @param {number} maxLength
+   * @param {string} cdaLink language-specific link to the work in the CDA
+   * @returns {string}
+   */
+  truncateWithCdaLink(text, maxLength, cdaLink) {
+    const truncated = this.truncateAtSentenceBoundary(text, maxLength);
+    if (!text || truncated.length >= text.length) return truncated;
+    return `${truncated} [...] ${cdaLink}`;
   }
 
   /**
