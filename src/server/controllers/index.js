@@ -187,12 +187,21 @@ function getSingleItem(mappings) {
                   literatureMap[item.reference_id] = item;
                 });
 
-                // Enrich publications in all language results with the same literature data
+                // Enrich publications in all language results with the same literature data.
+                // Primary sources are excluded: they are usually unrelated to the specific
+                // print (Abzug) and should not appear in the LIDO output.
                 for (let i = 0; i < data.results.length; i += 1) {
                   const languageItem = data.results[i];
                   if (Array.isArray(languageItem.data.publications)) {
-                    data.results[i].data.publications = languageItem.data.publications.map(
-                      (publication) => {
+                    data.results[i].data.publications = languageItem.data.publications
+                      .filter((publication) => {
+                        if (!publication.referenceId) {
+                          return true;
+                        }
+                        const literatureItem = literatureMap[publication.referenceId];
+                        return !literatureItem || !literatureItem.is_primary_source;
+                      })
+                      .map((publication) => {
                         if (publication.referenceId) {
                           const literatureItem = literatureMap[publication.referenceId];
                           if (literatureItem) {
@@ -206,8 +215,7 @@ function getSingleItem(mappings) {
                           }
                         }
                         return publication;
-                      },
-                    );
+                      });
                   }
                 }
               }
