@@ -559,6 +559,7 @@ class LidoFormatter extends BaseFormatter {
       if (i === 0 && descriptiveNoteValueDe.citation !== '') {
         objectDescriptionSet.ele('lido:sourceDescriptiveNote')
           .txt(descriptiveNoteValueDe.citation);
+        this.addObjectDescriptionRights(objectDescriptionSet, descriptiveNoteValueDe.citation);
       }
     }
 
@@ -672,6 +673,7 @@ class LidoFormatter extends BaseFormatter {
       if (provenanceDe.citation !== '') {
         provenanceDescriptionSet.ele('lido:sourceDescriptiveNote')
           .txt(provenanceDe.citation);
+        this.addObjectDescriptionRights(provenanceDescriptionSet, provenanceDe.citation);
       }
     }
 
@@ -1605,6 +1607,34 @@ class LidoFormatter extends BaseFormatter {
       text: text.trim(),
       citation: '',
     };
+  }
+
+  /**
+   * Append a lido:objectDescriptionRights element to an objectDescriptionSet,
+   * crediting the author of the descriptive text under CC BY-SA 4.0.
+   * Only applies when the citation ends in "<Name> <year>" (no comma) - e.g.
+   * "David Hotchkiss Price 2026" -> rightsHolder "David Hotchkiss Price".
+   * Citations that don't end in a bare year (e.g. bibliographic references
+   * like "Metzger, Exhib. Cat. Düsseldorf 2017, 270, No. 168") are skipped.
+   * @param {Object} descriptionSet - The lido:objectDescriptionSet xmlbuilder2 node
+   * @param {string} citation - The sourceDescriptiveNote text to derive the name from
+   */
+  addObjectDescriptionRights(descriptionSet, citation) {
+    const match = citation.match(/^(.*\S)\s+\d{4}$/);
+    if (!match) return;
+
+    const rights = descriptionSet.ele('lido:objectDescriptionRights');
+    rights.ele('lido:rightsType', {
+      'lido:type': 'http://terminology.lido-schema.org/lido00921',
+    })
+      .ele('lido:conceptID', {
+        'lido:type': 'http://terminology.lido-schema.org/lido00099',
+      })
+      .txt('https://creativecommons.org/licenses/by-sa/4.0/');
+    rights.ele('lido:rightsHolder')
+      .ele('lido:legalBodyName')
+      .ele('lido:appellationValue')
+      .txt(match[1]);
   }
 
   /**
