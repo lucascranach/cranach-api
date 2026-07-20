@@ -1492,10 +1492,9 @@ class LidoFormatter extends BaseFormatter {
         .txt(rightsHolderName);
 
       const createdNameForCreditLine = (imageMetadata.created?.de || '').replace(/^©\s*/, '');
-      const creditLineCreator = createdNameForCreditLine !== rightsHolderName ? createdNameForCreditLine : '';
       const creditLine = rightsHolderName === 'Technische Hochschule Köln'
         ? 'Cranach Digital Archive'
-        : [rightsHolderName, creditLineCreator].filter(Boolean).join(', ') || 'Cranach Digital Archive';
+        : [rightsHolderName, createdNameForCreditLine].filter(Boolean).join(', ') || 'Cranach Digital Archive';
       rightsResource.ele('lido:creditLine')
         .txt(creditLine);
     });
