@@ -1178,17 +1178,17 @@ class LidoFormatter extends BaseFormatter {
         'lido:type': 'http://terminology.lido-schema.org/lido00921',
       })
       .ele('skos:Concept', {
-        'rdf:about': 'http://creativecommons.org/publicdomain/zero/1.0/',
+        'rdf:about': 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
       })
       .ele('skos:prefLabel', {
         'xml:lang': 'de',
       })
-      .txt('CC0 1.0 Universell Public Domain Dedication')
+      .txt('Namensnennung-Nicht kommerziell-Share Alike 4.0 International')
       .up()
       .ele('skos:prefLabel', {
         'xml:lang': 'en',
       })
-      .txt('CC0 1.0 Universal Public Domain Dedication');
+      .txt('Attribution-NonCommercial-ShareAlike 4.0 International');
 
     recordWrap.ele('lido:recordInfoSet', {
       'lido:type': 'http://terminology.lido-schema.org/lido00471',
