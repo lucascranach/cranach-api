@@ -112,6 +112,12 @@ function getSingleItem(mappings) {
                     });
                   }
                 });
+              } else {
+                // eslint-disable-next-line no-console
+                console.warn(
+                  `Referenced record ${referencedInventoryNumber} not found `
+                  + `(referenced by ${id}); skipping field copy.`,
+                );
               }
             } catch (error) {
               // eslint-disable-next-line no-console

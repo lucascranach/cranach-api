@@ -841,7 +841,13 @@ class LidoFormatter extends BaseFormatter {
     // ** EO Old procedure
 
     // Create a separate lido:event element per role type
+    // UNKNOWN role types are placeholder entries (no id/name) and don't map to a
+    // meaningful LIDO event type, so they're skipped instead of emitting
+    // "nicht spezifiziert" events.
     Object.keys(personsByRoleTypeReferenced).forEach((roleType) => {
+      if (roleType === 'UNKNOWN') {
+        return;
+      }
       const persons = personsByRoleTypeReferenced[roleType];
       const eventData = getEventDataByRoleType(roleType);
 
