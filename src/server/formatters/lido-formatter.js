@@ -12,10 +12,6 @@ const {
 } = require('../mappings/authority-files');
 const { logUnknownSource, logKnownSource } = require('../utils/unknownSourcesLogger');
 
-// The image-download proxy downscales the origin image so its longest side is
-// at most this many pixels (preserving aspect ratio) before serving it.
-const MAX_DOWNLOAD_IMAGE_DIMENSION = 4400;
-
 /**
  * LIDO XML formatter for cultural heritage objects
  * Implements LIDO 1.0 (Lightweight Information Describing Objects)
@@ -1275,21 +1271,15 @@ class LidoFormatter extends BaseFormatter {
         addRepresentation(image.sizes.small, 'http://terminology.lido-schema.org/lido00451');
       }
 
-      //   │  ├─ lido:resourceRepresentation (thumbnail medium/large — lido00451)
-      if (image.sizes.medium) {
+      //   │  ├─ lido:resourceRepresentation (thumbnail medium — lido00451, only alongside a large high-res image)
+      if (image.sizes.medium && image.sizes.large) {
         addRepresentation(image.sizes.medium, 'http://terminology.lido-schema.org/lido00451');
       }
-      if (image.sizes.large) {
-        addRepresentation(image.sizes.large, 'http://terminology.lido-schema.org/lido00451');
-      }
 
-      //   │  ├─ lido:resourceRepresentation (high-resolution download via proxy — lido00464)
-      if (image.sizes.origin) {
-        const downloadUrl = `https://lucascranach.org/data-proxy/image-download.php?src=${encodeURIComponent(image.sizes.origin.src)}`;
-        addRepresentation(
-          { src: downloadUrl, dimensions: this.getDownloadImageDimensions(image.sizes.origin.dimensions) },
-          'http://terminology.lido-schema.org/lido00464',
-        );
+      //   │  ├─ lido:resourceRepresentation (high-resolution large — lido00464 / medium fallback — lido00464)
+      const highResImage = image.sizes.large || image.sizes.medium;
+      if (highResImage) {
+        addRepresentation(highResImage, 'http://terminology.lido-schema.org/lido00464');
       }
 
       //   │  ├─ lido:resourceType (digital image)
@@ -1459,23 +1449,6 @@ class LidoFormatter extends BaseFormatter {
       match = regex.exec(text);
     }
     return pairs;
-  }
-
-  /**
-   * Compute the dimensions the image-download proxy will actually serve for
-   * an origin image, scaling down proportionally if the longest side exceeds
-   * MAX_DOWNLOAD_IMAGE_DIMENSION.
-   * @param {Object} dimensions - { width, height } of the origin image
-   * @returns {Object} { width, height } as served by the download proxy
-   */
-  getDownloadImageDimensions({ width, height }) {
-    const longestSide = Math.max(width, height);
-    if (longestSide <= MAX_DOWNLOAD_IMAGE_DIMENSION) return { width, height };
-    const scale = MAX_DOWNLOAD_IMAGE_DIMENSION / longestSide;
-    return {
-      width: Math.round(width * scale),
-      height: Math.round(height * scale),
-    };
   }
 
   /**
