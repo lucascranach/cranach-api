@@ -59,6 +59,13 @@ class LidoFormatter extends BaseFormatter {
       languageData[item.language] = item.data;
     });
 
+    // Drawings are treated differently in several places below: they get no parent
+    // classification, keep their inscription transcriptions and their detailed medium
+    // description, allow longer descriptions and have no related work set. Only the
+    // German classification is evaluated, since that is the language the source data
+    // classifies in.
+    const isDrawing = languageData.de.classification === 'Zeichnung';
+
     // Use primary language data for main structure
     const primaryData = languageData[primaryLanguage] || resultsArray[0].data;
     const inventoryNumber = primaryData.inventory_number ? primaryData.inventory_number : '';
@@ -199,7 +206,7 @@ class LidoFormatter extends BaseFormatter {
     }
 
     //   └─ lido:classificationWrap (parent category, skip for drawings)
-    if (languageData.de.classification !== 'Zeichnung') {
+    if (!isDrawing) {
       objectClassificationWrap.ele('lido:classificationWrap')
         .ele('lido:classification', {
           'lido:type': 'http://terminology.lido-schema.org/lido00853',
@@ -263,7 +270,7 @@ class LidoFormatter extends BaseFormatter {
 
     // Inscription transcriptions are only kept for drawings. For prints
     // (Druckgrafik) they are derived from the WNDs and should be omitted here.
-    if (languageData.de.classification === 'Zeichnung') {
+    if (isDrawing) {
       const inscriptionTranscriptionDe = this.extractInscriptionsFromEdition(
         languageData.de.condition, languageData.de.inscription,
       );
@@ -523,7 +530,7 @@ class LidoFormatter extends BaseFormatter {
     // they need to be shortened for LIDO export. When a description is
     // shortened, a "[...]" marker and the language-specific CDA work link are
     // appended so readers can continue with the full text on lucascranach.org.
-    const descriptionMaxLength = languageData.de.classification === 'Zeichnung' ? 1100 : 500;
+    const descriptionMaxLength = isDrawing ? 1100 : 500;
     splitDe.description = this.truncateWithCdaLink(
       splitDe.description, descriptionMaxLength, `${baseUrl}/de/${inventoryNumber}`,
     );
@@ -986,7 +993,7 @@ class LidoFormatter extends BaseFormatter {
       .ele('lido:relatedWorksWrap');
 
     //   ├─ lido:relatedWorkSet (skip for drawings)
-    if (languageData.de.classification !== 'Zeichnung') {
+    if (!isDrawing) {
       const relatedWorkSet = relatedWorksWrap.ele('lido:relatedWorkSet');
       const relatedObject = relatedWorkSet.ele('lido:relatedWork').ele('lido:object');
 
