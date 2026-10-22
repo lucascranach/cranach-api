@@ -571,44 +571,37 @@ class LidoFormatter extends BaseFormatter {
     }
 
     //   │  ├─ lido:objectDescriptionSet (Footnotes / Anmerkungen)
-    if (splitDe.footnotes || splitEn.footnotes) {
-      const deAnnotations = this.parseAnnotations(splitDe.footnotes);
-      const enAnnotations = this.parseAnnotations(splitEn.footnotes);
+    // Only footnotes that are still referenced ("[n]") in the exported,
+    // possibly shortened description are exported, per language. Footnotes
+    // whose reference was cut off, and unnumbered footnote blocks that cannot
+    // be tied to the text, are left out.
+    const deReferences = this.extractFootnoteReferences(splitDe.description);
+    const enReferences = this.extractFootnoteReferences(splitEn.description);
+    const deMap = new Map(
+      this.parseAnnotations(splitDe.footnotes)
+        .filter(a => deReferences.has(a.number))
+        .map(a => [a.number, a]),
+    );
+    const enMap = new Map(
+      this.parseAnnotations(splitEn.footnotes)
+        .filter(a => enReferences.has(a.number))
+        .map(a => [a.number, a]),
+    );
+    const annotationNumbers = [...new Set([...deMap.keys(), ...enMap.keys()])].sort((a, b) => a - b);
 
-      const deMap = new Map(deAnnotations.map(a => [a.number, a]));
-      const enMap = new Map(enAnnotations.map(a => [a.number, a]));
-      const allNumbers = [...new Set([...deMap.keys(), ...enMap.keys()])].sort((a, b) => a - b);
+    for (const num of annotationNumbers) {
+      const deAnnotation = deMap.get(num);
+      const enAnnotation = enMap.get(num);
 
-      if (allNumbers.length > 0) {
-        for (const num of allNumbers) {
-          const deAnnotation = deMap.get(num);
-          const enAnnotation = enMap.get(num);
-          const rawText = (deAnnotation || enAnnotation).rawText;
-          const numMatch = rawText.match(/^\[(\d+)\]/);
-          const typeLabel = numMatch ? `Anm. ${numMatch[1]}` : 'Anmerkung';
+      const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
+        'lido:type': `Anm. ${num}`,
+      });
 
-          const annotationSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-            'lido:type': typeLabel,
-          });
-
-          if (deAnnotation) {
-            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deAnnotation.text);
-          }
-          if (enAnnotation) {
-            annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enAnnotation.text);
-          }
-        }
-      } else {
-        const footnotesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
-          'lido:type': 'Anmerkung',
-        });
-
-        if (splitDe.footnotes) {
-          footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(splitDe.footnotes);
-        }
-        if (splitEn.footnotes) {
-          footnotesDescriptionSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(splitEn.footnotes);
-        }
+      if (deAnnotation) {
+        annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'de' }).txt(deAnnotation.text);
+      }
+      if (enAnnotation) {
+        annotationSet.ele('lido:descriptiveNoteValue', { 'xml:lang': 'en' }).txt(enAnnotation.text);
       }
     }
 
@@ -1675,6 +1668,18 @@ class LidoFormatter extends BaseFormatter {
       return { number: parseInt(match[1], 10), rawText: part.trim(), text: match[2].trim() };
     }).filter(Boolean);
     return annotations;
+  }
+
+  /**
+   * Collect the footnote numbers referenced in a description text,
+   * e.g. "...übertragen wurde.[1]" or "...von Lucas Cranach [2].".
+   *
+   * @param {string} text
+   * @returns {Set<number>}
+   */
+  extractFootnoteReferences(text) {
+    if (!text) return new Set();
+    return new Set([...text.matchAll(/\[(\d+)\]/g)].map(m => parseInt(m[1], 10)));
   }
 
   /**
