@@ -506,6 +506,19 @@ function getEventDataByRoleType(roleType) {
           conceptID: 'http://vocab.getty.edu/aat/300025574',
         },
       };
+    // There is no controlled vocabulary concept for the role "Offizin", so the
+    // event is mapped to "Publikation" and the role is exported as term only.
+    case 'OFFICIN':
+      return {
+        eventType: {
+          conceptID: 'http://terminology.lido-schema.org/lido00228',
+          termDe: 'Publikation',
+          termEn: 'Publication',
+        },
+        roleActor: {
+          conceptID: '',
+        },
+      };
     case 'PRINTMAKER':
       return {
         eventType: {

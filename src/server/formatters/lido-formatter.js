@@ -907,9 +907,11 @@ class LidoFormatter extends BaseFormatter {
           }
 
           const roleActor = actorInRole.ele('lido:roleActor');
-          roleActor.ele('lido:conceptID', {
-            'lido:type': 'http://terminology.lido-schema.org/lido00099',
-          }).txt(eventData.roleActor.conceptID);
+          if (eventData.roleActor.conceptID) {
+            roleActor.ele('lido:conceptID', {
+              'lido:type': 'http://terminology.lido-schema.org/lido00099',
+            }).txt(eventData.roleActor.conceptID);
+          }
           roleActor.ele('lido:term', {
             'xml:lang': 'de',
           }).txt(personDe.role);
