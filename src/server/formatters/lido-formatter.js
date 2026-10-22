@@ -748,19 +748,28 @@ class LidoFormatter extends BaseFormatter {
       const objectMaterialsTechWrap = objectIdentificationWrap.ele('lido:objectMaterialsTechWrap');
       const objectMaterialsTechSet = objectMaterialsTechWrap.ele('lido:objectMaterialsTechSet');
 
-      // Resolve materialsTechData first so its terms can be used in displayMaterialsTech
       const materialsTechData = getMaterialsTechData(languageData.de.objectworktype_value);
 
-      if (languageData.de.display_materials_tech) {
+      // For prints the medium field is too unspecific as a technique statement
+      // ("Druck auf Papier"), so the object work type is used instead. Drawings keep
+      // their detailed medium description, which carries the actual technique
+      // information ("Feder mit schwarzem Medium, mit Pinsel und grauem Medium
+      // laviert ..."); there only the CDA self-citation is dropped.
+      const displayMaterialsTechDe = (!isDrawing && languageData.de.objectworktype_value)
+        || this.removeCdaTag(languageData.de.display_materials_tech);
+      const displayMaterialsTechEn = (!isDrawing && languageData.en.objectworktype_value)
+        || this.removeCdaTag(languageData.en.display_materials_tech);
+
+      if (displayMaterialsTechDe) {
         objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
           'xml:lang': 'de',
-        }).txt(languageData.de.display_materials_tech);
+        }).txt(displayMaterialsTechDe);
       }
 
-      if (languageData.en.display_materials_tech) {
+      if (displayMaterialsTechEn) {
         objectMaterialsTechSet.ele('lido:displayMaterialsTech', {
           'xml:lang': 'en',
-        }).txt(languageData.en.display_materials_tech);
+        }).txt(displayMaterialsTechEn);
       }
 
       // Add lido:materialsTech based on objectworktype_value
@@ -1420,13 +1429,15 @@ class LidoFormatter extends BaseFormatter {
   }
 
   /**
-   * Remove the substring '\n[cda 2026]' from the end of a string
+   * Remove a trailing CDA self-citation such as '\n[cda 2026]' from a string.
+   * Citations attributing a statement to a third party (e.g. '[Rosenberg 1960, 19]')
+   * are kept.
    * @param {string} text - The input string
    * @returns {string} The cleaned string
    */
   removeCdaTag(text) {
     if (!text) return text;
-    return text.replace(/\n\[cda 2026\]$/, '');
+    return text.replace(/\n+\[cda \d{4}\]\s*$/, '');
   }
 
   /**
