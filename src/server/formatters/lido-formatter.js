@@ -70,6 +70,8 @@ class LidoFormatter extends BaseFormatter {
     const primaryData = languageData[primaryLanguage] || resultsArray[0].data;
     const inventoryNumber = primaryData.inventory_number ? primaryData.inventory_number : '';
 
+    this.assertIsExportable(languageData, isDrawing, inventoryNumber);
+
     // Build dynamic source URL
     const domain = 'https://lucascranach.org';
     const baseUrl = process.env.LIDO_BASE_URL || 'https://lucascranach.org/';
@@ -1846,6 +1848,47 @@ class LidoFormatter extends BaseFormatter {
     result = result.replace(/^-?\s*(?:Auflage|Edition)\s+[a-z]\)\s*:?\s*\n?/gim, '');
 
     return result.trim();
+  }
+
+  /**
+   * Ensure the record is editorially finished and may be exported.
+   *
+   * Two criteria decide that:
+   *
+   * 1. There has to be a published work record (Werknormdatensatz). Its inventory
+   *    number is copied onto the printed exemplar (Abzug) before formatting and ends
+   *    up in the related work set "ist Exemplar von". When the work record is deferred
+   *    ("zurückgestellt", its inventory number marked with a leading "==") it is not
+   *    published and therefore cannot be resolved, so the exemplar keeps its own
+   *    inventory number and none of the information taken from the work record. Such
+   *    an exemplar is not finished and must not be exported. Drawings are exempt,
+   *    since they have no work record at all.
+   * 2. There has to be at least one image. A record without any image is not ready for
+   *    publication either.
+   *
+   * @param {Object} languageData - Data per language code
+   * @param {boolean} isDrawing - Whether the record is a drawing
+   * @param {string} inventoryNumber - Inventory number of the record itself
+   * @throws {Error} If the record must not be exported
+   */
+  assertIsExportable(languageData, isDrawing, inventoryNumber) {
+    const referencedInventoryNumber = languageData.de.inventory_number_referenced;
+
+    if (!isDrawing
+      && (!referencedInventoryNumber || referencedInventoryNumber === inventoryNumber)) {
+      throw new Error(
+        `The record ${inventoryNumber} is not linked to a published work record `
+        + '(Werknormdatensatz) and cannot be exported as LIDO.',
+      );
+    }
+
+    const imageIds = this.extractImageIds(languageData.de.images);
+
+    if (imageIds.length === 0) {
+      throw new Error(
+        `The record ${inventoryNumber} has no image and cannot be exported as LIDO.`,
+      );
+    }
   }
 
   /**
