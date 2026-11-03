@@ -630,7 +630,14 @@ class LidoFormatter extends BaseFormatter {
     // }
 
     //   │  ├─ lido:objectDescriptionSet (Sources / Quellen)
-    if (splitDe.sources || splitEn.sources) {
+    // In print descriptions with footnotes (KKL texts) the "Quellen / Publikationen"
+    // block only lists abbreviations of the research literature, not sources, so it
+    // is left out there. Only the German text is evaluated: some English print
+    // descriptions carry an unrelated appendix after a footnote separator.
+    const isPrint = languageData.de.classification === 'Druckgrafik';
+    const skipSources = isPrint && Boolean(splitDe.footnotes);
+
+    if (!skipSources && (splitDe.sources || splitEn.sources)) {
       const sourcesDescriptionSet = objectDescriptionWrap.ele('lido:objectDescriptionSet', {
         'lido:type': 'Quellen',
       });
